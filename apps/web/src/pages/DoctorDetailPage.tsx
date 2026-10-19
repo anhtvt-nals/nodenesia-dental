@@ -35,7 +35,7 @@ export const DoctorDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center font-mono text-xs text-[#14201C]/60">
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm font-medium text-text-muted">
         {t.common.loading}
       </div>
     );
@@ -44,13 +44,17 @@ export const DoctorDetailPage: React.FC = () => {
   if (!doctor) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-        <h1 className="font-serif text-3xl mb-4">Profil Dokter Tidak Ditemukan</h1>
-        <Link
-          to={localePath('/dokter')}
-          className="px-6 py-2.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider"
-        >
-          {t.doctors.backToDoctors}
-        </Link>
+        <div className="trust-card p-8">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4">
+            Profil Dokter Tidak Ditemukan
+          </h1>
+          <Link
+            to={localePath('/dokter')}
+            className="btn-primary text-sm cursor-pointer"
+          >
+            {t.doctors.backToDoctors}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -67,30 +71,33 @@ export const DoctorDetailPage: React.FC = () => {
         path={`/dokter/${doctor.slug}`}
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link
               to={localePath('/dokter')}
-              className="text-xs font-mono text-[#14201C]/60 hover:text-[#14201C] underline underline-offset-4"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
             >
-              ← {t.doctors.backToDoctors}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>{t.doctors.backToDoctors}</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start mb-12 pb-12 hairline-b">
+          <div className="trust-card p-6 sm:p-8 bg-bg-card grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
             {/* Doctor Photo */}
             <div className="md:col-span-5">
               {doctor.photoUrl && !photoFailed ? (
-                <div className="w-full aspect-[3/4] overflow-hidden hairline-border bg-[#E9E4D8] relative">
+                <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative">
                   <img
                     src={doctor.photoUrl}
                     alt={doctor.name}
                     onError={() => setPhotoFailed(true)}
-                    className="w-full h-full object-cover object-top filter brightness-[0.98]"
+                    className="w-full h-full object-cover object-top"
                   />
                   {doctor.experience && (
-                    <div className="absolute bottom-3 left-3 px-3 py-1 bg-[#14201C]/85 backdrop-blur-sm text-[#F4F1EA] text-xs font-mono uppercase tracking-wider">
+                    <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-full bg-bg-card/95 backdrop-blur-sm border border-border text-text text-xs font-bold shadow-sm">
                       {lang === 'en' ? doctor.experienceEn : doctor.experience}
                     </div>
                   )}
@@ -103,8 +110,8 @@ export const DoctorDetailPage: React.FC = () => {
                 />
               )}
               {doctor.sipNumber && (
-                <div className="mt-3 p-3 bg-[#E9E4D8]/50 hairline-border text-xs font-mono text-[#14201C]/70">
-                  <span className="block font-medium text-[#14201C] mb-0.5">{t.doctors.sipBadge}</span>
+                <div className="mt-4 p-4 rounded-xl bg-bg-alt border border-border text-xs text-text-muted">
+                  <span className="block font-bold text-text mb-0.5">{t.doctors.sipBadge}</span>
                   <span>{doctor.sipNumber}</span>
                 </div>
               )}
@@ -112,30 +119,31 @@ export const DoctorDetailPage: React.FC = () => {
 
             {/* Doctor Info */}
             <div className="md:col-span-7">
-              <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36] block mb-2">
-                {specialty}
-              </span>
-              <h1 className="font-serif text-4xl sm:text-5xl text-[#14201C] tracking-tight mb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="badge badge-primary">{specialty}</span>
+                <span className="badge badge-success">Indonesia · English</span>
+              </div>
+              <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-1.5">
                 {doctor.name}
               </h1>
-              <p className="text-sm font-mono text-[#14201C]/70 mb-6">
+              <p className="text-sm font-medium text-text-muted mb-6">
                 {title}
               </p>
 
-              <div className="prose max-w-none text-[#14201C]/80 font-sans text-base leading-relaxed mb-8">
+              <div className="prose max-w-none text-text-muted text-base leading-relaxed mb-8">
                 <p>{bio}</p>
               </div>
 
               {/* Education */}
               {doctor.education && (
                 <div className="mb-8">
-                  <h3 className="font-mono text-xs uppercase tracking-wider text-[#14201C]/50 mb-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-2.5">
                     {t.doctors.education}
                   </h3>
-                  <ul className="space-y-1.5 text-sm font-sans text-[#14201C]/80">
+                  <ul className="space-y-2 text-sm text-text-muted">
                     {doctor.education.map((edu, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-[#1F3D36]">·</span>
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
                         <span>{edu}</span>
                       </li>
                     ))}
@@ -144,17 +152,17 @@ export const DoctorDetailPage: React.FC = () => {
               )}
 
               {/* Weekly Practice Hours */}
-              <div className="mb-8 p-4 bg-[#E9E4D8]/50 hairline-border">
-                <h3 className="font-mono text-xs uppercase tracking-wider text-[#14201C]/60 mb-2">
+              <div className="mb-8 p-5 rounded-xl bg-bg-alt border border-border">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">
                   {t.doctors.weeklyHours}
                 </h3>
-                <div className="space-y-1 text-xs font-mono text-[#14201C]/80">
+                <div className="space-y-2 text-xs sm:text-sm text-text-muted">
                   {doctor.workingHours.map((wh) => (
-                    <div key={wh.weekday} className="flex items-center justify-between">
-                      <span className="font-medium text-[#14201C]">
-                        {t.schedule.days[wh.weekday as keyof typeof t.schedule.days]}:
+                    <div key={wh.weekday} className="flex items-center justify-between py-1 border-b border-border/60 last:border-0">
+                      <span className="font-semibold text-text">
+                        {t.schedule.days[wh.weekday as keyof typeof t.schedule.days]}
                       </span>
-                      <span>{wh.start} – {wh.end} WIB</span>
+                      <span className="font-medium text-primary">{wh.start} – {wh.end} WIB</span>
                     </div>
                   ))}
                 </div>
@@ -163,24 +171,27 @@ export const DoctorDetailPage: React.FC = () => {
               {/* Action */}
               <Link
                 to={localePath(`/booking?dokter=${doctor.id}`)}
-                className="w-full sm:w-auto inline-block text-center px-8 py-3.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors"
+                className="btn-primary w-full sm:w-auto justify-center py-3 px-8 cursor-pointer"
               >
-                {t.doctors.bookWithDoctor} →
+                <span>{t.doctors.bookWithDoctor}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
           </div>
 
           {/* Services handled by this doctor */}
-          <div>
-            <h2 className="font-serif text-2xl text-[#14201C] mb-2">
+          <div className="trust-card p-6 sm:p-8 bg-bg-card">
+            <h2 className="font-heading text-2xl font-bold text-text mb-1.5">
               {t.doctors.servicesHandled}
             </h2>
-            <p className="text-xs font-mono text-[#14201C]/60 mb-6">
+            <p className="text-sm text-text-muted mb-6">
               Tindakan medis yang dilakukan secara rutin oleh {doctor.name}
             </p>
-            <div className="hairline-t divide-y divide-[#14201C]/10">
-              {services.map((svc) => (
-                <PriceRow key={svc.id} service={svc} />
+            <div className="border-t border-border divide-y divide-border">
+              {services.map((svc, idx) => (
+                <PriceRow key={svc.id} service={svc} index={idx} />
               ))}
             </div>
           </div>
