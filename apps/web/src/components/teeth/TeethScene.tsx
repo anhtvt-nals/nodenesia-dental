@@ -24,10 +24,10 @@ const MODEL_TARGET_RADIUS = 1.4;
 // (a couple of touching pairs are welded, so ~30 shells for ~32 teeth). Splitting
 // the shells lets us shade teeth and gingiva differently *and* light up a group
 // of teeth — the front teeth vs the premolars/molars — when a zone is selected.
-const TEETH_COLOR = 0xF7F2E6;
-const GUM_COLOR = 0xC0757A;
-const HIGHLIGHT_COLOR = 0x4FA98C;
-const HIGHLIGHT_EMISSIVE = 0.45;
+const TEETH_COLOR = 0xFAFBFC;
+const GUM_COLOR = 0xD9828B;
+const HIGHLIGHT_COLOR = 0x0066CC;
+const HIGHLIGHT_EMISSIVE = 0.5;
 // Fraction of the model's half-width that separates front teeth from molars.
 const FRONT_TOOTH_WIDTH_RATIO = 0.31;
 // Fraction of the model's width within which soft tissue is kept (the gums).
@@ -826,18 +826,18 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
     const environmentTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = environmentTarget.texture;
 
-    // Lighting (Warm Key + Cool Fill + subtle rim)
-    scene.add(new THREE.HemisphereLight(0xF4F1EA, 0x8A9A94, 0.5));
+    // Lighting (Clinical Daylight Key + Cool Medical Fill + subtle rim)
+    scene.add(new THREE.HemisphereLight(0xFAFBFC, 0x94A3B8, 0.55));
 
-    const keyLight = new THREE.DirectionalLight(0xFFF9E6, 1.6);
+    const keyLight = new THREE.DirectionalLight(0xFFFFFF, 1.6);
     keyLight.position.set(3, 5, 4);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xCCE0DF, 0.8);
+    const fillLight = new THREE.DirectionalLight(0xCFE8FF, 0.85);
     fillLight.position.set(-4, 2, -3);
     scene.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(0xFFFFFF, 0.45);
+    const rimLight = new THREE.DirectionalLight(0xE0F2FE, 0.5);
     rimLight.position.set(0, -3, -4);
     scene.add(rimLight);
 
@@ -1011,15 +1011,15 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
   return (
     <div className={`relative w-full ${fill ? 'h-full flex flex-col' : ''} ${className}`.trim()}>
       {/* 3D Scene / Poster Canvas Container (Responsive height) */}
-      <div className={`relative w-full ${fill ? 'flex-1 min-h-[270px] sm:min-h-[340px]' : 'h-[270px] sm:h-[340px] md:h-[460px]'} bg-[#E9E4D8]/30 hairline-border overflow-hidden`}>
+      <div className={`relative w-full ${fill ? 'flex-1 min-h-[280px] sm:min-h-[340px]' : 'h-[280px] sm:h-[340px] md:h-[460px]'} bg-bg-alt border border-border rounded-2xl overflow-hidden shadow-xs`}>
         <div ref={mountRef} className="w-full h-full" />
 
         {status === 'error' && (
-          <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#E9E4D8]">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#14201C]/60 mb-2">
-              [3D MODEL PREVIEW]
+          <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-bg-alt">
+            <span className="badge badge-primary mb-3 text-xs">
+              <span>[3D MODEL PREVIEW]</span>
             </span>
-            <p className="font-serif text-xl text-[#14201C] max-w-sm">
+            <p className="font-heading text-xl font-bold text-text max-w-sm">
               Anatomi Gigi & Lengkung Rahang Interaktif
             </p>
           </div>
@@ -1027,12 +1027,12 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
 
         {status === 'loading' && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="font-mono text-xs text-[#14201C]/50">Memuat model 3D…</span>
+            <span className="font-heading font-semibold text-xs text-text-muted">Memuat model 3D…</span>
           </div>
         )}
 
         {/* Interaction hint overlay */}
-        <div className="absolute top-2.5 left-2.5 bg-[#F4F1EA]/90 hairline-border px-2.5 py-1 text-[10px] sm:text-[11px] font-mono text-[#14201C]/75 backdrop-blur-xs select-none max-w-[68%]">
+        <div className="absolute top-3 left-3 bg-bg-card/90 border border-border rounded-xl px-3 py-1.5 text-[11px] font-medium text-text-muted backdrop-blur-xs select-none max-w-[68%] shadow-2xs">
           {t.home.zonesHint}
         </div>
 
@@ -1041,13 +1041,13 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
           href={MODEL_ATTRIBUTION_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute top-2.5 right-2.5 bg-[#F4F1EA]/80 hairline-border px-2 py-0.5 text-[9px] font-mono text-[#14201C]/55 hover:text-[#14201C] backdrop-blur-xs"
+          className="absolute top-3 right-3 bg-bg-card/85 border border-border rounded-lg px-2.5 py-1 text-[10px] font-medium text-text-muted hover:text-primary backdrop-blur-xs"
         >
           3D: Mince · CC BY 4.0
         </a>
 
         {/* Zone Selector Pills / Buttons (Touch accessible) */}
-        <div className="absolute bottom-2.5 left-2 right-2 flex items-center justify-center gap-1.5 flex-wrap">
+        <div className="absolute bottom-3 left-2.5 right-2.5 flex items-center justify-center gap-2 flex-wrap">
           {(['front', 'molar', 'gum', 'arch'] as ToothZone[]).map((zoneKey) => (
             <button
               key={zoneKey}
@@ -1058,10 +1058,10 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
                   setMobileSheetOpen(true);
                 }
               }}
-              className={`px-2.5 py-1 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-mono hairline-border transition-colors ${
+              className={`px-3.5 py-1.5 min-h-[38px] rounded-full text-xs font-semibold border transition-all cursor-pointer ${
                 activeZone === zoneKey
-                  ? 'bg-[#1F3D36] text-[#F4F1EA] border-[#1F3D36] font-medium shadow-xs'
-                  : 'bg-[#F4F1EA]/90 text-[#14201C] hover:bg-[#E9E4D8]'
+                  ? 'bg-primary text-white border-primary shadow-sm'
+                  : 'bg-bg-card/95 text-text border-border hover:border-primary hover:text-primary'
               }`}
             >
               {zoneKey === 'front'
@@ -1076,42 +1076,42 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
         </div>
       </div>
 
-      {/* Selected Zone price list (compact) */}
+      {/* Selected Zone price list (Demo Card look) */}
       {activeZone && (
-        <div className="mt-3 p-4 hairline-border bg-[#F4F1EA]">
-          <div className="flex items-center justify-between gap-4 pb-2 hairline-b">
-            <div className="flex items-baseline gap-2 min-w-0">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[#1F3D36] shrink-0">
+        <div className="mt-3.5 trust-card p-5">
+          <div className="flex items-center justify-between gap-4 pb-3 border-b border-border">
+            <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
+              <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary-hover text-xs font-semibold shrink-0">
                 {t.prices.activeZone}
               </span>
-              <h4 className="font-serif text-base sm:text-lg text-[#14201C] truncate">
+              <h4 className="font-heading text-base sm:text-lg font-bold text-text truncate">
                 {zoneNames[activeZone]}
               </h4>
             </div>
-            <span className="text-[11px] font-mono text-[#14201C]/50 whitespace-nowrap">
+            <span className="text-xs font-semibold text-text-muted whitespace-nowrap">
               {currentZoneServices.length} jenis
             </span>
           </div>
 
-          <ul className="divide-y divide-[#14201C]/10">
+          <ul className="divide-y divide-border mt-1">
             {currentZoneServices.map((svc) => {
               const svcName = lang === 'en' ? svc.nameEn : svc.name;
 
               return (
-                <li key={svc.id} className="flex items-center justify-between gap-3 py-2">
+                <li key={svc.id} className="flex items-center justify-between gap-3 py-2.5">
                   <Link
                     to={localePath(`/layanan/${svc.slug}`)}
-                    className="font-sans text-sm text-[#14201C] hover:text-[#1F3D36] transition-colors truncate"
+                    className="font-body font-medium text-sm text-text hover:text-primary transition-colors truncate"
                   >
                     {svcName}
                   </Link>
-                  <span className="flex items-center gap-2.5 shrink-0">
-                    <span className="font-mono text-xs font-semibold text-[#1F3D36] whitespace-nowrap">
+                  <span className="flex items-center gap-3 shrink-0">
+                    <span className="font-heading text-xs sm:text-sm font-bold text-primary whitespace-nowrap">
                       {formatRupiah(svc.priceFrom, lang === 'en')}
                     </span>
                     <Link
                       to={localePath(`/booking?layanan=${svc.slug}`)}
-                      className="px-2.5 py-1 bg-[#1F3D36] text-[#F4F1EA] text-[11px] font-mono hover:bg-[#162B26] transition-colors whitespace-nowrap"
+                      className="btn-primary text-xs py-1.5 px-3.5 min-h-[34px] rounded-lg whitespace-nowrap"
                     >
                       {t.common.bookNow}
                     </Link>

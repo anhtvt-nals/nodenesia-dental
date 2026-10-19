@@ -17,7 +17,7 @@ interface LazyTeethSceneProps {
 export const LazyTeethScene: React.FC<LazyTeethSceneProps> = (props) => (
   <Suspense
     fallback={
-      <div className="w-full aspect-[16/10] hairline-border bg-[#E9E4D8]/40 flex items-center justify-center font-mono text-xs text-[#14201C]/50">
+      <div className="w-full aspect-[16/10] rounded-2xl border border-border bg-bg-alt flex items-center justify-center font-heading font-semibold text-sm text-text-muted">
         Memuat model 3D…
       </div>
     }
