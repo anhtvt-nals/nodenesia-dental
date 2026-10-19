@@ -1,0 +1,22 @@
+{
+  "name": "nodenesia-dental",
+  "private": true,
+  "packageManager": "yarn@4.5.3",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --filter=@clinic/api --filter=@clinic/web --filter=@clinic/admin",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

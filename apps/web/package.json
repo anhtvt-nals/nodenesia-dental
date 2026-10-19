@@ -1,0 +1,32 @@
+{
+  "name": "@clinic/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet-async": "^3.0.0",
+    "react-router-dom": "^7.18.4",
+    "tailwindcss": "^4.3.3",
+    "three": "^0.186.1",
+    "vite": "^5.4.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/three": "^0.186.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

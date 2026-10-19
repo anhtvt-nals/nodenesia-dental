@@ -1,0 +1,42 @@
+
+ RUN  v2.1.9 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api
+
+ ✓ src/modules/notifications/notification.service.spec.ts (1 test) 5ms
+ ✓ src/modules/auth/admin-users.service.spec.ts (3 tests) 10ms
+ ✓ src/modules/bookings/admin-bookings.service.spec.ts (5 tests) 29ms
+ ✓ src/modules/doctors/admin-doctors.service.spec.ts (2 tests) 40ms
+ ✓ src/modules/auth/auth.service.spec.ts (3 tests) 223ms
+ ✓ src/modules/bookings/manage-bookings.service.spec.ts (1 test) 311ms
+   ✓ ManageBookingsService > only reschedules an active booking into an available clinic-local slot 310ms
+ ✓ src/modules/bookings/slot-engine.spec.ts (2 tests) 4ms
+ ✓ src/modules/patients/patients-admin.service.spec.ts (2 tests) 5ms
+ ✓ src/modules/bookings/public-booking.service.spec.ts (1 test) 7ms
+ ✓ src/modules/notifications/notification-operations.service.spec.ts (1 test) 3ms
+ ✓ src/modules/auth/guards/access-token.guard.spec.ts (2 tests) 2ms
+ ✓ src/modules/bookings/manual-booking.service.spec.ts (1 test) 4ms
+ ✓ src/modules/settings/settings.service.spec.ts (2 tests) 2ms
+ ✓ src/modules/bookings/bookings.repository.spec.ts (1 test) 113ms
+ ✓ src/modules/reports/reports.service.spec.ts (1 test) 3ms
+ ✓ src/modules/articles/articles.service.spec.ts (2 tests) 3ms
+ ✓ src/modules/services/admin-services.service.spec.ts (1 test) 4ms
+ ✓ src/modules/faqs/faqs.service.spec.ts (1 test) 10ms
+ ✓ src/config/production-config.spec.ts (1 test) 2ms
+ ✓ src/modules/bookings/bookings.service.spec.ts (1 test) 4ms
+ ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1 test) 176ms
+ ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1 test) 9ms
+ ✓ src/modules/content/content.service.spec.ts (1 test) 9ms
+ ✓ src/modules/testimonials/testimonials.service.spec.ts (1 test) 3ms
+ ✓ src/modules/notifications/notification-template.spec.ts (1 test) 1ms
+ ✓ src/modules/auth/refresh-cookie.spec.ts (1 test) 2ms
+ ✓ src/config/swagger-config.spec.ts (1 test) 8ms
+ ✓ src/workspace-smoke.spec.ts (1 test) 5ms
+ ✓ src/modules/promotions/promotions.service.spec.ts (1 test) 4ms
+ ✓ src/modules/gallery/gallery.service.spec.ts (1 test) 2ms
+ ✓ src/app.spec.ts (19 tests) 1206ms
+   ✓ API bootstrap > keeps the rotated refresh token in an HttpOnly cookie 415ms
+
+ Test Files  31 passed (31)
+      Tests  63 passed (63)
+   Start at  11:05:28
+   Duration  3.35s (transform 1.13s, setup 0ms, collect 7.90s, tests 2.21s, environment 8ms, prepare 2.20s)
+

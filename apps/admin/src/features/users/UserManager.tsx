@@ -1,0 +1,9 @@
+import { FormEvent } from 'react';
+import { createUser, updateUserActive, type AdminUser } from '../../api/admin-api';
+
+type Props = { accessToken: string; users: AdminUser[]; onChanged: (users: AdminUser[]) => void; onError: (message: string) => void };
+export function UserManager({ accessToken, users, onChanged, onError }: Props) {
+  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const form = new FormData(event.currentTarget); try { const user = await createUser(accessToken, { email: String(form.get('email')), name: String(form.get('name')), role: String(form.get('role')) as 'owner' | 'staff', password: String(form.get('password')) }); onChanged([user, ...users]); event.currentTarget.reset(); } catch (error) { onError((error as Error).message); } }
+  async function toggle(user: AdminUser) { try { const updated = await updateUserActive(accessToken, user.id, !user.isActive); onChanged(users.map((item) => item.id === user.id ? updated : item)); } catch (error) { onError((error as Error).message); } }
+  return <section aria-labelledby="users-heading"><h2 id="users-heading">Tài khoản nhân sự</h2><table><thead><tr><th>Tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th /></tr></thead><tbody>{users.map((user) => <tr key={user.id}><td>{user.name}</td><td>{user.email}</td><td>{user.role}</td><td>{user.isActive ? 'Active' : 'Inactive'}</td><td><button type="button" onClick={() => void toggle(user)}>{user.isActive ? 'Deactivate' : 'Activate'}</button></td></tr>)}</tbody></table><form onSubmit={submit}><h3>Tạo tài khoản</h3><label>Tên<input name="name" required /></label><label>Email<input name="email" type="email" required /></label><label>Vai trò<select name="role"><option value="staff">Staff</option><option value="owner">Owner</option></select></label><label>Mật khẩu<input name="password" type="password" minLength={12} required /></label><button>Tạo tài khoản</button></form></section>;
+}

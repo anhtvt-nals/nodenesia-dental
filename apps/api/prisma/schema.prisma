@@ -1,0 +1,360 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  owner
+  staff
+}
+
+enum ServiceZone {
+  front
+  molar
+  gum
+  arch
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+  no_show
+}
+
+enum BookingSource {
+  web
+  admin
+}
+
+enum NotificationType {
+  confirmation
+  reminder_h1
+  reminder_2h
+  cancel
+  reschedule
+  review_request
+}
+
+enum NotificationStatus {
+  queued
+  sent
+  failed
+}
+
+enum GalleryType {
+  before_after
+  photo
+}
+
+enum ServiceCategory {
+  prevention
+  aesthetic
+  orthodontic
+  restorative
+  surgery
+  pediatric
+}
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  name          String
+  role          UserRole
+  isActive      Boolean        @default(true) @map("is_active")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  userAgent String?   @map("user_agent")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("refresh_tokens")
+}
+
+model ClinicSettings {
+  id                 String   @id @default("default")
+  name               String
+  phone              String
+  waNumber           String   @map("wa_number")
+  address            String
+  lat                Decimal? @db.Decimal(9, 6)
+  lng                Decimal? @db.Decimal(9, 6)
+  timezone           String   @default("Asia/Jakarta")
+  slotStepMinutes    Int      @default(15) @map("slot_step_minutes")
+  bookingLeadMinutes Int      @default(60) @map("booking_lead_minutes")
+  bookingHorizonDays Int      @default(60) @map("booking_horizon_days")
+  cancelCutoffHours  Int      @default(24) @map("cancel_cutoff_hours")
+  chairsCount        Int      @default(3) @map("chairs_count")
+  reminderTemplates  Json     @map("reminder_templates")
+  socials            Json
+  tagline            String?
+  taglineEn          String?  @map("tagline_en")
+  city               String?
+  instagramHandle    String?  @map("instagram_handle")
+  googleMapsUrl      String?  @map("google_maps_url")
+  openHours          Json?    @map("open_hours")
+  stats              Json?
+  @@map("clinic_settings")
+}
+
+model Doctor {
+  id           String          @id @default(uuid()) @db.Uuid
+  name         String
+  slug         String          @unique
+  title        String?
+  specialty    String?
+  bio          String?
+  photoUrl     String?         @map("photo_url")
+  titleEn      String?         @map("title_en")
+  specialtyEn  String?         @map("specialty_en")
+  bioEn        String?         @map("bio_en")
+  sipNumber    String?         @map("sip_number")
+  experienceYears Int?         @map("experience_years")
+  education    Json?
+  isActive     Boolean         @default(true) @map("is_active")
+  sortOrder    Int             @default(0) @map("sort_order")
+  services     DoctorService[]
+  workingHours WorkingHour[]
+  timeOffs     TimeOff[]
+  bookings     Booking[]
+  @@map("doctors")
+}
+
+model Service {
+  id              String          @id @default(uuid()) @db.Uuid
+  slug            String          @unique
+  name            String
+  nameEn          String?         @map("name_en")
+  shortDesc       String          @map("short_desc")
+  shortDescEn     String?         @map("short_desc_en")
+  description     String
+  descriptionEn   String?         @map("description_en")
+  zone            ServiceZone
+  category        ServiceCategory
+  durationMinutes Int             @map("duration_minutes")
+  priceFrom       Decimal         @map("price_from") @db.Decimal(12, 2)
+  priceTo         Decimal?        @map("price_to") @db.Decimal(12, 2)
+  priceNote       String?         @map("price_note")
+  priceNoteEn     String?         @map("price_note_en")
+  seoTitle        String?         @map("seo_title")
+  seoDesc         String?         @map("seo_desc")
+  isActive        Boolean         @default(true) @map("is_active")
+  sortOrder       Int             @default(0) @map("sort_order")
+  doctors         DoctorService[]
+  bookings        Booking[]
+  faqs            Faq[]
+  galleryItems    GalleryItem[]
+  promotions      Promotion[]
+  @@map("services")
+}
+
+model DoctorService {
+  doctorId  String  @map("doctor_id") @db.Uuid
+  serviceId String  @map("service_id") @db.Uuid
+  doctor    Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  @@id([doctorId, serviceId])
+  @@map("doctor_services")
+}
+
+model WorkingHour {
+  id        String @id @default(uuid()) @db.Uuid
+  doctorId  String @map("doctor_id") @db.Uuid
+  weekday   Int
+  startTime DateTime @map("start_time") @db.Time(0)
+  endTime   DateTime @map("end_time") @db.Time(0)
+  doctor    Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  @@index([doctorId, weekday])
+  @@unique([doctorId, weekday, startTime, endTime])
+  @@map("working_hours")
+}
+
+model TimeOff {
+  id       String    @id @default(uuid()) @db.Uuid
+  doctorId String?   @map("doctor_id") @db.Uuid
+  startsAt DateTime  @map("starts_at") @db.Timestamptz(6)
+  endsAt   DateTime  @map("ends_at") @db.Timestamptz(6)
+  reason   String?
+  doctor   Doctor?   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  @@index([doctorId, startsAt])
+  @@map("time_offs")
+}
+
+model Patient {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  phoneE164 String    @unique @map("phone_e164")
+  notes     String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  bookings  Booking[]
+  @@map("patients")
+}
+
+model Booking {
+  id              String          @id @default(uuid()) @db.Uuid
+  code            String          @unique
+  patientId       String          @map("patient_id") @db.Uuid
+  doctorId        String          @map("doctor_id") @db.Uuid
+  serviceId       String          @map("service_id") @db.Uuid
+  startsAt        DateTime        @map("starts_at") @db.Timestamptz(6)
+  endsAt          DateTime        @map("ends_at") @db.Timestamptz(6)
+  status          BookingStatus   @default(confirmed)
+  source          BookingSource
+  notes           String?
+  complaint       String?
+  manageTokenHash String?         @map("manage_token_hash")
+  cancelledReason String?         @map("cancelled_reason")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  patient         Patient         @relation(fields: [patientId], references: [id])
+  doctor          Doctor          @relation(fields: [doctorId], references: [id])
+  service         Service         @relation(fields: [serviceId], references: [id])
+  notifications   NotificationLog[]
+  @@index([startsAt])
+  @@index([doctorId, startsAt])
+  @@index([status])
+  @@map("bookings")
+}
+
+model NotificationLog {
+  id            String             @id @default(uuid()) @db.Uuid
+  bookingId     String             @map("booking_id") @db.Uuid
+  type          NotificationType
+  channel       String
+  provider      String
+  status        NotificationStatus @default(queued)
+  providerMsgId String?            @map("provider_msg_id")
+  error         String?
+  scheduledAt   DateTime           @map("scheduled_at") @db.Timestamptz(6)
+  sentAt        DateTime?          @map("sent_at") @db.Timestamptz(6)
+  attempts      Int                @default(0)
+  booking       Booking            @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  @@index([status, scheduledAt])
+  @@map("notification_logs")
+}
+
+model Testimonial {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String
+  text        String
+  textEn      String? @map("text_en")
+  serviceName String? @map("service_name")
+  serviceNameEn String? @map("service_name_en")
+  reviewedAt  String? @map("reviewed_at")
+  rating      Int
+  source      String
+  isPublished Boolean @default(false) @map("is_published")
+  sortOrder   Int     @default(0) @map("sort_order")
+  @@map("testimonials")
+}
+
+model GalleryItem {
+  id               String      @id @default(uuid()) @db.Uuid
+  type             GalleryType
+  beforeUrl        String?     @map("before_url")
+  afterUrl         String?     @map("after_url")
+  beforeLabel      String?     @map("before_label")
+  afterLabel       String?     @map("after_label")
+  caption          String?
+  captionEn        String?     @map("caption_en")
+  treatmentDuration String?    @map("treatment_duration")
+  serviceId        String?     @map("service_id") @db.Uuid
+  consentConfirmed Boolean     @default(false) @map("consent_confirmed")
+  isPublished      Boolean     @default(false) @map("is_published")
+  sortOrder        Int         @default(0) @map("sort_order")
+  service          Service?    @relation(fields: [serviceId], references: [id])
+  @@map("gallery_items")
+}
+
+model Faq {
+  id          String   @id @default(uuid()) @db.Uuid
+  question    String
+  questionEn  String?  @map("question_en")
+  answer      String
+  answerEn    String?  @map("answer_en")
+  category    String?
+  serviceId   String?  @map("service_id") @db.Uuid
+  isPublished Boolean  @default(false) @map("is_published")
+  sortOrder   Int      @default(0) @map("sort_order")
+  service     Service? @relation(fields: [serviceId], references: [id])
+  @@map("faqs")
+}
+
+model ContentBlock {
+  key     String
+  locale  String
+  content Json
+  @@id([key, locale])
+  @@map("content_blocks")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  diff      Json
+  ip        String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@map("audit_logs")
+}
+
+model Promotion {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  serviceId   String?  @map("service_id") @db.Uuid
+  startsAt    DateTime @map("starts_at") @db.Timestamptz(6)
+  endsAt      DateTime @map("ends_at") @db.Timestamptz(6)
+  isPublished Boolean  @default(false) @map("is_published")
+  service     Service? @relation(fields: [serviceId], references: [id])
+  @@map("promotions")
+}
+
+model ArticleCategory {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  nameEn    String?   @map("name_en")
+  slug      String    @unique
+  sortOrder Int       @default(0) @map("sort_order")
+  articles  Article[]
+  @@map("article_categories")
+}
+
+model Article {
+  id          String           @id @default(uuid()) @db.Uuid
+  slug        String           @unique
+  title       String
+  titleEn     String?          @map("title_en")
+  excerpt     String
+  excerptEn   String?          @map("excerpt_en")
+  body        String
+  bodyEn      String?          @map("body_en")
+  readTime    String?          @map("read_time")
+  authorName  String?          @map("author_name")
+  authorTitle String?          @map("author_title")
+  categoryId  String?          @map("category_id") @db.Uuid
+  coverUrl    String?          @map("cover_url")
+  seoTitle    String?          @map("seo_title")
+  seoDesc     String?          @map("seo_desc")
+  publishedAt DateTime?        @map("published_at") @db.Timestamptz(6)
+  category    ArticleCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  @@index([publishedAt])
+  @@map("articles")
+}

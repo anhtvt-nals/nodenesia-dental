@@ -1,0 +1,36 @@
+# Clinic platform
+
+## Local pilot
+
+```sh
+corepack yarn
+cp .env.example .env
+docker compose up -d
+DATABASE_URL='postgresql://clinic:clinic@localhost:5432/clinic?schema=public' corepack yarn workspace @clinic/api prisma migrate deploy
+ADMIN_SEED_PASSWORD='choose-a-local-password' corepack yarn workspace @clinic/api seed
+```
+
+The API dev process loads the root `.env` automatically (via `tsx --env-file-if-exists`), so `DATABASE_URL` and friends are picked up without exporting them by hand. `docker compose` reads the same file for its `${POSTGRES_*}` defaults.
+
+Start all three apps from the root:
+
+```sh
+corepack yarn dev
+```
+
+Public web and admin Vite servers proxy `/api` to the API on port 3000. The local owner email defaults to `owner@clinic.local`; override it with `ADMIN_SEED_EMAIL` when seeding.
+
+Swagger is disabled during development because the `tsx` dev runner does not emit the parameter metadata it needs. It can only be enabled from a compiled production runtime with `NODE_ENV=production SWAGGER_ENABLED=true`.
+
+## Verification
+
+```sh
+corepack yarn lint
+corepack yarn typecheck
+corepack yarn test
+corepack yarn build
+```
+
+## Before production
+
+Set a unique `JWT_SECRET`, run behind HTTPS/reverse proxy, and move the in-memory booking rate limiter to shared storage if the API is scaled beyond one instance.
