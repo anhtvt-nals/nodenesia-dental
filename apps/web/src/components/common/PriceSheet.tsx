@@ -35,66 +35,72 @@ export const PriceSheet: React.FC<PriceSheetProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="price-sheet-title"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-[#14201C]/60 p-0 sm:p-4 transition-opacity animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-text/60 backdrop-blur-xs p-0 sm:p-4 transition-opacity"
+      onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-[#F4F1EA] hairline-border shadow-2xl p-6 max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-lg bg-bg-card border border-border rounded-t-2xl sm:rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-4 mb-4 pb-3 hairline-b">
+        <div className="flex items-start justify-between gap-4 mb-5 pb-4 border-b border-border">
           <div>
-            <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36]">
-              {t.prices.activeZone}
-            </span>
-            <h3 id="price-sheet-title" className="font-serif text-2xl text-[#14201C]">
+            <div className="badge badge-primary mb-2 py-1 px-3 text-xs">
+              <span>{t.prices.activeZone}</span>
+            </div>
+            <h3 id="price-sheet-title" className="font-heading text-xl sm:text-2xl font-bold text-text">
               {zoneNames[zone]}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 text-xs font-mono text-[#14201C]/60 hover:text-[#14201C] underline"
+            className="p-2 rounded-xl bg-bg-alt text-text-muted hover:text-text border border-border cursor-pointer transition-colors"
             aria-label="Tutup panel biaya"
           >
-            ✕ Tutup
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           {matchingServices.map((service) => {
             const serviceName = lang === 'en' ? service.nameEn : service.name;
             const shortDesc = lang === 'en' ? service.shortDescEn : service.shortDesc;
             const priceNote = lang === 'en' ? service.priceNoteEn : service.priceNote;
 
             return (
-              <div key={service.id} className="p-4 bg-[#E9E4D8]/50 hairline-border">
-                <div className="flex items-baseline justify-between gap-2 mb-1">
-                  <h4 className="font-serif text-lg text-[#14201C]">
+              <div key={service.id} className="p-4 bg-bg-alt/70 border border-border rounded-xl">
+                <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                  <h4 className="font-heading text-base font-bold text-text">
                     {serviceName}
                   </h4>
-                  <span className="font-mono text-xs font-medium text-[#1F3D36] whitespace-nowrap">
+                  <span className="font-heading text-sm font-bold text-primary whitespace-nowrap">
                     {formatRupiah(service.priceFrom, lang === 'en')}
                   </span>
                 </div>
-                <p className="text-xs text-[#14201C]/75 mb-3 leading-relaxed">
+                <p className="text-xs text-text-muted mb-3 leading-relaxed">
                   {shortDesc}
                 </p>
                 {priceNote && (
-                  <div className="text-[11px] font-mono text-[#14201C]/60 mb-3">
+                  <div className="text-xs text-text-muted font-medium mb-3">
                     {priceNote}
                   </div>
                 )}
-                <div className="flex items-center gap-2 pt-2 hairline-t">
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
                   <Link
                     to={localePath(`/layanan/${service.slug}`)}
-                    className="text-xs font-mono text-[#14201C]/70 hover:text-[#14201C] underline underline-offset-4 flex-1"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                     onClick={onClose}
                   >
-                    {t.common.moreDetail}
+                    <span>{t.common.moreDetail}</span>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
                   </Link>
                   <Link
                     to={localePath(`/booking?layanan=${service.slug}`)}
-                    className="px-3 py-1.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono hover:bg-[#162B26] transition-colors whitespace-nowrap"
+                    className="btn-primary text-xs py-2 px-4 min-h-[38px]"
                     onClick={onClose}
                   >
                     {t.common.bookNow}
@@ -105,11 +111,11 @@ export const PriceSheet: React.FC<PriceSheetProps> = ({
           })}
         </div>
 
-        <div className="mt-6 pt-4 hairline-t flex justify-end">
+        <div className="mt-6 pt-4 border-t border-border flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono hairline-border bg-[#E9E4D8] text-[#14201C] hover:bg-[#DDD7C9]"
+            className="btn-secondary text-sm py-2.5 px-5 min-h-[42px]"
           >
             Tutup
           </button>

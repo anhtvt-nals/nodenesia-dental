@@ -18,7 +18,7 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({ currentStep, onS
 
   return (
     <nav aria-label="Progress Reservasi" className="w-full mb-8">
-      <ol className="grid grid-cols-2 md:grid-cols-4 gap-2 hairline-b pb-4">
+      <ol className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {steps.map((step) => {
           const isCompleted = currentStep > step.num;
           const isCurrent = currentStep === step.num;
@@ -30,20 +30,28 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({ currentStep, onS
                 type="button"
                 disabled={!isNavigable}
                 onClick={() => isNavigable && onStepClick(step.num)}
-                className={`text-left w-full p-2.5 transition-colors flex flex-col justify-between hairline-border ${
+                className={`text-left w-full p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
                   isCurrent
-                    ? 'bg-[#1F3D36] text-[#F4F1EA] border-[#1F3D36]'
+                    ? 'bg-primary text-white border-primary shadow-sm'
                     : isCompleted
-                    ? 'bg-[#E9E4D8]/60 text-[#14201C] hover:bg-[#E9E4D8]'
-                    : 'bg-[#F4F1EA] text-[#14201C]/40 cursor-not-allowed border-[#14201C]/10'
+                    ? 'bg-bg-card text-text border-primary/40 hover:border-primary cursor-pointer'
+                    : 'bg-bg-alt text-text-muted border-border cursor-not-allowed opacity-75'
                 }`}
                 aria-current={isCurrent ? 'step' : undefined}
               >
-                <div className="flex items-center justify-between text-xs font-mono mb-1">
-                  <span>STEP 0{step.num}</span>
-                  {isCompleted && <span className="text-[#1F3D36]">✓</span>}
+                <div className="flex items-center justify-between text-xs font-semibold mb-1">
+                  <span className={isCurrent ? 'text-white/90' : 'text-primary'}>
+                    LANGKAH 0{step.num}
+                  </span>
+                  {isCompleted && (
+                    <span className="w-5 h-5 rounded-full bg-success/15 text-success-dark flex items-center justify-center" aria-hidden="true">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  )}
                 </div>
-                <div className="font-sans text-xs md:text-sm font-medium truncate">
+                <div className="font-heading text-xs md:text-sm font-bold truncate">
                   {step.label}
                 </div>
               </button>

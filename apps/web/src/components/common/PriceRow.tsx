@@ -19,34 +19,47 @@ export const PriceRow: React.FC<PriceRowProps> = ({ service, index, showCategory
   const displayIndex = index !== undefined ? String(index + 1).padStart(2, '0') : null;
 
   return (
-    <div className="group py-5 hairline-b flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors hover:bg-[#E9E4D8]/30 px-3 -mx-3">
+    <div className="group py-5 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors hover:bg-bg-alt/60 px-4 -mx-4 rounded-xl">
       <div className="flex items-start gap-4 flex-1 min-w-0">
         {displayIndex && (
-          <span className="font-mono text-xs text-[#14201C]/40 pt-1 shrink-0">
+          <span className="w-9 h-9 rounded-lg bg-primary/10 text-primary font-heading text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
             {displayIndex}
           </span>
         )}
         <div className="min-w-0">
-          <div className="flex flex-wrap items-baseline gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Link
               to={localePath(`/layanan/${service.slug}`)}
-              className="font-serif text-xl md:text-2xl text-[#14201C] hover:text-[#1F3D36] transition-colors"
+              className="font-heading text-lg md:text-xl font-bold text-text hover:text-primary transition-colors"
             >
               {serviceName}
             </Link>
             {showCategory && (
-              <span className="text-xs font-mono text-[#14201C]/50">
-                · {t.services.categories[service.category]}
+              <span className="px-2.5 py-0.5 rounded-full bg-bg-alt text-text-muted text-xs font-semibold">
+                {t.services.categories[service.category]}
               </span>
             )}
           </div>
-          <p className="text-sm text-[#14201C]/70 mt-1 max-w-2xl line-clamp-2">
+          <p className="text-sm text-text-muted mt-1 max-w-2xl line-clamp-2">
             {shortDesc}
           </p>
-          <div className="flex items-center gap-3 mt-2 text-xs font-mono text-[#14201C]/60">
-            <span>{service.durationMinutes} {t.common.minutes}</span>
-            <span>·</span>
-            <span>{priceNote || `${t.services.startingFrom} ${formatRupiah(service.priceFrom, lang === 'en')}`}</span>
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-text-muted font-medium">
+            <span className="inline-flex items-center gap-1">
+              <svg className="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {service.durationMinutes} {t.common.minutes}
+            </span>
+            <span aria-hidden="true">·</span>
+            <span className="font-heading font-bold text-primary text-sm">
+              {formatRupiah(service.priceFrom, lang === 'en')}
+            </span>
+            {priceNote && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{priceNote}</span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -54,15 +67,18 @@ export const PriceRow: React.FC<PriceRowProps> = ({ service, index, showCategory
       <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end pt-2 md:pt-0">
         <Link
           to={localePath(`/layanan/${service.slug}`)}
-          className="text-xs font-mono uppercase tracking-wider text-[#14201C]/70 hover:text-[#14201C] underline underline-offset-4 py-2"
+          className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline py-2"
         >
-          {t.common.moreDetail}
+          <span>{t.common.moreDetail}</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
         </Link>
         <Link
           to={localePath(`/booking?layanan=${service.slug}`)}
-          className="px-4 py-2 min-h-[38px] flex items-center justify-center bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] active:bg-[#162B26] transition-colors whitespace-nowrap shadow-xs"
+          className="btn-primary text-xs py-2.5 px-4 min-h-[40px] whitespace-nowrap"
         >
-          {t.common.bookNow} →
+          <span>{t.common.bookNow}</span>
         </Link>
       </div>
     </div>

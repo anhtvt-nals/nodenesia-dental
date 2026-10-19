@@ -13,8 +13,12 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
 
   // Current day in Jakarta (1=Mon, ..., 6=Sat, 0=Sun)
   const currentDayOfWeek = new Date().getDay();
-  // Default to today if Mon-Sat, else default to Monday (1)
-  const defaultTab = initialDay !== undefined ? initialDay : (currentDayOfWeek >= 1 && currentDayOfWeek <= 6 ? currentDayOfWeek : 1);
+  const defaultTab =
+    initialDay !== undefined
+      ? initialDay
+      : currentDayOfWeek >= 1 && currentDayOfWeek <= 6
+      ? currentDayOfWeek
+      : 1;
 
   const [selectedDay, setSelectedDay] = useState<number>(defaultTab);
 
@@ -34,7 +38,6 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
     }
   });
 
-  // Sort by start hour
   rows.sort((a, b) => a.start.localeCompare(b.start));
 
   const isToday = selectedDay === currentDayOfWeek;
@@ -45,7 +48,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
       <div
         role="tablist"
         aria-label="Pilih hari praktek dokter"
-        className="flex items-center gap-1 border-b border-[#14201C]/15 overflow-x-auto pb-px mb-6 scrollbar-none"
+        className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-none"
       >
         {daysList.map((dayNum) => {
           const isActive = selectedDay === dayNum;
@@ -59,15 +62,19 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
               aria-selected={isActive}
               tabIndex={isActive ? 0 : -1}
               onClick={() => setSelectedDay(dayNum)}
-              className={`px-4 py-2.5 text-xs font-mono tracking-wider transition-colors whitespace-nowrap shrink-0 border-b-2 -mb-px flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 flex items-center gap-2 cursor-pointer border ${
                 isActive
-                  ? 'border-[#14201C] text-[#14201C] font-semibold bg-[#E9E4D8]/50'
-                  : 'border-transparent text-[#14201C]/60 hover:text-[#14201C] hover:bg-[#E9E4D8]/20'
+                  ? 'bg-primary text-white border-primary shadow-xs'
+                  : 'bg-bg-card text-text-muted border-border hover:border-primary hover:text-primary'
               }`}
             >
               <span>{dayName}</span>
               {isDayToday && (
-                <span className="text-[10px] text-[#1F3D36] font-medium bg-[#1F3D36]/10 px-1 py-0.2">
+                <span
+                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-success/15 text-success-dark'
+                  }`}
+                >
                   {t.common.today}
                 </span>
               )}
@@ -78,55 +85,61 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
 
       {/* Schedule Table / List */}
       {isToday && (
-        <div className="mb-4 inline-flex items-center gap-2 text-xs font-mono text-[#1F3D36] bg-[#1F3D36]/10 px-3 py-1.5 hairline-border border-[#1F3D36]/20">
-          <span className="font-semibold">{t.schedule.todaySlotBadge}</span>
-          <span>·</span>
-          <span>Reservasi sebelum jam 17:00 untuk tindakan hari ini</span>
+        <div className="mb-5 badge badge-success text-xs py-2 px-4">
+          <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+          <span>{t.schedule.todaySlotBadge}</span>
+          <span aria-hidden="true">·</span>
+          <span className="font-normal">Reservasi sebelum jam 17:00 untuk tindakan hari ini</span>
         </div>
       )}
 
       {rows.length === 0 ? (
-        <div className="p-8 hairline-border bg-[#E9E4D8]/30 text-center text-sm font-mono text-[#14201C]/60">
+        <div className="p-8 rounded-2xl border border-border bg-bg-card text-center text-sm text-text-muted">
           Tidak ada dokter yang berpraktek pada hari ini.
         </div>
       ) : (
-        <div className="hairline-border bg-[#F4F1EA] divide-y divide-[#14201C]/10">
+        <div className="rounded-2xl border border-border bg-bg-card divide-y divide-border overflow-hidden">
           {rows.map(({ doctor, start, end }) => {
             const specialty = lang === 'en' ? doctor.specialtyEn : doctor.specialty;
 
             return (
               <div
                 key={doctor.id}
-                className="p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-[#E9E4D8]/30 transition-colors"
+                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-alt/50 transition-colors"
               >
-                <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
-                  <div className="font-mono text-xs sm:text-base font-medium text-[#1F3D36] bg-[#E9E4D8] px-2.5 sm:px-3 py-1 sm:py-1.5 whitespace-nowrap shrink-0">
-                    {start} – {end} WIB
+                <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 font-heading text-xs sm:text-sm font-bold text-primary bg-primary/10 px-3 py-2 rounded-xl whitespace-nowrap shrink-0">
+                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{start} – {end} WIB</span>
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-serif text-base sm:text-xl text-[#14201C] truncate">
-                      <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-[#1F3D36] transition-colors">
+                    <h4 className="font-heading text-base sm:text-lg font-bold text-text truncate">
+                      <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-primary transition-colors">
                         {doctor.name}
                       </Link>
                     </h4>
-                    <p className="text-xs font-mono text-[#14201C]/60 truncate">
+                    <p className="text-xs sm:text-sm text-text-muted font-medium truncate">
                       {specialty}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end pt-2 sm:pt-0 hairline-t sm:border-t-0">
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end pt-3 sm:pt-0 border-t border-border sm:border-t-0">
                   <Link
                     to={localePath(`/dokter/${doctor.slug}`)}
-                    className="text-xs font-mono text-[#14201C]/70 hover:text-[#14201C] underline underline-offset-4 py-1"
+                    className="text-sm font-semibold text-primary hover:underline py-1"
                   >
                     Profil
                   </Link>
                   <Link
                     to={localePath(`/booking?dokter=${doctor.id}`)}
-                    className="px-4 py-2 min-h-[38px] flex items-center justify-center bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono hover:bg-[#162B26] active:bg-[#162B26] transition-colors whitespace-nowrap shadow-xs"
+                    className="btn-primary text-xs py-2.5 px-4 min-h-[40px] whitespace-nowrap"
                   >
-                    {t.schedule.bookSlot} →
+                    <span>{t.schedule.bookSlot}</span>
                   </Link>
                 </div>
               </div>

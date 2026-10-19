@@ -19,7 +19,7 @@ export const SlotPicker: React.FC<SlotPickerProps> = ({
 
   if (isLoading) {
     return (
-      <div className="p-8 text-center hairline-border bg-[#E9E4D8]/30 font-mono text-xs text-[#14201C]/60">
+      <div className="p-8 text-center rounded-xl border border-border bg-bg-alt font-medium text-sm text-text-muted">
         {t.common.loading}
       </div>
     );
@@ -27,13 +27,12 @@ export const SlotPicker: React.FC<SlotPickerProps> = ({
 
   if (slots.length === 0) {
     return (
-      <div className="p-6 text-center hairline-border bg-[#E9E4D8]/30 font-mono text-xs text-[#14201C]/70">
+      <div className="p-6 text-center rounded-xl border border-border bg-bg-alt font-medium text-sm text-text-muted">
         {t.booking.noSlotsAvailable}
       </div>
     );
   }
 
-  // Split into Morning (09:00 - 12:00), Afternoon (13:00 - 17:00), Evening (17:00 - 20:00)
   const morning = slots.filter((s) => {
     const h = parseInt(s.time.split(':')[0], 10);
     return h < 12;
@@ -51,10 +50,10 @@ export const SlotPicker: React.FC<SlotPickerProps> = ({
     if (groupSlots.length === 0) return null;
     return (
       <div className="mb-6 last:mb-0">
-        <div className="text-xs font-mono uppercase tracking-wider text-[#14201C]/50 mb-3">
+        <div className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
           {title}
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
           {groupSlots.map((slot) => {
             const isSelected = selectedSlot === slot.time;
             const isAvailable = slot.available;
@@ -65,12 +64,12 @@ export const SlotPicker: React.FC<SlotPickerProps> = ({
                 type="button"
                 disabled={!isAvailable}
                 onClick={() => isAvailable && onSelectSlot(slot.time)}
-                className={`py-2 px-3 text-xs font-mono tracking-tight text-center hairline-border transition-colors ${
+                className={`py-2.5 px-3 min-h-[44px] text-sm font-semibold rounded-xl border text-center transition-all ${
                   !isAvailable
-                    ? 'bg-[#E9E4D8]/30 text-[#14201C]/25 cursor-not-allowed border-dashed'
+                    ? 'bg-bg-alt/60 text-text-muted/50 cursor-not-allowed border-dashed border-border'
                     : isSelected
-                    ? 'bg-[#1F3D36] text-[#F4F1EA] border-[#1F3D36] font-medium'
-                    : 'bg-[#F4F1EA] text-[#14201C] hover:bg-[#E9E4D8]'
+                    ? 'bg-primary text-white border-primary shadow-xs cursor-pointer'
+                    : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer'
                 }`}
                 title={slot.reason}
               >

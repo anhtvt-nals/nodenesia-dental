@@ -18,7 +18,7 @@ export const DateStrip: React.FC<DateStripProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-none">
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 scrollbar-none">
         {dates.map((item, idx) => {
           const isSelected = selectedDate === item.date;
           const dayName = t.schedule.days[item.dayOfWeek as keyof typeof t.schedule.days];
@@ -35,22 +35,22 @@ export const DateStrip: React.FC<DateStripProps> = ({
               type="button"
               disabled={item.isClosed}
               onClick={() => onSelectDate(item.date)}
-              className={`p-3 min-w-[76px] text-center shrink-0 transition-colors flex flex-col items-center justify-center hairline-border ${
+              className={`p-3 min-w-[82px] text-center shrink-0 rounded-xl border transition-all flex flex-col items-center justify-center ${
                 item.isClosed
-                  ? 'bg-[#E9E4D8]/20 text-[#14201C]/30 cursor-not-allowed border-dashed'
+                  ? 'bg-bg-alt/60 text-text-muted/60 cursor-not-allowed border-dashed border-border'
                   : isSelected
-                  ? 'bg-[#14201C] text-[#F4F1EA] border-[#14201C]'
-                  : 'bg-[#F4F1EA] text-[#14201C] hover:bg-[#E9E4D8]'
+                  ? 'bg-primary text-white border-primary shadow-sm cursor-pointer'
+                  : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer'
               }`}
               aria-label={`${dayName}, ${dayNumber} ${monthName}${item.isClosed ? ' (' + t.common.closed + ')' : ''}`}
             >
-              <span className="text-[11px] font-mono uppercase tracking-wider block">
+              <span className={`text-[11px] font-semibold uppercase tracking-wide block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
                 {isToday ? t.common.today : dayName.slice(0, 3)}
               </span>
-              <span className="font-serif text-2xl font-normal block my-0.5">
+              <span className="font-heading text-2xl font-bold block my-0.5">
                 {dayNumber}
               </span>
-              <span className="text-[10px] font-mono block">
+              <span className={`text-[11px] font-medium block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
                 {item.isClosed ? t.common.closed : monthName}
               </span>
             </button>

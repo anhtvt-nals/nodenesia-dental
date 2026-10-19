@@ -15,72 +15,96 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
   const title = lang === 'en' ? doctor.titleEn : doctor.title;
   const specialty = lang === 'en' ? doctor.specialtyEn : doctor.specialty;
   const bio = lang === 'en' ? doctor.bioEn : doctor.bio;
+  const experience =
+    (lang === 'en' ? doctor.experienceEn : doctor.experience) ||
+    (doctor.experienceYears ? `${doctor.experienceYears}+ ${lang === 'en' ? 'years' : 'tahun'}` : 'SIP Resmi');
 
   return (
-    <div className="hairline-border bg-[#F4F1EA] flex flex-col justify-between h-full group hover:bg-[#E9E4D8]/30 transition-colors">
+    <article className="doctor-card flex flex-col justify-between h-full group">
       <div>
         {doctor.photoUrl && !photoFailed ? (
-          <div className={`w-full overflow-hidden hairline-b bg-[#E9E4D8] relative ${compact ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
+          <div className="w-full h-[240px] overflow-hidden bg-bg-alt relative border-b border-border">
             <img
               src={doctor.photoUrl}
               alt={doctor.name}
               loading="lazy"
               onError={() => setPhotoFailed(true)}
-              className="w-full h-full object-cover object-top filter brightness-[0.98] group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
             />
-            {doctor.experience && (
-              <div className="absolute bottom-2 left-2 px-2.5 py-1 bg-[#14201C]/85 backdrop-blur-sm text-[#F4F1EA] text-[10px] font-mono uppercase tracking-wider">
-                {lang === 'en' ? doctor.experienceEn : doctor.experience}
-              </div>
-            )}
           </div>
         ) : (
-          <PhotoPlaceholder
-            label={`[FOTO ${doctor.name.toUpperCase()}]`}
-            sublabel={specialty}
-            aspect={compact ? '4:3' : '3:4'}
-          />
-        )}
-        <div className="p-4 sm:p-6">
-          <div className="text-xs font-mono text-[#1F3D36] uppercase tracking-wider mb-2">
-            {specialty}
+          <div className="p-3 pb-0">
+            <PhotoPlaceholder
+              label={`[FOTO ${doctor.name.toUpperCase()}]`}
+              sublabel={specialty}
+              aspect={compact ? '4:3' : '4:3'}
+              className="h-[220px]"
+            />
           </div>
-          <h3 className="font-serif text-xl sm:text-2xl text-[#14201C] mb-1">
-            <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-[#1F3D36] transition-colors">
+        )}
+
+        <div className="p-6 pb-4">
+          <h3 className="font-heading text-lg font-bold text-text">
+            <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-primary transition-colors">
               {doctor.name}
             </Link>
           </h3>
-          <p className="text-xs font-mono text-[#14201C]/60 mb-3">
+          <p className="text-primary font-semibold text-sm mt-0.5">
+            {specialty}
+          </p>
+          <p className="text-text-muted text-sm mt-1">
             {title}
           </p>
+
           {!compact && (
-            <p className="text-xs sm:text-sm text-[#14201C]/75 leading-relaxed line-clamp-3 mb-4">
+            <p className="text-xs sm:text-sm text-text-muted leading-relaxed line-clamp-2 mt-3">
               {bio}
             </p>
           )}
 
-          {/* Schedule snippet */}
-          <div className="text-xs font-mono text-[#14201C]/60 pt-3 hairline-t">
-            <span className="font-medium text-[#14201C]">{t.doctors.weeklyHours}:</span>{' '}
-            {doctor.workingHours.map((w) => `${t.schedule.days[w.weekday as keyof typeof t.schedule.days]} (${w.start}-${w.end})`).join(', ')}
+          {/* Demo pattern: experience + language pills */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="flex items-center justify-between gap-2 text-sm flex-wrap">
+              <span className="text-text-muted font-medium text-xs">
+                {experience}
+              </span>
+              <div className="flex gap-1.5 flex-wrap">
+                <span className="px-2 py-0.5 bg-bg-alt text-text-muted text-xs font-medium rounded-md border border-border">
+                  Indonesia
+                </span>
+                <span className="px-2 py-0.5 bg-bg-alt text-text-muted text-xs font-medium rounded-md border border-border">
+                  English
+                </span>
+              </div>
+            </div>
+
+            {/* Schedule snippet */}
+            {doctor.workingHours && doctor.workingHours.length > 0 && (
+              <div className="text-xs text-text-muted mt-3 pt-2.5 border-t border-border/60 truncate">
+                <span className="font-semibold text-text">{t.doctors.weeklyHours}:</span>{' '}
+                {doctor.workingHours
+                  .map((w) => `${t.schedule.days[w.weekday as keyof typeof t.schedule.days]} (${w.start}-${w.end})`)
+                  .join(', ')}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 pt-0 flex items-center justify-between gap-3 hairline-t mt-3">
+      <div className="px-6 pb-6 pt-0 flex flex-col gap-2.5">
         <Link
           to={localePath(`/dokter/${doctor.slug}`)}
-          className="text-xs font-mono uppercase tracking-wider text-[#14201C]/70 hover:text-[#14201C] underline underline-offset-4 py-2"
+          className="btn-secondary w-full text-sm py-2.5 min-h-[44px]"
         >
           {t.common.moreDetail}
         </Link>
         <Link
           to={localePath(`/booking?dokter=${doctor.id}`)}
-          className="px-4 py-2.5 min-h-[40px] flex items-center justify-center bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono hover:bg-[#162B26] active:bg-[#162B26] transition-colors whitespace-nowrap shadow-xs"
+          className="btn-primary w-full text-sm py-2.5 min-h-[44px]"
         >
-          {t.common.bookNow} →
+          <span>{t.common.bookNow}</span>
         </Link>
       </div>
-    </div>
+    </article>
   );
 };
