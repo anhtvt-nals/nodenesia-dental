@@ -150,41 +150,46 @@ export const ManageBookingPage: React.FC = () => {
         path={`/booking/kelola/${urlCode || ''}`}
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-12 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36] block mb-2">
-              Layanan Pasien Mandiri
+            <span className="badge badge-primary mb-3">
+              {lang === 'en' ? 'Self-Service Patient Portal' : 'Layanan Pasien Mandiri'}
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl text-[#14201C] tracking-tight mb-2">
+            <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
               {t.manageBooking.pageTitle}
             </h1>
-            <p className="text-sm font-sans text-[#14201C]/75">
+            <p className="text-base text-text-muted">
               {t.manageBooking.pageDesc}
             </p>
           </div>
 
           {/* Search Form */}
-          <form onSubmit={handleSearch} className="mb-8 p-6 hairline-border bg-[#F4F1EA]">
-            <h2 className="font-serif text-xl text-[#14201C] mb-2">
+          <form onSubmit={handleSearch} className="mb-8 p-6 sm:p-8 trust-card bg-bg-card">
+            <label htmlFor="booking-code-search" className="font-heading text-xl font-bold text-text block mb-1.5">
               {t.manageBooking.inputCodeTitle}
-            </h2>
-            <p className="text-xs font-mono text-[#14201C]/60 mb-4">
+            </label>
+            <p className="text-sm text-text-muted mb-5">
               {t.manageBooking.inputCodeDesc}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
+                id="booking-code-search"
                 type="text"
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                 placeholder={t.manageBooking.codePlaceholder}
-                className="flex-1 p-3 text-sm font-mono hairline-border bg-[#F4F1EA] uppercase tracking-wider focus:outline-none"
+                className="form-input flex-1 uppercase tracking-wider font-semibold"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors"
+                className="btn-primary px-6 py-3 justify-center cursor-pointer"
               >
-                {t.manageBooking.searchBtn}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>{t.manageBooking.searchBtn}</span>
               </button>
             </div>
           </form>
@@ -193,10 +198,10 @@ export const ManageBookingPage: React.FC = () => {
           {actionMessage && (
             <div
               role="alert"
-              className={`p-4 mb-8 text-xs font-mono hairline-border ${
+              className={`p-4 mb-8 text-sm font-medium rounded-xl border ${
                 actionMessage.type === 'success'
-                  ? 'bg-[#1F3D36]/10 text-[#1F3D36] border-[#1F3D36]/30'
-                  : 'bg-[#C8553D]/10 text-[#C8553D] border-[#C8553D]/30'
+                  ? 'bg-success/10 text-success-dark border-success/30'
+                  : 'bg-error/10 text-error-dark border-error/30'
               }`}
             >
               {actionMessage.text}
@@ -204,33 +209,33 @@ export const ManageBookingPage: React.FC = () => {
           )}
 
           {isLoading ? (
-            <div className="p-16 text-center font-mono text-xs text-[#14201C]/60">
+            <div className="p-16 text-center text-sm font-medium text-text-muted">
               {t.common.loading}
             </div>
           ) : booking ? (
-            <div className="hairline-border bg-[#F4F1EA] p-6 md:p-8 space-y-6">
+            <div className="trust-card bg-bg-card p-6 md:p-8 space-y-6">
               {/* Header Status */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 hairline-b">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-wider text-[#14201C]/60 block mb-1">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-text-muted block mb-1">
                     Kode Reservasi
                   </span>
-                  <div className="font-mono text-3xl font-semibold text-[#14201C]">
+                  <div className="font-heading text-3xl font-extrabold text-primary">
                     {booking.code}
                   </div>
                 </div>
 
                 <div className="sm:text-right">
-                  <span className="font-mono text-xs text-[#14201C]/60 block mb-1">
+                  <span className="text-xs font-medium text-text-muted block mb-1">
                     {t.manageBooking.statusLabel}
                   </span>
                   <span
-                    className={`inline-block px-3 py-1 text-xs font-mono font-semibold uppercase hairline-border ${
+                    className={`inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase ${
                       booking.status === 'confirmed'
-                        ? 'bg-[#1F3D36]/10 text-[#1F3D36] border-[#1F3D36]/30'
+                        ? 'badge-success'
                         : booking.status === 'cancelled'
-                        ? 'bg-[#C8553D]/10 text-[#C8553D] border-[#C8553D]/30'
-                        : 'bg-[#E9E4D8] text-[#14201C]'
+                        ? 'bg-error/15 text-error-dark'
+                        : 'bg-bg-alt text-text'
                     }`}
                   >
                     {t.manageBooking.statusMap[booking.status] || booking.status}
@@ -239,26 +244,26 @@ export const ManageBookingPage: React.FC = () => {
               </div>
 
               {/* Booking Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-[#E9E4D8]/40 hairline-border">
-                  <span className="text-[#14201C]/60 block mb-1">Nama Pasien:</span>
-                  <span className="font-sans font-medium text-sm text-[#14201C]">{booking.patient.name}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div className="p-4 rounded-xl bg-bg-alt border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Nama Pasien:</span>
+                  <span className="font-semibold text-text">{booking.patient.name}</span>
                 </div>
-                <div className="p-4 bg-[#E9E4D8]/40 hairline-border">
-                  <span className="text-[#14201C]/60 block mb-1">Nomor WhatsApp:</span>
-                  <span className="font-medium text-sm text-[#14201C]">{formatPhoneDisplay(booking.patient.phone)}</span>
+                <div className="p-4 rounded-xl bg-bg-alt border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Nomor WhatsApp:</span>
+                  <span className="font-semibold text-text">{formatPhoneDisplay(booking.patient.phone)}</span>
                 </div>
-                <div className="p-4 bg-[#E9E4D8]/40 hairline-border">
-                  <span className="text-[#14201C]/60 block mb-1">Layanan Gigi:</span>
-                  <span className="font-sans font-medium text-sm text-[#14201C]">{serviceName}</span>
+                <div className="p-4 rounded-xl bg-bg-alt border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Layanan Gigi:</span>
+                  <span className="font-semibold text-text">{serviceName}</span>
                 </div>
-                <div className="p-4 bg-[#E9E4D8]/40 hairline-border">
-                  <span className="text-[#14201C]/60 block mb-1">Dokter Spesialis:</span>
-                  <span className="font-sans font-medium text-sm text-[#14201C]">{doctorName}</span>
+                <div className="p-4 rounded-xl bg-bg-alt border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Dokter Spesialis:</span>
+                  <span className="font-semibold text-text">{doctorName}</span>
                 </div>
-                <div className="p-4 bg-[#E9E4D8]/40 hairline-border sm:col-span-2">
-                  <span className="text-[#14201C]/60 block mb-1">Waktu Janji Temu:</span>
-                  <span className="font-semibold text-base text-[#1F3D36]">
+                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 sm:col-span-2">
+                  <span className="text-xs text-text-muted block mb-1">Waktu Janji Temu:</span>
+                  <span className="font-heading font-bold text-lg text-primary">
                     {booking.startsAt.split('T')[0]} · {booking.startsAt.split('T')[1]?.slice(0, 5)} WIB
                   </span>
                 </div>
@@ -266,18 +271,18 @@ export const ManageBookingPage: React.FC = () => {
 
               {/* Action Buttons (Only if active) */}
               {booking.status === 'confirmed' && (
-                <div className="pt-6 hairline-t flex flex-wrap gap-4">
+                <div className="pt-6 border-t border-border flex flex-wrap gap-3.5">
                   <button
                     type="button"
                     onClick={() => setIsRescheduling(!isRescheduling)}
-                    className="px-5 py-2.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors"
+                    className="btn-primary text-sm py-2.5 px-5 cursor-pointer"
                   >
                     {isRescheduling ? 'Tutup Pilihan Jadwal' : t.manageBooking.rescheduleBtn}
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowCancelModal(true)}
-                    className="px-5 py-2.5 hairline-border border-[#C8553D]/40 text-[#C8553D] text-xs font-mono uppercase tracking-wider hover:bg-[#C8553D]/10 transition-colors"
+                    className="px-5 py-2.5 rounded-xl border border-error/40 text-error-dark text-sm font-semibold hover:bg-error/10 transition-colors cursor-pointer"
                   >
                     {t.manageBooking.cancelBookingBtn}
                   </button>
@@ -286,11 +291,11 @@ export const ManageBookingPage: React.FC = () => {
 
               {/* Reschedule Interface */}
               {isRescheduling && (
-                <div className="mt-6 p-6 bg-[#E9E4D8]/50 hairline-border">
-                  <h3 className="font-serif text-xl text-[#14201C] mb-2">
+                <div className="mt-6 p-6 rounded-xl bg-bg-alt border border-border">
+                  <h3 className="font-heading text-xl font-bold text-text mb-1.5">
                     {t.manageBooking.rescheduleTitle}
                   </h3>
-                  <p className="text-xs font-mono text-[#14201C]/60 mb-4">
+                  <p className="text-xs sm:text-sm text-text-muted mb-5">
                     Pilih tanggal baru (14 hari ke depan) dan jam yang masih tersedia
                   </p>
 
@@ -318,14 +323,14 @@ export const ManageBookingPage: React.FC = () => {
                       type="button"
                       disabled={!rescheduleTime || isProcessingAction}
                       onClick={handleSaveReschedule}
-                      className="px-6 py-2.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors disabled:opacity-50"
+                      className="btn-primary text-sm py-2.5 px-6 disabled:opacity-50 cursor-pointer"
                     >
                       {isProcessingAction ? 'Menyimpan...' : t.manageBooking.saveRescheduleBtn}
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsRescheduling(false)}
-                      className="px-4 py-2.5 hairline-border bg-[#E9E4D8] text-xs font-mono text-[#14201C]"
+                      className="px-4 py-2.5 rounded-xl border border-border bg-bg-card text-sm font-semibold text-text hover:bg-bg transition-colors cursor-pointer"
                     >
                       Batal
                     </button>
@@ -340,20 +345,20 @@ export const ManageBookingPage: React.FC = () => {
             <div
               role="dialog"
               aria-modal="true"
-              className="fixed inset-0 z-50 flex items-center justify-center bg-[#14201C]/60 p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-bg-dark/60 backdrop-blur-xs p-4"
             >
-              <div className="w-full max-w-md bg-[#F4F1EA] hairline-border p-6 shadow-2xl">
-                <h3 className="font-serif text-2xl text-[#14201C] mb-2">
+              <div className="w-full max-w-md bg-bg-card rounded-2xl border border-border p-6 shadow-xl">
+                <h3 className="font-heading text-xl font-bold text-text mb-2">
                   {t.manageBooking.confirmCancelTitle}
                 </h3>
-                <p className="text-sm font-sans text-[#14201C]/75 mb-6 leading-relaxed">
+                <p className="text-sm text-text-muted mb-6 leading-relaxed">
                   {t.manageBooking.confirmCancelDesc}
                 </p>
-                <div className="flex items-center justify-end gap-3 font-mono text-xs">
+                <div className="flex items-center justify-end gap-3 text-sm">
                   <button
                     type="button"
                     onClick={() => setShowCancelModal(false)}
-                    className="px-4 py-2.5 hairline-border bg-[#E9E4D8] text-[#14201C]"
+                    className="px-4 py-2.5 rounded-xl border border-border bg-bg-alt font-semibold text-text hover:bg-border/50 transition-colors cursor-pointer"
                   >
                     {t.manageBooking.keepBookingAction}
                   </button>
@@ -361,7 +366,7 @@ export const ManageBookingPage: React.FC = () => {
                     type="button"
                     disabled={isProcessingAction}
                     onClick={handleCancel}
-                    className="px-5 py-2.5 bg-[#C8553D] text-[#F4F1EA] uppercase tracking-wider hover:bg-[#a6432e] disabled:opacity-50"
+                    className="btn-emergency py-2.5 px-5 disabled:opacity-50 cursor-pointer"
                   >
                     {isProcessingAction ? 'Memproses...' : t.manageBooking.confirmCancelAction}
                   </button>
