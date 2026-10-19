@@ -153,8 +153,9 @@ export const HomePage: React.FC = () => {
               </div>
 
               <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-text leading-[1.12] mb-5 tracking-tight">
-                {t.home.heroTitle}{' '}
-                <span className="gradient-text">{t.home.heroSubtitle}</span>
+                {t.home.heroTitlePart1}{' '}
+                <span className="gradient-text">{t.home.heroTitleAccent}</span>{' '}
+                {t.home.heroTitlePart2}
               </h1>
 
               <p className="text-base sm:text-lg text-text-muted mb-7 leading-relaxed max-w-2xl">
@@ -172,13 +173,13 @@ export const HomePage: React.FC = () => {
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  <span>{t.home.ctaBook}</span>
+                  <span>{t.home.heroPrimaryCta}</span>
                 </Link>
                 <Link
                   to={localePath('/harga')}
                   className="btn-secondary text-base px-6 py-3.5 cursor-pointer"
                 >
-                  <span>{t.home.ctaCheckPrices}</span>
+                  <span>{t.nav.prices}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
@@ -320,7 +321,9 @@ export const HomePage: React.FC = () => {
                             <div className="mb-3">
                               <div className="flex flex-wrap items-center gap-2 mb-1.5">
                                 <span className="badge badge-primary">{docSpecialty}</span>
-                                <span className="text-xs font-medium text-text-muted">• {doc.strNumber}</span>
+                                {doc.sipNumber && (
+                                  <span className="text-xs font-medium text-text-muted">• {doc.sipNumber}</span>
+                                )}
                               </div>
                               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-text tracking-tight mb-1">
                                 {doc.name}
@@ -459,8 +462,8 @@ export const HomePage: React.FC = () => {
 
           {/* 6 Featured Service Cards (Demo pattern: 3-column grid with icon badge + Learn more) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {services.slice(0, 6).map((service, idx) => (
-              <ServiceCard key={service.id} service={service} index={idx} />
+            {services.slice(0, 6).map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
 
@@ -481,7 +484,7 @@ export const HomePage: React.FC = () => {
                 to={localePath('/harga')}
                 className="text-sm font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1 shrink-0 cursor-pointer"
               >
-                <span>{t.home.ctaCheckPrices}</span>
+                <span>{t.nav.prices}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
