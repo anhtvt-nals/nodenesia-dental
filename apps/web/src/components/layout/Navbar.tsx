@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useI18n } from '../../i18n';
+import { useClinicSettings } from '../../lib/clinic-settings';
+import { buildWhatsAppLink } from '../../lib/utils';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
 
 export const Navbar: React.FC = () => {
-  const { t, localePath } = useI18n();
+  const { lang, t, localePath } = useI18n();
+  const settings = useClinicSettings();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // 4-5 concise navigation links
   const navLinks = [
     { label: t.nav.services, path: '/layanan' },
     { label: t.nav.doctors, path: '/dokter' },
     { label: t.nav.schedule, path: '/jadwal' },
     { label: t.nav.prices, path: '/harga' },
     { label: t.nav.patient, path: '/pasien' },
+    { label: t.nav.manageBooking, path: '/booking/kelola' },
   ];
 
-  // Secondary nav links for drawer / more
   const secondaryLinks = [
     { label: t.nav.results, path: '/hasil-kami' },
     { label: t.nav.facilities, path: '/fasilitas' },
     { label: t.nav.articles, path: '/artikel' },
     { label: t.nav.contact, path: '/kontak' },
-    { label: t.nav.manageBooking, path: '/booking/kelola/BK-8821' },
   ];
 
   const isActive = (path: string) => {
@@ -31,28 +32,47 @@ export const Navbar: React.FC = () => {
     return location.pathname === full || location.pathname.startsWith(`${full}/`);
   };
 
+  const emergencyWaLink = buildWhatsAppLink(
+    settings.whatsappNumber || '6281289001234',
+    lang === 'en'
+      ? 'Hello [NAMA KLINIK], I need emergency dental assistance.'
+      : 'Halo [NAMA KLINIK], saya memerlukan bantuan darurat sakit gigi.'
+  );
+
   return (
-    <header className="sticky top-0 z-40 bg-[#F4F1EA]/95 backdrop-blur-sm hairline-b">
+    <header className="navbar-medical sticky top-0 z-50" role="navigation" aria-label="Navigasi Utama">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3 sm:gap-6 lg:gap-8 h-16 sm:h-18">
-          {/* Zone 1: Brand title wordmark, responsive font size & overflow handling */}
+        <div className="flex items-center justify-between gap-3 sm:gap-6 h-18 py-3">
+          {/* Zone 1: Brand icon + title + subtitle */}
           <Link
             to={localePath('/')}
-            className="font-serif text-xl sm:text-2xl md:text-3xl text-[#14201C] tracking-tight truncate max-w-[190px] xs:max-w-[280px] sm:max-w-none shrink-0 hover:text-[#1F3D36] transition-colors"
+            className="flex items-center gap-3 shrink-0 group cursor-pointer"
           >
-            {t.brandName}
+            <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center shadow-xs group-hover:bg-primary-hover transition-colors shrink-0">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <span className="font-heading text-base sm:text-lg font-bold text-text block truncate max-w-[160px] xs:max-w-[220px] sm:max-w-none leading-tight">
+                {t.brandName}
+              </span>
+              <span className="block text-xs text-text-muted truncate max-w-[160px] xs:max-w-[220px] sm:max-w-none">
+                {t.tagline}
+              </span>
+            </div>
           </Link>
 
-          {/* Zone 2: 4-5 concise single-line text links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-sans text-[#14201C]/80" aria-label="Navigasi Utama">
+          {/* Zone 2: Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7" aria-label="Menu Utama">
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={localePath(item.path)}
-                className={`whitespace-nowrap shrink-0 transition-colors py-1 ${
+                className={`text-sm font-medium whitespace-nowrap rounded-lg px-2 py-1.5 transition-colors cursor-pointer ${
                   isActive(item.path)
-                    ? 'text-[#1F3D36] font-semibold border-b border-[#1F3D36]'
-                    : 'hover:text-[#14201C]'
+                    ? 'text-primary font-semibold bg-primary/8'
+                    : 'text-text-muted hover:text-primary'
                 }`}
               >
                 {item.label}
@@ -60,13 +80,26 @@ export const Navbar: React.FC = () => {
             ))}
           </nav>
 
-          {/* Zone 3: LanguageSwitcher + Primary Action */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Zone 3: LanguageSwitcher + Emergency Link + Primary CTA */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <LanguageSwitcher />
+
+            <a
+              href={emergencyWaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:inline-flex btn-emergency text-sm py-2.5 px-4 min-h-[42px]"
+              aria-label={lang === 'en' ? 'Emergency dental WhatsApp hotline' : 'Hotline darurat sakit gigi via WhatsApp'}
+            >
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span>{lang === 'en' ? 'Emergency' : 'Darurat'}</span>
+            </a>
 
             <Link
               to={localePath('/booking')}
-              className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors whitespace-nowrap shrink-0 shadow-xs"
+              className="hidden sm:inline-flex btn-primary text-sm py-2.5 px-5 min-h-[42px] whitespace-nowrap"
             >
               {t.nav.bookNow}
             </Link>
@@ -75,11 +108,20 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden px-2.5 py-1.5 min-h-[38px] text-[#14201C] hover:bg-[#E9E4D8] hairline-border flex items-center gap-1.5 active:bg-[#DDD7C9]"
+              className="lg:hidden p-2.5 min-h-[44px] min-w-[44px] text-text bg-bg-alt hover:bg-border/60 border border-border rounded-xl flex items-center justify-center cursor-pointer transition-colors"
               aria-label={isMobileMenuOpen ? 'Tutup navigasi' : 'Buka navigasi'}
               aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              <span className="font-mono text-xs font-medium">{isMobileMenuOpen ? '✕ TUTUP' : '☰ MENU'}</span>
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -87,17 +129,20 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#F4F1EA] hairline-b px-4 py-5 space-y-4 animate-in slide-in-from-top-2 duration-150 shadow-md">
-          <div className="grid grid-cols-2 gap-2.5 text-sm font-sans">
+        <div
+          id="mobile-menu"
+          className="lg:hidden bg-bg-card border-b border-border px-4 py-5 space-y-4 shadow-lg"
+        >
+          <div className="grid grid-cols-2 gap-2.5 text-sm">
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={localePath(item.path)}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`p-3 min-h-[46px] flex items-center justify-center text-center hairline-border font-medium transition-colors ${
+                className={`p-3 min-h-[48px] flex items-center justify-center text-center rounded-xl border font-semibold transition-colors cursor-pointer ${
                   isActive(item.path)
-                    ? 'bg-[#1F3D36] text-[#F4F1EA]'
-                    : 'bg-[#E9E4D8]/60 text-[#14201C] active:bg-[#DDD7C9]'
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-bg-alt text-text border-border hover:border-primary'
                 }`}
               >
                 {item.label}
@@ -105,15 +150,17 @@ export const Navbar: React.FC = () => {
             ))}
           </div>
 
-          <div className="pt-3 hairline-t">
-            <div className="text-xs font-mono uppercase text-[#14201C]/50 mb-2">Menu Lainnya</div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
+          <div className="pt-3 border-t border-border">
+            <div className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2.5">
+              {lang === 'en' ? 'More Information' : 'Menu Lainnya'}
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
               {secondaryLinks.map((item) => (
                 <Link
                   key={item.path}
                   to={localePath(item.path)}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-2.5 py-2 min-h-[38px] flex items-center justify-center text-center bg-[#E9E4D8]/60 text-[#14201C] hover:bg-[#DDD7C9] active:bg-[#DDD7C9]"
+                  className="px-3 py-2.5 min-h-[44px] flex items-center justify-center text-center rounded-xl bg-bg-alt text-text-muted font-medium hover:text-primary border border-border transition-colors cursor-pointer"
                 >
                   {item.label}
                 </Link>
@@ -121,13 +168,25 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <a
+              href={emergencyWaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="btn-emergency w-full text-sm"
+            >
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span>{lang === 'en' ? 'Emergency Hotline' : 'Darurat Sakit Gigi'}</span>
+            </a>
             <Link
               to={localePath('/booking')}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full min-h-[46px] flex items-center justify-center text-center py-3 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider font-semibold shadow-xs"
+              className="btn-primary w-full text-sm"
             >
-              {t.nav.bookNow} →
+              <span>{t.nav.bookNow}</span>
             </Link>
           </div>
         </div>

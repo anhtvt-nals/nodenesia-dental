@@ -7,8 +7,8 @@ interface SectionLabelProps {
 
 export const SectionLabel: React.FC<SectionLabelProps> = ({ number, className = '' }) => {
   return (
-    <div className={`font-mono text-xs tracking-wider uppercase text-[#14201C]/60 mb-3 select-none ${className}`}>
-      {number}
+    <div className={`badge badge-primary mb-4 select-none ${className}`}>
+      <span>{number}</span>
     </div>
   );
 };

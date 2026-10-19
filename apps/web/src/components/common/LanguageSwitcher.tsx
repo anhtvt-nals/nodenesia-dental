@@ -1,5 +1,5 @@
 import React from 'react';
-import { useI18n, Language } from '../../i18n';
+import { useI18n } from '../../i18n';
 
 export const LanguageSwitcher: React.FC<{ className?: string }> = ({ className = '' }) => {
   const { lang, setLang } = useI18n();
@@ -8,28 +8,27 @@ export const LanguageSwitcher: React.FC<{ className?: string }> = ({ className =
     <div
       role="group"
       aria-label="Pilih bahasa / Select language"
-      className={`inline-flex items-center text-xs font-mono hairline-border p-0.5 bg-[#E9E4D8]/50 ${className}`}
+      className={`inline-flex items-center text-xs font-semibold border border-border rounded-lg p-0.5 bg-bg-alt ${className}`}
     >
       <button
         type="button"
         onClick={() => setLang('id')}
-        className={`px-2 py-1 transition-colors ${
+        className={`px-2.5 py-1.5 rounded-md transition-colors cursor-pointer ${
           lang === 'id'
-            ? 'bg-[#14201C] text-[#F4F1EA] font-medium'
-            : 'text-[#14201C]/60 hover:text-[#14201C]'
+            ? 'bg-primary text-white shadow-xs'
+            : 'text-text-muted hover:text-text'
         }`}
         aria-pressed={lang === 'id'}
       >
         ID
       </button>
-      <span className="text-[#14201C]/20 px-0.5" aria-hidden="true">|</span>
       <button
         type="button"
         onClick={() => setLang('en')}
-        className={`px-2 py-1 transition-colors ${
+        className={`px-2.5 py-1.5 rounded-md transition-colors cursor-pointer ${
           lang === 'en'
-            ? 'bg-[#14201C] text-[#F4F1EA] font-medium'
-            : 'text-[#14201C]/60 hover:text-[#14201C]'
+            ? 'bg-primary text-white shadow-xs'
+            : 'text-text-muted hover:text-text'
         }`}
         aria-pressed={lang === 'en'}
       >
