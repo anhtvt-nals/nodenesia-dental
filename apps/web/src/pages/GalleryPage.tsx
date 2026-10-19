@@ -28,22 +28,22 @@ export const GalleryPage: React.FC = () => {
         path="/hasil-kami"
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-3xl">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36] block mb-2">
-              Dokumentasi Klinis
+            <span className="badge badge-primary mb-3">
+              {lang === 'en' ? 'Clinical Documentation' : 'Dokumentasi Klinis'}
             </span>
-            <h1 className="font-serif text-4xl sm:text-5xl text-[#14201C] tracking-tight mb-4 text-balance">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-text tracking-tight mb-4 text-balance">
               {t.gallery.pageTitle}
             </h1>
-            <p className="text-base text-[#14201C]/80 leading-relaxed font-sans mb-4">
+            <p className="text-base text-text-muted leading-relaxed mb-5">
               {t.gallery.pageDesc}
             </p>
 
             {/* Mandatory Consent Notice */}
-            <div className="p-4 bg-[#E9E4D8]/50 hairline-border text-xs font-mono text-[#14201C]/70">
-              <span className="font-semibold text-[#1F3D36] block mb-1">
+            <div className="p-4 rounded-xl bg-bg-card border border-border text-xs sm:text-sm text-text-muted">
+              <span className="font-bold text-primary block mb-1">
                 Pemberitahuan Persetujuan Medis (Informed Consent):
               </span>
               {t.gallery.consentNotice}
@@ -51,27 +51,27 @@ export const GalleryPage: React.FC = () => {
           </div>
 
           {loading ? (
-            <div className="p-16 text-center font-mono text-xs text-[#14201C]/60">
+            <div className="p-16 text-center text-sm font-medium text-text-muted">
               {t.common.loading}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {items.map((item) => {
                 const serviceName = lang === 'en' ? item.serviceNameEn : item.serviceName;
                 const caption = lang === 'en' ? item.captionEn : item.caption;
 
                 return (
-                  <div key={item.id} className="hairline-border bg-[#F4F1EA] p-6 flex flex-col justify-between">
+                  <div key={item.id} className="trust-card bg-bg-card p-6 flex flex-col justify-between">
                     <div>
                       {/* Before / After Dual Frame */}
-                      <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="grid grid-cols-2 gap-3.5 mb-5">
                         <div>
                           <PhotoPlaceholder
                             label="[FOTO SEBELUM]"
                             sublabel={item.beforeLabel}
                             aspect="4:3"
                           />
-                          <span className="block text-[11px] font-mono text-[#14201C]/60 mt-1.5 text-center">
+                          <span className="block text-xs font-medium text-text-muted mt-2 text-center">
                             Sebelum Perawatan
                           </span>
                         </div>
@@ -81,32 +81,35 @@ export const GalleryPage: React.FC = () => {
                             sublabel={item.afterLabel}
                             aspect="4:3"
                           />
-                          <span className="block text-[11px] font-mono text-[#1F3D36] font-medium mt-1.5 text-center">
+                          <span className="block text-xs font-bold text-secondary mt-2 text-center">
                             Hasil Sesudah
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs font-mono text-[#14201C]/60 mb-2">
-                        <span className="text-[#1F3D36] font-medium">{serviceName}</span>
-                        <span>{t.gallery.treatmentTime}: {item.treatmentDuration}</span>
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted mb-3">
+                        <span className="badge badge-primary">{serviceName}</span>
+                        <span className="font-medium">{t.gallery.treatmentTime}: {item.treatmentDuration}</span>
                       </div>
 
-                      <h3 className="font-serif text-xl text-[#14201C] mb-2">
+                      <h3 className="font-heading text-xl font-bold text-text mb-2">
                         {item.afterLabel}
                       </h3>
-                      <p className="text-sm font-sans text-[#14201C]/75 leading-relaxed mb-6">
+                      <p className="text-sm text-text-muted leading-relaxed mb-6">
                         {caption}
                       </p>
                     </div>
 
-                    <div className="pt-4 hairline-t flex items-center justify-between">
-                      <span className="text-xs font-mono text-[#14201C]/50">
-                        {t.gallery.verifiedCase} ✓
+                    <div className="pt-4 border-t border-border flex items-center justify-between gap-3">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-success-dark">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{t.gallery.verifiedCase}</span>
                       </span>
                       <Link
                         to={localePath(`/booking?layanan=${item.serviceSlug}`)}
-                        className="px-4 py-2 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono hover:bg-[#162B26] transition-colors"
+                        className="btn-primary text-xs py-2 px-4 cursor-pointer"
                       >
                         Konsultasi Kasus Ini
                       </Link>

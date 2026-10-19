@@ -14,31 +14,33 @@ export const NotFoundPage: React.FC = () => {
         path="/404"
       />
 
-      <div className="py-24 md:py-36 text-center">
+      <div className="py-20 md:py-32 text-center bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-md mx-auto px-4">
-          <span className="font-mono text-6xl md:text-7xl font-light text-[#1F3D36] block mb-4">
-            {t.notFound.code}
-          </span>
-          <h1 className="font-serif text-3xl md:text-4xl text-[#14201C] mb-3">
-            {t.notFound.title}
-          </h1>
-          <p className="text-sm font-sans text-[#14201C]/75 mb-8 leading-relaxed">
-            {t.notFound.desc}
-          </p>
+          <div className="trust-card p-8 sm:p-10 bg-bg-card">
+            <span className="stat-number text-6xl md:text-7xl block mb-3">
+              {t.notFound.code}
+            </span>
+            <h1 className="font-heading text-2xl md:text-3xl font-bold text-text mb-3">
+              {t.notFound.title}
+            </h1>
+            <p className="text-sm text-text-muted mb-8 leading-relaxed">
+              {t.notFound.desc}
+            </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              to={localePath('/')}
-              className="w-full sm:w-auto px-6 py-3 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors"
-            >
-              {t.notFound.backHome}
-            </Link>
-            <Link
-              to={localePath('/layanan')}
-              className="w-full sm:w-auto px-6 py-3 hairline-border bg-[#E9E4D8] text-[#14201C] text-xs font-mono uppercase tracking-wider hover:bg-[#DDD7C9] transition-colors"
-            >
-              {t.notFound.exploreServices}
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                to={localePath('/')}
+                className="btn-primary w-full sm:w-auto justify-center text-sm py-3 px-6 cursor-pointer"
+              >
+                {t.notFound.backHome}
+              </Link>
+              <Link
+                to={localePath('/layanan')}
+                className="btn-secondary w-full sm:w-auto justify-center text-sm py-3 px-6 cursor-pointer"
+              >
+                {t.notFound.exploreServices}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { ReviewCard } from '../components/common/ReviewCard';
 import { AppHelmet } from '../components/common/AppHelmet';
 
 export const TestimonialsPage: React.FC = () => {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
   const [reviews, setReviews] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,37 +27,48 @@ export const TestimonialsPage: React.FC = () => {
         path="/testimoni"
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-3xl">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36] block mb-2">
-              Suara Pasien
+            <span className="badge badge-primary mb-3">
+              {lang === 'en' ? 'Patient Voices' : 'Suara Pasien'}
             </span>
-            <h1 className="font-serif text-4xl sm:text-5xl text-[#14201C] tracking-tight mb-4 text-balance">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-text tracking-tight mb-4 text-balance">
               {t.testimonials.pageTitle}
             </h1>
-            <p className="text-base text-[#14201C]/80 leading-relaxed font-sans mb-6">
+            <p className="text-base text-text-muted leading-relaxed mb-6">
               {t.testimonials.pageDesc}
             </p>
 
-            {/* Scorecard anchor */}
-            <div className="inline-flex items-center gap-4 p-4 bg-[#E9E4D8]/50 hairline-border">
-              <div className="font-mono text-3xl font-normal text-[#1F3D36]">
-                4.9 <span className="text-base text-[#14201C]/50">/ 5.0</span>
+            {/* Scorecard anchor with SVG stars (no text/emoji stars) */}
+            <div className="inline-flex items-center gap-4 p-4 sm:p-5 rounded-2xl bg-bg-card border border-border shadow-sm">
+              <div className="stat-number text-3xl sm:text-4xl">
+                4.9 <span className="text-base font-normal text-text-subtle">/ 5.0</span>
               </div>
-              <div className="text-xs font-mono text-[#14201C]/70">
-                <div className="text-[#C8553D] tracking-widest text-sm mb-0.5">★★★★★</div>
-                <div>{t.testimonials.overallRating} (Google Review & Terverifikasi)</div>
+              <div className="text-xs text-text-muted">
+                <div className="flex items-center gap-1 text-accent mb-1" aria-label="4.9 out of 5 stars">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg
+                      key={i}
+                      className="w-4 h-4 fill-current"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <div className="font-medium text-text">{t.testimonials.overallRating} (Google Review & Terverifikasi)</div>
               </div>
             </div>
           </div>
 
           {loading ? (
-            <div className="p-16 text-center font-mono text-xs text-[#14201C]/60">
+            <div className="p-16 text-center text-sm font-medium text-text-muted">
               {t.common.loading}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {reviews.map((rev) => (
                 <ReviewCard key={rev.id} testimonial={rev} />
               ))}

@@ -34,7 +34,7 @@ export const ArticleDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center font-mono text-xs text-[#14201C]/60">
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm font-medium text-text-muted">
         {t.common.loading}
       </div>
     );
@@ -43,13 +43,17 @@ export const ArticleDetailPage: React.FC = () => {
   if (!article) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-        <h1 className="font-serif text-3xl mb-4">Artikel Tidak Ditemukan</h1>
-        <Link
-          to={localePath('/artikel')}
-          className="px-6 py-2.5 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider"
-        >
-          {t.articles.backToArticles}
-        </Link>
+        <div className="trust-card p-8">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4">
+            Artikel Tidak Ditemukan
+          </h1>
+          <Link
+            to={localePath('/artikel')}
+            className="btn-primary text-sm cursor-pointer"
+          >
+            {t.articles.backToArticles}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -66,69 +70,76 @@ export const ArticleDetailPage: React.FC = () => {
         path={`/artikel/${article.slug}`}
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link
               to={localePath('/artikel')}
-              className="text-xs font-mono text-[#14201C]/60 hover:text-[#14201C] underline underline-offset-4"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
             >
-              ← {t.articles.backToArticles}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>{t.articles.backToArticles}</span>
             </Link>
           </div>
 
-          <header className="mb-8 pb-8 hairline-b">
-            {/* Zero-Pill Unboxed Metadata */}
-            <div className="flex items-center gap-2 text-xs font-mono text-[#1F3D36] uppercase tracking-wider mb-4">
-              <span>{categoryName}</span>
-              <span aria-hidden="true">·</span>
-              <span>{article.readTime}</span>
-              <span aria-hidden="true">·</span>
-              <span>{article.publishedAt}</span>
-            </div>
-
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#14201C] tracking-tight leading-tight mb-6 text-balance">
-              {title}
-            </h1>
-
-            <div className="flex items-center justify-between gap-4 text-xs font-mono text-[#14201C]/70 pt-4 hairline-t">
-              <div>
-                <span className="text-[#14201C]/50 block">Ditinjau oleh medis:</span>
-                <span className="font-medium text-[#14201C]">{article.authorName} ({article.authorTitle})</span>
+          <div className="trust-card p-6 sm:p-10 bg-bg-card">
+            <header className="mb-8 pb-6 border-b border-border">
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-medium text-text-muted mb-4">
+                <span className="badge badge-primary">{categoryName}</span>
+                <span aria-hidden="true">·</span>
+                <span>{article.readTime}</span>
+                <span aria-hidden="true">·</span>
+                <span>{article.publishedAt}</span>
               </div>
-              <button
-                type="button"
-                onClick={handleShare}
-                className="px-3 py-1.5 hairline-border bg-[#E9E4D8]/50 hover:bg-[#E9E4D8] transition-colors whitespace-nowrap"
+
+              <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight leading-tight mb-6 text-balance">
+                {title}
+              </h1>
+
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs pt-4 border-t border-border">
+                <div>
+                  <span className="text-text-muted block">Ditinjau oleh medis:</span>
+                  <span className="font-bold text-text">{article.authorName} ({article.authorTitle})</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="btn-secondary text-xs py-2 px-4 cursor-pointer"
+                >
+                  {copied ? t.articles.copiedAlert : t.articles.shareArticle}
+                </button>
+              </div>
+            </header>
+
+            {/* Article Body */}
+            <div className="prose max-w-none text-text-muted text-base leading-relaxed space-y-5">
+              {content.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+
+            {/* Consultation CTA */}
+            <div className="mt-12 p-6 rounded-xl bg-bg-alt border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div>
+                <h3 className="font-heading text-lg font-bold text-text mb-1">
+                  Ingin berkonsultasi mengenai keluhan gigi Anda?
+                </h3>
+                <p className="text-xs sm:text-sm text-text-muted">
+                  Jadwalkan pemeriksaan klinis bersama dokter kami
+                </p>
+              </div>
+              <Link
+                to={localePath('/booking')}
+                className="btn-primary text-sm py-2.5 px-6 whitespace-nowrap justify-center cursor-pointer"
               >
-                {copied ? t.articles.copiedAlert : t.articles.shareArticle}
-              </button>
+                <span>Buat Janji Temu</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
-          </header>
-
-          {/* Article Body */}
-          <div className="prose max-w-none text-[#14201C]/85 font-sans text-base leading-relaxed space-y-6">
-            {content.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </div>
-
-          {/* Consultation CTA */}
-          <div className="mt-12 p-8 hairline-border bg-[#E9E4D8]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div>
-              <h3 className="font-serif text-xl text-[#14201C] mb-1">
-                Ingin berkonsultasi mengenai keluhan gigi Anda?
-              </h3>
-              <p className="text-xs font-mono text-[#14201C]/70">
-                Jadwalkan pemeriksaan klinis bersama dokter kami
-              </p>
-            </div>
-            <Link
-              to={localePath('/booking')}
-              className="px-6 py-3 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors whitespace-nowrap text-center"
-            >
-              Buat Janji Temu →
-            </Link>
           </div>
         </article>
       </div>

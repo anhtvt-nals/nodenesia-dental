@@ -4,7 +4,7 @@ import { AppHelmet } from '../components/common/AppHelmet';
 import { PhotoPlaceholder } from '../components/common/PhotoPlaceholder';
 
 export const FacilitiesPage: React.FC = () => {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
 
   return (
     <>
@@ -14,44 +14,48 @@ export const FacilitiesPage: React.FC = () => {
         path="/fasilitas"
       />
 
-      <div className="py-12 md:py-16">
+      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 max-w-3xl">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#1F3D36] block mb-2">
-              Standar Medis & Kenyamanan
+            <span className="badge badge-primary mb-3">
+              {lang === 'en' ? 'Medical Standards & Comfort' : 'Standar Medis & Kenyamanan'}
             </span>
-            <h1 className="font-serif text-4xl sm:text-5xl text-[#14201C] tracking-tight mb-4 text-balance">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-text tracking-tight mb-4 text-balance">
               {t.facilities.pageTitle}
             </h1>
-            <p className="text-base text-[#14201C]/80 leading-relaxed font-sans">
+            <p className="text-base text-text-muted leading-relaxed">
               {t.facilities.pageDesc}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {t.facilities.items.map((facility, index) => (
-              <div key={index} className="hairline-border bg-[#F4F1EA] flex flex-col justify-between">
+              <div key={index} className="trust-card bg-bg-card overflow-hidden p-0 flex flex-col justify-between">
                 <div>
                   <PhotoPlaceholder
                     label={`[FOTO FASILITAS 0${index + 1}]`}
                     sublabel={facility.title}
                     aspect="16:9"
+                    className="rounded-none border-0 border-b border-border"
                   />
                   <div className="p-6">
-                    <span className="font-mono text-xs text-[#1F3D36] block mb-2">
-                      0{index + 1}. TEKNOLOGI
+                    <span className="badge badge-primary mb-3">
+                      0{index + 1} · TEKNOLOGI
                     </span>
-                    <h3 className="font-serif text-xl text-[#14201C] mb-2">
+                    <h3 className="font-heading text-xl font-bold text-text mb-2">
                       {facility.title}
                     </h3>
-                    <p className="text-sm font-sans text-[#14201C]/75 leading-relaxed">
+                    <p className="text-sm text-text-muted leading-relaxed">
                       {facility.desc}
                     </p>
                   </div>
                 </div>
 
-                <div className="p-6 pt-0 text-[11px] font-mono text-[#14201C]/50 hairline-t mt-4">
-                  Teruji & Terkalibrasi Berkala
+                <div className="px-6 py-4 text-xs font-semibold text-success-dark border-t border-border bg-bg-alt/50 flex items-center gap-2">
+                  <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Teruji & Terkalibrasi Berkala</span>
                 </div>
               </div>
             ))}
