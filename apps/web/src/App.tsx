@@ -52,29 +52,29 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center max-w-lg mx-auto">
-          <span className="font-mono text-xs uppercase tracking-wider text-[#C8553D] block mb-2">
-            Pemberitahuan Sistem
-          </span>
-          <h2 className="font-serif text-3xl text-[#14201C] mb-3">
+          <div className="badge badge-primary mb-4">
+            <span>Pemberitahuan Sistem</span>
+          </div>
+          <h2 className="font-heading text-3xl text-text mb-3">
             Halaman Sedang Diperbarui
           </h2>
-          <p className="text-sm font-sans text-[#14201C]/75 mb-6 leading-relaxed">
+          <p className="text-sm font-body text-text-muted mb-6 leading-relaxed">
             Terjadi pembaruan modul aplikasi atau kendala koneksi sesaat. Silakan muat ulang halaman.
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             <button
               type="button"
               onClick={() => {
                 this.setState({ hasError: false });
                 window.location.reload();
               }}
-              className="px-6 py-3 bg-[#1F3D36] text-[#F4F1EA] text-xs font-mono uppercase tracking-wider hover:bg-[#162B26] transition-colors"
+              className="btn-primary text-sm"
             >
               Muat Ulang Halaman
             </button>
             <a
               href="/"
-              className="px-6 py-3 hairline-border bg-[#E9E4D8] text-[#14201C] text-xs font-mono uppercase tracking-wider hover:bg-[#DDD7C9] transition-colors"
+              className="btn-secondary text-sm"
             >
               Kembali ke Beranda
             </a>
@@ -96,7 +96,7 @@ function ScrollToTop() {
 
 const LoadingFallback: React.FC = () => (
   <div className="min-h-[50vh] flex flex-col items-center justify-center p-8">
-    <div className="font-mono text-xs text-[#1F3D36] uppercase tracking-widest animate-pulse">
+    <div className="font-heading font-semibold text-sm text-primary animate-pulse">
       Memuat Halaman...
     </div>
   </div>
