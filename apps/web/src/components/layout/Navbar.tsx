@@ -54,22 +54,22 @@ export const Navbar: React.FC = () => {
               </svg>
             </div>
             <div className="min-w-0">
-              <span className="font-heading text-base sm:text-lg font-bold text-text block truncate max-w-[160px] xs:max-w-[220px] sm:max-w-none leading-tight">
+              <span className="font-heading text-base sm:text-lg font-bold text-text block truncate max-w-[155px] sm:max-w-[220px] lg:max-w-[175px] xl:max-w-none leading-tight">
                 {t.brandName}
               </span>
-              <span className="block text-xs text-text-muted truncate max-w-[160px] xs:max-w-[220px] sm:max-w-none">
+              <span className="block text-xs text-text-muted truncate max-w-[155px] sm:max-w-[220px] lg:max-w-[175px] xl:max-w-none">
                 {t.tagline}
               </span>
             </div>
           </Link>
 
           {/* Zone 2: Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-7" aria-label="Menu Utama">
+          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-5" aria-label="Menu Utama">
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={localePath(item.path)}
-                className={`text-sm font-medium whitespace-nowrap rounded-lg px-2 py-1.5 transition-colors cursor-pointer ${
+                className={`text-xs xl:text-sm font-medium whitespace-nowrap rounded-lg px-1.5 xl:px-2 py-1.5 transition-colors cursor-pointer ${
                   isActive(item.path)
                     ? 'text-primary font-semibold bg-primary/8'
                     : 'text-text-muted hover:text-primary'
@@ -84,25 +84,29 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <LanguageSwitcher />
 
-            <a
-              href={emergencyWaLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden xl:inline-flex btn-emergency text-sm py-2.5 px-4 min-h-[42px]"
-              aria-label={lang === 'en' ? 'Emergency dental WhatsApp hotline' : 'Hotline darurat sakit gigi via WhatsApp'}
-            >
-              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>{lang === 'en' ? 'Emergency' : 'Darurat'}</span>
-            </a>
+            <div className="hidden xl:block">
+              <a
+                href={emergencyWaLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-emergency text-sm py-2.5 px-4 min-h-[42px]"
+                aria-label={lang === 'en' ? 'Emergency dental WhatsApp hotline' : 'Hotline darurat sakit gigi via WhatsApp'}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>{lang === 'en' ? 'Emergency' : 'Darurat'}</span>
+              </a>
+            </div>
 
-            <Link
-              to={localePath('/booking')}
-              className="hidden sm:inline-flex btn-primary text-sm py-2.5 px-5 min-h-[42px] whitespace-nowrap"
-            >
-              {t.nav.bookNow}
-            </Link>
+            <div className="hidden sm:block">
+              <Link
+                to={localePath('/booking')}
+                className="btn-primary text-sm py-2.5 px-5 min-h-[42px] whitespace-nowrap"
+              >
+                {t.nav.bookNow}
+              </Link>
+            </div>
 
             {/* Mobile menu toggle */}
             <button

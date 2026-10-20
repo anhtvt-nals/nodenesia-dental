@@ -218,10 +218,10 @@ export const HomePage: React.FC = () => {
                   <span className="badge badge-primary">Kemenkes RI</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-5">
+                <div className="grid grid-cols-2 gap-3.5 sm:gap-5">
                   {heroStats.map((stat, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-bg-alt/70 border border-border/70">
-                      <div className="stat-number text-2xl sm:text-3xl mb-1">
+                    <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-bg-alt/70 border border-border/70 min-w-0">
+                      <div className="stat-number text-lg sm:text-2xl xl:text-3xl mb-1 break-words">
                         {stat.value}
                       </div>
                       <div className="text-xs font-medium text-text-muted">
@@ -267,7 +267,7 @@ export const HomePage: React.FC = () => {
                         >
                           {/* Photo */}
                           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-[340px] shrink-0 bg-bg-alt overflow-hidden border-b border-border">
-                            {doc.photoUrl && !brokenPhotos[doc.id] ? (
+                            {doc.photoUrl && !doc.photoUrl.includes('unsplash.com') && !brokenPhotos[doc.id] ? (
                               <img
                                 src={doc.photoUrl}
                                 alt={doc.name}
@@ -340,20 +340,25 @@ export const HomePage: React.FC = () => {
                             <div className="mt-auto pt-5">
                               {hasMultipleDoctors && (
                                 <div className="flex items-center justify-between gap-4 mb-3">
-                                  <div className="flex items-center gap-1.5">
+                                  <div className="flex items-center gap-1">
                                     {doctors.map((d, i) => (
                                       <button
                                         key={d.id}
                                         type="button"
+                                        tabIndex={isActive ? 0 : -1}
                                         aria-label={d.name}
                                         aria-current={i === safeHeroIndex ? 'true' : undefined}
                                         onClick={() => setHeroIndex(i)}
-                                        className={`h-2 rounded-full transition-all cursor-pointer ${
-                                          i === safeHeroIndex
-                                            ? 'w-7 bg-primary'
-                                            : 'w-2 bg-border hover:bg-text-subtle'
-                                        }`}
-                                      />
+                                        className="min-w-[28px] min-h-[28px] flex items-center justify-center cursor-pointer"
+                                      >
+                                        <span
+                                          className={`h-2 rounded-full transition-all block ${
+                                            i === safeHeroIndex
+                                              ? 'w-7 bg-primary'
+                                              : 'w-2.5 bg-border hover:bg-text-subtle'
+                                          }`}
+                                        />
+                                      </button>
                                     ))}
                                   </div>
                                   <span className="text-xs font-semibold text-text-muted tabular-nums">
@@ -365,6 +370,7 @@ export const HomePage: React.FC = () => {
                               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-4 border-t border-border">
                                 <Link
                                   to={localePath(`/booking?dokter=${doc.id}`)}
+                                  tabIndex={isActive ? 0 : -1}
                                   className="btn-primary text-sm py-2.5 px-5 justify-center cursor-pointer"
                                 >
                                   <span>{t.home.heroDoctorBook}</span>
@@ -375,6 +381,7 @@ export const HomePage: React.FC = () => {
                                 <div className="flex items-center gap-2.5 w-full sm:w-auto">
                                   <Link
                                     to={localePath(`/dokter/${doc.slug}`)}
+                                    tabIndex={isActive ? 0 : -1}
                                     className="flex-1 sm:flex-initial btn-secondary text-sm py-2.5 px-4 justify-center cursor-pointer"
                                   >
                                     {t.home.heroDoctorProfile}
@@ -383,7 +390,8 @@ export const HomePage: React.FC = () => {
                                     href={waAskLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 min-h-[42px] rounded-xl text-xs font-semibold text-secondary hover:bg-secondary/10 transition-colors cursor-pointer sm:ml-auto"
+                                    tabIndex={isActive ? 0 : -1}
+                                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 min-h-[42px] rounded-xl text-xs font-bold text-primary-hover hover:bg-primary/10 transition-colors cursor-pointer sm:ml-auto"
                                   >
                                     <span>{t.booking.askViaWhatsApp}</span>
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -648,7 +656,7 @@ export const HomePage: React.FC = () => {
                 <ul className="space-y-3.5 text-sm sm:text-base text-text-muted">
                   {t.home.secAboutMissionItems.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full bg-secondary/15 text-secondary font-heading font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded-full bg-success/15 text-success-dark font-heading font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                         {String(idx + 1).padStart(2, '0')}
                       </span>
                       <span>{item}</span>

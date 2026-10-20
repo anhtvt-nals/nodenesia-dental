@@ -1031,20 +1031,21 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
           </div>
         )}
 
-        {/* Interaction hint overlay */}
-        <div className="absolute top-3 left-3 bg-bg-card/90 border border-border rounded-xl px-3 py-1.5 text-[11px] font-medium text-text-muted backdrop-blur-xs select-none max-w-[68%] shadow-2xs">
-          {t.home.zonesHint}
-        </div>
+        {/* Top bar: Interaction hint + Model attribution (CC BY 4.0) */}
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none">
+          <div className="bg-bg-card/90 border border-border rounded-xl px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-medium text-text-muted backdrop-blur-xs select-none shadow-2xs leading-snug">
+            {t.home.zonesHint}
+          </div>
 
-        {/* Model attribution (CC BY 4.0) */}
-        <a
-          href={MODEL_ATTRIBUTION_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-3 right-3 bg-bg-card/85 border border-border rounded-lg px-2.5 py-1 text-[10px] font-medium text-text-muted hover:text-primary backdrop-blur-xs"
-        >
-          3D: Mince · CC BY 4.0
-        </a>
+          <a
+            href={MODEL_ATTRIBUTION_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto shrink-0 bg-bg-card/90 border border-border rounded-lg px-2 py-1 text-[10px] font-medium text-text-muted hover:text-primary backdrop-blur-xs whitespace-nowrap"
+          >
+            3D: Mince · CC BY 4.0
+          </a>
+        </div>
 
         {/* Zone Selector Pills / Buttons (Touch accessible) */}
         <div className="absolute bottom-3 left-2.5 right-2.5 flex items-center justify-center gap-2 flex-wrap">
@@ -1084,9 +1085,9 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
               <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary-hover text-xs font-semibold shrink-0">
                 {t.prices.activeZone}
               </span>
-              <h4 className="font-heading text-base sm:text-lg font-bold text-text truncate">
+              <h3 className="font-heading text-base sm:text-lg font-bold text-text truncate">
                 {zoneNames[activeZone]}
-              </h4>
+              </h3>
             </div>
             <span className="text-xs font-semibold text-text-muted whitespace-nowrap">
               {currentZoneServices.length} jenis

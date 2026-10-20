@@ -88,7 +88,7 @@ export const DoctorDetailPage: React.FC = () => {
           <div className="trust-card p-6 sm:p-8 bg-bg-card grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
             {/* Doctor Photo */}
             <div className="md:col-span-5">
-              {doctor.photoUrl && !photoFailed ? (
+              {doctor.photoUrl && !doctor.photoUrl.includes('unsplash.com') && !photoFailed ? (
                 <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative">
                   <img
                     src={doctor.photoUrl}

@@ -74,7 +74,7 @@ export const PatientGuidePage: React.FC = () => {
             <ul className="space-y-3 text-sm sm:text-base text-text-muted">
               {t.patientGuide.prepItems.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-secondary/15 text-secondary font-heading font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-6 h-6 rounded-full bg-success/15 text-success-dark font-heading font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                     0{idx + 1}
                   </span>
                   <span>{item}</span>

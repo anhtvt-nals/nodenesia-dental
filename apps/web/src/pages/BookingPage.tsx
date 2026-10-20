@@ -345,15 +345,17 @@ export const BookingPage: React.FC = () => {
                               </p>
                             </div>
 
-                            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1.5 pt-3 sm:pt-0 border-t sm:border-t-0 border-border shrink-0">
-                              <span className="text-xs text-text-subtle block">
-                                {t.services.startingFrom}
-                              </span>
-                              <span className="font-heading text-lg font-bold text-primary">
-                                {formatRupiah(svc.priceFrom, lang === 'en')}
-                              </span>
+                            <div className="flex sm:flex-col items-baseline sm:items-end justify-between sm:justify-start gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-border shrink-0">
+                              <div className="flex sm:flex-col items-baseline sm:items-end gap-1.5 sm:gap-0.5 shrink-0">
+                                <span className="text-xs text-text-subtle">
+                                  {t.services.startingFrom}
+                                </span>
+                                <span className="font-heading text-base sm:text-lg font-bold text-primary whitespace-nowrap">
+                                  {formatRupiah(svc.priceFrom, lang === 'en')}
+                                </span>
+                              </div>
                               {priceNote && (
-                                <span className="text-[11px] text-text-muted block sm:text-right">
+                                <span className="text-[11px] text-text-muted block text-right max-w-[180px] sm:max-w-none">
                                   {priceNote}
                                 </span>
                               )}

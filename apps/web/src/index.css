@@ -8,7 +8,7 @@
   --color-accent: #F59E0B;
   --color-info: #3B82F6;
   --color-success: #10B981;
-  --color-success-dark: #047857;
+  --color-success-dark: #065F46;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-error-dark: #DC2626;
@@ -48,7 +48,7 @@
   --color-accent: #F59E0B;
   --color-info: #3B82F6;
   --color-success: #10B981;
-  --color-success-dark: #047857;
+  --color-success-dark: #065F46;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-error-dark: #DC2626;
@@ -254,7 +254,7 @@ h1, h2, h3, h4, .font-heading, .font-display {
 .stat-number {
   font-family: var(--font-heading);
   color: var(--color-primary);
-  font-size: 2.25rem;
+  font-size: clamp(1.25rem, 4.2vw, 2.25rem);
   font-weight: 700;
   line-height: 1.1;
 }

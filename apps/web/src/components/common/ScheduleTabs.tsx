@@ -71,8 +71,8 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
               <span>{dayName}</span>
               {isDayToday && (
                 <span
-                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-success/15 text-success-dark'
+                  className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                    isActive ? 'bg-white text-primary-hover' : 'bg-success/15 text-success-dark'
                   }`}
                 >
                   {t.common.today}
@@ -117,11 +117,11 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay 
                     <span>{start} – {end} WIB</span>
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-heading text-base sm:text-lg font-bold text-text truncate">
+                    <h3 className="font-heading text-base sm:text-lg font-bold text-text truncate">
                       <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-primary transition-colors">
                         {doctor.name}
                       </Link>
-                    </h4>
+                    </h3>
                     <p className="text-xs sm:text-sm text-text-muted font-medium truncate">
                       {specialty}
                     </p>

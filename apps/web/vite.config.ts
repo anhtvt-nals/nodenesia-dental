@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     proxy: { '/api': 'http://localhost:3000' },
   },
+  preview: {
+    proxy: { '/api': 'http://localhost:3000' },
+  },
   build: {
     // Three.js ships as a large, separately code-split vendor chunk.
     chunkSizeWarningLimit: 600,

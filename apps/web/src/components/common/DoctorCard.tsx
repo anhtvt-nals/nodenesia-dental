@@ -22,7 +22,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
   return (
     <article className="doctor-card flex flex-col justify-between h-full group">
       <div>
-        {doctor.photoUrl && !photoFailed ? (
+        {doctor.photoUrl && !doctor.photoUrl.includes('unsplash.com') && !photoFailed ? (
           <div className="w-full h-[240px] overflow-hidden bg-bg-alt relative border-b border-border">
             <img
               src={doctor.photoUrl}
