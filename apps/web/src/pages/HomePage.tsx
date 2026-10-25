@@ -183,89 +183,131 @@ export const HomePage: React.FC = () => {
         jsonLd={jsonLdDentist}
       />
 
-      {/* 1. HERO (Enamel #F6F7F4): headline + 2 CTAs + quick booking form on the left, single large photo with floating review card and service chips on the right */}
+      {/* 1. HERO: replicates hero.png layout - eyebrow, 2-line headline, pill CTAs with arrow circles, stacked booking fields, large rounded photo with floating stat card and glass chips */}
       <section className="bg-bg border-b border-border overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 md:pt-14 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left */}
-            <div className="min-w-0">
-              <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.02] tracking-[-0.03em] mb-6">
+            <div className="min-w-0 lg:pt-2">
+              <p className="inline-flex items-center gap-2 text-base font-medium text-primary mb-5">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M10 1.5l2.6 5.5 6 .8-4.4 4.2 1.1 6L10 15.1 4.7 18l1.1-6L1.4 7.8l6-.8L10 1.5z" />
+                </svg>
+                {lang === 'en' ? 'Open Monday – Saturday, 09:00 – 20:00' : 'Buka Senin – Sabtu, 09.00 – 20.00 WIB'}
+              </p>
+
+              <h1 className="font-heading text-[2.5rem] sm:text-5xl lg:text-[3.5rem] font-bold text-primary leading-[1.1] tracking-[-0.02em] mb-5 max-w-[14ch] sm:max-w-none">
                 <span className="block">{t.home.heroTitlePart1}</span>
-                <span className="block text-primary">
+                <span className="block">
                   {t.home.heroTitleAccent} {t.home.heroTitlePart2}
                 </span>
               </h1>
 
-              <p className="text-lg text-text-muted mb-8 leading-relaxed max-w-[48ch]">
+              <p className="text-base sm:text-[1.0625rem] text-text-muted mb-8 leading-relaxed max-w-[52ch]">
                 {t.home.heroDesc}
               </p>
 
-              {/* Max 2 CTAs */}
-              <div className="flex flex-wrap items-center gap-3.5 mb-8">
-                <Link to={localePath('/booking')} className="btn-primary text-base px-7 py-3.5">
+              {/* Max 2 CTAs, pill shape with arrow circle */}
+              <div className="flex flex-wrap items-center gap-3 mb-8">
+                <Link
+                  to={localePath('/booking')}
+                  className="group inline-flex items-center gap-3 rounded-full bg-primary text-bg pl-6 pr-2 py-2 text-base font-medium hover:bg-primary-hover transition-colors"
+                >
                   {t.home.heroPrimaryCta}
+                  <span className="w-9 h-9 rounded-full bg-bg text-primary inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </Link>
+
                 <a
                   href={waAskLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-whatsapp text-base px-7 py-3.5"
+                  className="inline-flex items-center gap-3 rounded-full bg-accent text-text border border-text/15 pl-6 pr-2 py-2 text-base font-medium hover:opacity-90 transition-opacity"
                 >
                   {t.home.heroSecondaryCta}
+                  <span className="w-9 h-9 rounded-full bg-text text-bg inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </a>
               </div>
 
-              {/* Quick booking form: passes existing ?layanan= / ?dokter= params to the unchanged booking flow */}
-              <form
-                onSubmit={handleQuickBook}
-                className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 max-w-[560px]"
-              >
-                <label className="sr-only" htmlFor="hero-service">
-                  {lang === 'en' ? 'Treatment' : 'Layanan'}
-                </label>
-                <select
-                  id="hero-service"
-                  value={quickService}
-                  onChange={(e) => setQuickService(e.target.value)}
-                  className="form-input"
-                >
-                  <option value="">{lang === 'en' ? 'Any treatment' : 'Pilih layanan'}</option>
-                  {services.map((s) => (
-                    <option key={s.id} value={s.slug}>
-                      {lang === 'en' ? s.nameEn : s.name}
-                    </option>
-                  ))}
-                </select>
+              {/* Quick booking: stacked fields -> existing /booking?layanan=&dokter= params */}
+              <form onSubmit={handleQuickBook} className="space-y-3 max-w-[510px]">
+                <div className="relative">
+                  <label className="sr-only" htmlFor="hero-service">
+                    {lang === 'en' ? 'Treatment' : 'Layanan'}
+                  </label>
+                  <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 3h10a2 2 0 012 2v14l-4-2-3 2-3-2-4 2V5a2 2 0 012-2zM9 8h6M9 12h6" />
+                  </svg>
+                  <select
+                    id="hero-service"
+                    value={quickService}
+                    onChange={(e) => setQuickService(e.target.value)}
+                    className="w-full appearance-none rounded-[14px] bg-bg-alt text-primary font-medium text-base pl-12 pr-11 py-3.5 min-h-[56px] cursor-pointer border border-transparent focus:border-primary"
+                  >
+                    <option value="">{lang === 'en' ? 'Treatment' : 'Layanan'}</option>
+                    {services.map((sv) => (
+                      <option key={sv.id} value={sv.slug}>
+                        {lang === 'en' ? sv.nameEn : sv.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
 
-                <label className="sr-only" htmlFor="hero-doctor">
-                  {lang === 'en' ? 'Specialist' : 'Dokter spesialis'}
-                </label>
-                <select
-                  id="hero-doctor"
-                  value={quickDoctor}
-                  onChange={(e) => setQuickDoctor(e.target.value)}
-                  className="form-input"
-                >
-                  <option value="">{lang === 'en' ? 'Any specialist' : 'Pilih dokter'}</option>
-                  {doctors.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <label className="sr-only" htmlFor="hero-doctor">
+                    {lang === 'en' ? 'Specialist' : 'Dokter spesialis'}
+                  </label>
+                  <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+                  </svg>
+                  <select
+                    id="hero-doctor"
+                    value={quickDoctor}
+                    onChange={(e) => setQuickDoctor(e.target.value)}
+                    className="w-full appearance-none rounded-[14px] bg-bg-alt text-primary font-medium text-base pl-12 pr-11 py-3.5 min-h-[56px] cursor-pointer border border-transparent focus:border-primary"
+                  >
+                    <option value="">{lang === 'en' ? 'Specialist' : 'Dokter spesialis'}</option>
+                    {doctors.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
 
-                <button type="submit" className="btn-primary px-6">
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary text-bg px-6 py-3 text-base font-medium hover:bg-primary-hover transition-colors cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path strokeLinecap="round" d="M20 20l-3.5-3.5" />
+                  </svg>
                   {lang === 'en' ? 'Check slots' : 'Cek jadwal'}
                 </button>
               </form>
             </div>
 
-            {/* Right: one large photo, floating review card, service chips */}
-            <div className="relative w-full max-w-[600px] mx-auto lg:mr-0 lg:ml-auto">
+            {/* Right: large rounded photo, floating stat card, glass chips */}
+            <div className="relative w-full max-w-[540px] mx-auto lg:mr-0 lg:ml-auto">
               {/* TODO: Replace stock photo with real in-clinic photography */}
-              <div className="relative aspect-[4/5] sm:aspect-[5/5] lg:aspect-[6/6.4] w-full overflow-hidden photo-asymmetric border border-border bg-bg-alt">
+              <div className="relative aspect-[533/604] w-full overflow-hidden rounded-[36px] bg-bg-alt">
                 <img
-                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1400&q=80"
+                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1200&q=80"
                   alt={lang === 'en' ? 'Patient during a dental checkup' : 'Pasien saat pemeriksaan gigi'}
                   loading="eager"
                   className="w-full h-full object-cover"
@@ -276,7 +318,7 @@ export const HomePage: React.FC = () => {
                     {heroChips.map((chip) => (
                       <span
                         key={chip}
-                        className="bg-bg/90 text-text text-sm font-medium px-3 py-1.5 rounded-[6px] border border-border"
+                        className="rounded-full bg-primary/70 backdrop-blur-md border border-bg/40 text-bg text-sm font-medium px-4 py-2"
                       >
                         {chip}
                       </span>
@@ -285,13 +327,15 @@ export const HomePage: React.FC = () => {
                 )}
               </div>
 
-              {/* Floating review card */}
-              <div className="absolute left-3 sm:-left-6 bottom-20 sm:bottom-24 bg-bg border border-border rounded-[14px] px-4 py-3 shadow-[0_12px_28px_-14px_rgba(18,57,47,0.35)] max-w-[220px]">
-                <p className="font-heading text-xl font-bold text-text leading-tight">
-                  4,9 / 5,0
+              {/* Floating stat card overlapping the photo's left edge */}
+              <div className="absolute -left-4 sm:-left-10 top-[56%] bg-bg rounded-[20px] px-5 py-4 shadow-[0_16px_36px_-16px_rgba(18,57,47,0.4)] max-w-[220px]">
+                <p className="font-heading text-lg font-bold text-text leading-tight">
+                  {lang === 'en' ? '380+ reviews' : '380+ ulasan'}
                 </p>
-                <p className="text-sm text-text-muted leading-snug mt-0.5">
-                  {lang === 'en' ? '380+ Google Maps reviews' : '380+ ulasan Google Maps'}
+                <p className="text-sm text-text-muted leading-snug mt-1">
+                  {lang === 'en'
+                    ? 'Rated 4.9 / 5.0 on Google Maps'
+                    : 'Rating 4,9 / 5,0 di Google Maps'}
                 </p>
               </div>
             </div>
