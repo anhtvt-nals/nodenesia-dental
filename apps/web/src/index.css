@@ -313,6 +313,15 @@ h4,
   top: 0;
 }
 
+/* Hero stacked card layers */
+.hero-stack-layer {
+  will-change: transform, opacity, filter;
+  transition:
+    transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* Gum #E59A93 focus ring on all interactive elements */
 button:focus-visible,
 a:focus-visible,

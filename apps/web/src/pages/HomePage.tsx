@@ -245,22 +245,30 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="relative grid pt-3 pb-5 pr-6 sm:pr-10">
+              <div className="relative grid pt-2 pb-10 pr-12 sm:pr-20 lg:pr-24">
                 {displayDoctors.map((doc, idx) => {
                   const total = displayDoctors.length;
                   const rel = ((idx - safeHeroIndex) % total + total) % total;
                   const isActive = rel === 0;
-                  const isNext = rel === 1;
                   const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
+                  const docShortName = doc.name.split(',')[0];
 
-                  let layerClass =
-                    'z-10 translate-x-6 sm:translate-x-9 translate-y-4 scale-[0.88] opacity-40 blur-[4px] cursor-pointer';
-                  if (isActive) {
-                    layerClass =
-                      'z-30 translate-x-0 translate-y-0 scale-100 opacity-100 blur-0';
-                  } else if (isNext) {
-                    layerClass =
-                      'z-20 translate-x-3 sm:translate-x-5 translate-y-2 scale-[0.94] opacity-70 blur-[2px] cursor-pointer';
+                  // Calculate explicit stacked offset so background layers clearly peek out on the right & bottom
+                  let styleTransform = 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)';
+                  let styleFilter = 'blur(0px)';
+                  let styleOpacity = 1;
+                  let zIndex = 30;
+
+                  if (rel === 1) {
+                    styleTransform = 'translate3d(38px, 16px, 0px) scale(0.93) rotate(1.75deg)';
+                    styleFilter = 'blur(3.5px)';
+                    styleOpacity = 0.82;
+                    zIndex = 20;
+                  } else if (rel >= 2) {
+                    styleTransform = 'translate3d(74px, 32px, 0px) scale(0.86) rotate(3.5deg)';
+                    styleFilter = 'blur(6px)';
+                    styleOpacity = 0.6;
+                    zIndex = 10;
                   }
 
                   return (
@@ -270,9 +278,17 @@ export const HomePage: React.FC = () => {
                       onClick={() => {
                         if (!isActive) goToHero(idx);
                       }}
-                      className={`hero-stack-layer col-start-1 row-start-1 origin-left transition-all duration-700 ease-out ${layerClass}`}
+                      style={{
+                        transform: styleTransform,
+                        filter: styleFilter,
+                        opacity: styleOpacity,
+                        zIndex,
+                      }}
+                      className={`hero-stack-layer col-start-1 row-start-1 origin-top-left ${
+                        isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
+                      }`}
                     >
-                      <div className="aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border border-border">
+                      <div className="relative aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border-2 border-bg ring-1 ring-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.22)]">
                         <img
                           src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
                           alt={doc.name}
@@ -282,6 +298,11 @@ export const HomePage: React.FC = () => {
                           }
                           className="w-full h-full object-cover object-top select-none"
                         />
+                        {!isActive && (
+                          <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
+                            {docShortName}
+                          </span>
+                        )}
                       </div>
                     </div>
                   );
@@ -296,7 +317,7 @@ export const HomePage: React.FC = () => {
                   lang === 'en' ? activeDoc.specialtyEn : activeDoc.specialty;
 
                 return (
-                  <div className="pt-2 pr-6 sm:pr-10 flex items-center justify-between gap-4">
+                  <div className="pt-2 flex items-center justify-between gap-4">
                     <div className="min-w-0">
                       <Link
                         to={localePath(`/dokter/${activeDoc.slug}`)}
