@@ -164,8 +164,17 @@ export const HomePage: React.FC = () => {
     t.booking.waPrefillGeneral
   );
 
-  const featuredReview = reviews[0];
-  const secondaryReviews = reviews.slice(1, 4);
+  // Filter for real review data (non-empty name, treatment/serviceName, and comment without bracket placeholders)
+  const validReviews = reviews.filter(
+    (rev) =>
+      Boolean(rev.name?.trim()) &&
+      Boolean(rev.serviceName?.trim()) &&
+      Boolean((lang === 'en' ? rev.commentEn : rev.comment)?.trim()) &&
+      !/\[.*\]/.test(rev.name) &&
+      !/\[.*\]/.test(rev.comment)
+  );
+  const featuredReview = validReviews[0];
+  const secondaryReviews = validReviews.slice(1, 4);
 
   return (
     <>
@@ -461,7 +470,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. REVIEWS (Mint #DDEAE3): One large pull quote + 2-3 small quotes as a plain list. No 5-star icon rows */}
+      {/* 4. REVIEWS (Mint #DDEAE3): Hidden if no real review data; otherwise 1 large pull quote + 2-3 small quotes showing real name + treatment only */}
       {featuredReview && (
         <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -477,10 +486,9 @@ export const HomePage: React.FC = () => {
                 <blockquote className="font-heading text-2xl sm:text-3xl lg:text-[2.1rem] font-medium text-text leading-[1.28] mb-6">
                   “{lang === 'en' ? featuredReview.commentEn : featuredReview.comment}”
                 </blockquote>
-                <div className="text-sm text-text-muted">
+                <div className="text-base text-text-muted">
                   <strong className="font-semibold text-text">{featuredReview.name}</strong>
                   {featuredReview.serviceName ? ` — ${featuredReview.serviceName}` : ''}
-                  {featuredReview.source ? ` (${featuredReview.source})` : ''}
                 </div>
               </div>
 
@@ -489,13 +497,12 @@ export const HomePage: React.FC = () => {
                 <div className="lg:col-span-5 divide-y divide-border border-t lg:border-t-0 lg:border-l border-border lg:pl-10">
                   {secondaryReviews.map((rev) => (
                     <div key={rev.id} className="py-5 first:pt-0 last:pb-0">
-                      <blockquote className="text-sm sm:text-base text-text leading-relaxed mb-2">
+                      <blockquote className="text-base text-text leading-relaxed mb-2">
                         “{lang === 'en' ? rev.commentEn : rev.comment}”
                       </blockquote>
-                      <div className="text-xs text-text-muted">
+                      <div className="text-base text-text-muted">
                         <strong className="font-semibold text-text">{rev.name}</strong>
-                        {rev.serviceName ? ` · ${rev.serviceName}` : ''}
-                        {rev.date ? ` · ${rev.date}` : ''}
+                        {rev.serviceName ? ` — ${rev.serviceName}` : ''}
                       </div>
                     </div>
                   ))}

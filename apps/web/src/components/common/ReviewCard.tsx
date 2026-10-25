@@ -19,20 +19,14 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ testimonial }) => {
         “{comment}”
       </blockquote>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted">
-        <div>
-          <span className="font-heading font-bold text-text">{testimonial.name}</span>
-          {testimonial.serviceName && (
-            <>
-              <span aria-hidden="true"> · </span>
-              <span>{testimonial.serviceName}</span>
-            </>
-          )}
-        </div>
-        <span>
-          {testimonial.source}
-          {testimonial.date ? ` · ${testimonial.date}` : ''}
-        </span>
+      <div className="text-base text-text-muted">
+        <span className="font-heading font-bold text-text">{testimonial.name}</span>
+        {testimonial.serviceName && (
+          <>
+            <span aria-hidden="true"> — </span>
+            <span>{testimonial.serviceName}</span>
+          </>
+        )}
       </div>
     </article>
   );
