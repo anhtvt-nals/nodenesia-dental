@@ -229,9 +229,9 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Right: Larger doctor photo bleeding to right viewport edge with auto cross-fade */}
+            {/* Right: Contained doctor photo within grid container with auto cross-fade */}
             <div
-              className="w-full lg:-mr-[max(2rem,calc((100vw-80rem)/2+2rem))]"
+              className="w-full"
               onMouseEnter={() => setIsHeroPaused(true)}
               onMouseLeave={() => setIsHeroPaused(false)}
               onFocusCapture={() => setIsHeroPaused(true)}
@@ -259,7 +259,7 @@ export const HomePage: React.FC = () => {
                         isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'
                       }`}
                     >
-                      <div className="aspect-[16/11] sm:aspect-[16/10] lg:min-h-[440px] w-full bg-bg-alt overflow-hidden photo-bleed-right border border-r-0 border-border">
+                      <div className="aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border border-border">
                         <img
                           src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
                           alt={doc.name}
@@ -271,7 +271,7 @@ export const HomePage: React.FC = () => {
                         />
                       </div>
 
-                      <figcaption className="pt-4 pr-4 lg:pr-12 flex flex-wrap items-baseline justify-between gap-2">
+                      <figcaption className="pt-4 flex flex-wrap items-baseline justify-between gap-2">
                         <div>
                           <Link
                             to={localePath(`/dokter/${doc.slug}`)}
