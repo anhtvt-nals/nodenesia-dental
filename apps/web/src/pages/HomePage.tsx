@@ -304,7 +304,7 @@ export const HomePage: React.FC = () => {
             </div>
             <Link
               to={localePath('/harga')}
-              className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 shrink-0 self-start md:self-auto"
+              className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80 shrink-0 self-start md:self-auto"
             >
               {t.home.viewAllServices}
             </Link>
@@ -318,9 +318,9 @@ export const HomePage: React.FC = () => {
               return (
                 <div
                   key={service.id}
-                  className="py-5 rounded-none grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 items-baseline"
+                  className="py-5 rounded-none grid grid-cols-1 md:grid-cols-[1fr_1.6fr_auto] gap-2 md:gap-8 items-baseline"
                 >
-                  <div className="md:col-span-4">
+                  <div>
                     <Link
                       to={localePath(`/layanan/${service.slug}`)}
                       className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary transition-colors"
@@ -329,21 +329,20 @@ export const HomePage: React.FC = () => {
                     </Link>
                   </div>
 
-                  <div className="md:col-span-5 text-sm text-text-muted">
+                  <div className="text-base text-text-muted leading-relaxed">
                     {shortDesc} ({service.durationMinutes} {t.common.minutes})
                   </div>
 
-                  <div className="md:col-span-2 md:text-right text-sm text-text tabular-nums">
-                    <span className="text-text-muted mr-1.5">{t.services.startingFrom}</span>
-                    <strong className="font-heading font-bold text-base">
-                      {formatRupiah(service.priceFrom, lang === 'en')}
-                    </strong>
-                  </div>
-
-                  <div className="md:col-span-1 md:text-right">
+                  <div className="md:text-right text-base text-text tabular-nums whitespace-nowrap flex flex-wrap md:justify-end items-baseline gap-x-4 gap-y-1">
+                    <span>
+                      <span className="text-text-muted mr-1.5">{t.services.startingFrom}</span>
+                      <strong className="font-heading font-bold text-lg text-text">
+                        {formatRupiah(service.priceFrom, lang === 'en')}
+                      </strong>
+                    </span>
                     <Link
                       to={localePath(`/layanan/${service.slug}`)}
-                      className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                      className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80"
                     >
                       {t.common.moreDetail}
                     </Link>
@@ -546,19 +545,19 @@ export const HomePage: React.FC = () => {
                           {title}
                         </Link>
                       </h3>
-                      <span className="block text-xs text-text-muted mt-1">
+                      <span className="block text-base text-text-muted mt-1">
                         {art.authorName} · {art.readTime}
                       </span>
                     </div>
 
-                    <p className="md:col-span-5 text-sm text-text-muted leading-relaxed">
+                    <p className="md:col-span-5 text-base text-text-muted leading-relaxed">
                       {summary}
                     </p>
 
                     <div className="md:col-span-2 md:text-right">
                       <Link
                         to={localePath(`/artikel/${art.slug}`)}
-                        className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                        className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
                       >
                         {lang === 'en' ? 'Read article' : 'Baca artikel'}
                       </Link>
@@ -587,14 +586,14 @@ export const HomePage: React.FC = () => {
                 <h3 className="font-heading text-lg font-bold text-text mb-1">
                   {t.contact.addressTitle}
                 </h3>
-                <p className="text-sm sm:text-base text-text-muted leading-relaxed">
+                <p className="text-base text-text-muted leading-relaxed">
                   {clinicAddress}
                 </p>
                 <a
                   href={settings?.googleMapsUrl || 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-2 text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80"
+                  className="inline-block mt-2 text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80"
                 >
                   {t.contact.viewOnMap}
                 </a>
@@ -604,7 +603,7 @@ export const HomePage: React.FC = () => {
                 <h3 className="font-heading text-lg font-bold text-text mb-1">
                   {lang === 'en' ? 'Parking & public transit' : 'Kapasitas parkir & transportasi umum'}
                 </h3>
-                <p className="text-sm text-text-muted leading-relaxed">
+                <p className="text-base text-text-muted leading-relaxed">
                   {lang === 'en'
                     ? 'Free private parking for 6 cars and 15 motorcycles at the clinic entrance. 5 minutes from Blok M / Senayan MRT Station and Tendean TransJakarta stop.'
                     : 'Parkir halaman pribadi gratis untuk 6 mobil dan 15 motor tepat di depan lobi. Berjarak 5 menit dari Stasiun MRT Blok M / Senayan dan Halte TransJakarta Tendean.'}
@@ -615,7 +614,7 @@ export const HomePage: React.FC = () => {
                 <h3 className="font-heading text-lg font-bold text-text mb-1">
                   {lang === 'en' ? 'Payment & insurance' : 'Pembayaran & klaim asuransi'}
                 </h3>
-                <p className="text-sm text-text-muted leading-relaxed">
+                <p className="text-base text-text-muted leading-relaxed">
                   {lang === 'en'
                     ? 'Accepts QRIS, Debit/Credit cards, bank transfer, and cash. We provide itemized medical receipts and odontograms for private/corporate insurance reimbursement (non-BPJS clinic).'
                     : 'Menerima QRIS, kartu Debit/Kredit, transfer bank, dan tunai. Kami menerbitkan kuitansi medis rincian tindakan serta odontogram resmi untuk klaim reimbursement asuransi swasta/kantor (belum melayani BPJS Kesehatan).'}
@@ -625,13 +624,13 @@ export const HomePage: React.FC = () => {
               <div className="pt-5 border-t border-border flex flex-wrap items-center gap-4">
                 <Link
                   to={localePath('/booking')}
-                  className="btn-primary text-sm"
+                  className="btn-primary text-base"
                 >
                   {t.home.heroPrimaryCta}
                 </Link>
                 <Link
                   to={localePath('/booking/kelola')}
-                  className="text-sm font-semibold text-text-muted hover:text-text underline underline-offset-4"
+                  className="text-base font-semibold text-text-muted hover:text-text underline underline-offset-4"
                 >
                   {t.nav.manageBooking}
                 </Link>

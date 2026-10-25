@@ -16,7 +16,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   return (
     <article className="py-6 border-b border-border flex flex-col justify-between h-full">
       <div>
-        <div className="flex items-center justify-between gap-2 text-xs text-text-muted mb-2">
+        <div className="flex items-center justify-between gap-2 text-base text-text-muted mb-2">
           <span className="font-medium">{categoryName}</span>
           <span>{article.readTime}</span>
         </div>
@@ -26,18 +26,18 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
             {title}
           </Link>
         </h3>
-        <p className="text-sm text-text-muted leading-relaxed mb-4">
+        <p className="text-base text-text-muted leading-relaxed mb-4">
           {summary}
         </p>
       </div>
 
-      <div className="pt-3 flex items-center justify-between gap-3 text-xs">
+      <div className="pt-3 flex items-center justify-between gap-3 text-base">
         <span className="text-text-muted font-medium truncate">
           {article.authorName}
         </span>
         <Link
           to={localePath(`/artikel/${article.slug}`)}
-          className="text-sm text-primary font-semibold hover:underline underline-offset-4 shrink-0"
+          className="text-base text-primary font-semibold hover:underline underline-offset-4 shrink-0"
         >
           {t.common.moreDetail}
         </Link>

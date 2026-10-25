@@ -17,7 +17,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
   return (
     <article className="py-6 border-b border-border flex flex-col justify-between h-full">
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted mb-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-base text-text-muted mb-2">
           <span className="font-medium">{categoryLabel}</span>
           <span>
             {service.durationMinutes} {t.common.minutes}
@@ -29,14 +29,14 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             {serviceName}
           </Link>
         </h3>
-        <p className="text-sm text-text-muted leading-relaxed mb-5">
+        <p className="text-base text-text-muted leading-relaxed mb-5">
           {shortDesc}
         </p>
       </div>
 
       <div className="pt-4 border-t border-border/60 flex items-center justify-between gap-4">
         <div>
-          <span className="text-xs text-text-muted block">
+          <span className="text-base text-text-muted block">
             {t.services.startingFrom}
           </span>
           <span className="font-heading text-lg font-bold text-text tabular-nums">
@@ -44,7 +44,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           </span>
         </div>
 
-        <div className="flex items-center gap-4 text-sm font-semibold">
+        <div className="flex items-center gap-4 text-base font-semibold">
           <Link
             to={localePath(`/layanan/${service.slug}`)}
             className="text-text-muted hover:text-primary underline underline-offset-4"

@@ -50,20 +50,20 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
               {doctor.name}
             </Link>
           </h3>
-          <p className="text-primary font-medium text-sm mt-0.5">
+          <p className="text-primary font-medium text-base mt-0.5">
             {specialty}
           </p>
-          <p className="text-text-muted text-sm mt-1">
+          <p className="text-text-muted text-base mt-1">
             {title}
           </p>
 
           {!compact && (
-            <p className="text-sm text-text-muted leading-relaxed mt-3">
+            <p className="text-base text-text-muted leading-relaxed mt-3">
               {bio}
             </p>
           )}
 
-          <div className="mt-4 pt-3 border-t border-border/60 text-xs text-text-muted space-y-1.5">
+          <div className="mt-4 pt-3 border-t border-border/60 text-base text-text-muted space-y-1.5">
             {experience && (
               <div>
                 <span className="font-semibold text-text">{experience}</span>

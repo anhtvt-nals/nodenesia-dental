@@ -17,8 +17,8 @@ export const PriceRow: React.FC<PriceRowProps> = ({ service, showCategory = fals
   const priceNote = lang === 'en' ? service.priceNoteEn : service.priceNote;
 
   return (
-    <div className="py-5 border-b border-border rounded-none grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-baseline">
-      <div className="md:col-span-4">
+    <div className="py-5 border-b border-border rounded-none grid grid-cols-1 md:grid-cols-[1fr_1.6fr_auto] gap-3 md:gap-8 items-baseline">
+      <div>
         <Link
           to={localePath(`/layanan/${service.slug}`)}
           className="font-heading text-lg font-bold text-text hover:text-primary transition-colors"
@@ -26,37 +26,39 @@ export const PriceRow: React.FC<PriceRowProps> = ({ service, showCategory = fals
           {serviceName}
         </Link>
         {showCategory && (
-          <span className="block text-xs text-text-muted mt-0.5">
+          <span className="block text-base text-text-muted mt-0.5">
             {t.services.categories[service.category]} · {service.durationMinutes} {t.common.minutes}
           </span>
         )}
       </div>
 
-      <div className="md:col-span-4 text-sm text-text-muted">
+      <div className="text-base text-text-muted leading-relaxed">
         <p>{shortDesc}</p>
-        {priceNote && <p className="text-xs mt-1">{priceNote}</p>}
+        {priceNote && <p className="text-base mt-1">{priceNote}</p>}
       </div>
 
-      <div className="md:col-span-2 md:text-right">
-        <span className="text-xs text-text-muted block">{t.services.startingFrom}</span>
-        <span className="font-heading font-bold text-base text-text tabular-nums">
-          {formatRupiah(service.priceFrom, lang === 'en')}
-        </span>
-      </div>
+      <div className="md:text-right flex flex-wrap md:justify-end items-baseline gap-x-5 gap-y-2 whitespace-nowrap">
+        <div>
+          <span className="text-base text-text-muted mr-1.5">{t.services.startingFrom}</span>
+          <span className="font-heading font-bold text-lg text-text tabular-nums">
+            {formatRupiah(service.priceFrom, lang === 'en')}
+          </span>
+        </div>
 
-      <div className="md:col-span-2 flex items-center md:justify-end gap-4 text-sm font-semibold">
-        <Link
-          to={localePath(`/layanan/${service.slug}`)}
-          className="text-text-muted hover:text-primary underline underline-offset-4"
-        >
-          {t.common.moreDetail}
-        </Link>
-        <Link
-          to={localePath(`/booking?layanan=${service.slug}`)}
-          className="text-primary hover:underline underline-offset-4"
-        >
-          {t.common.bookNow}
-        </Link>
+        <div className="flex items-center gap-4 text-base font-semibold">
+          <Link
+            to={localePath(`/layanan/${service.slug}`)}
+            className="text-text-muted hover:text-primary underline underline-offset-4"
+          >
+            {t.common.moreDetail}
+          </Link>
+          <Link
+            to={localePath(`/booking?layanan=${service.slug}`)}
+            className="text-primary hover:underline underline-offset-4"
+          >
+            {t.common.bookNow}
+          </Link>
+        </div>
       </div>
     </div>
   );
