@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import {
   getSettings,
@@ -76,6 +76,7 @@ const DEFAULT_HERO_DOCTORS: Doctor[] = [
 
 export const HomePage: React.FC = () => {
   const { lang, t, localePath } = useI18n();
+  const navigate = useNavigate();
 
   const [settings, setSettings] = useState<ClinicSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
@@ -83,25 +84,22 @@ export const HomePage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [reviews, setReviews] = useState<Testimonial[]>([]);
   const [brokenPhotos, setBrokenPhotos] = useState<Record<string, boolean>>({});
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [isHeroPaused, setIsHeroPaused] = useState(false);
-  const [heroTouchStartX, setHeroTouchStartX] = useState<number | null>(null);
+  const [quickService, setQuickService] = useState('');
+  const [quickDoctor, setQuickDoctor] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const displayDoctors = doctors.length > 0 ? doctors : DEFAULT_HERO_DOCTORS;
-  const safeHeroIndex = heroIndex % displayDoctors.length;
-  const goToHero = (next: number) => {
-    setHeroIndex(((next % displayDoctors.length) + displayDoctors.length) % displayDoctors.length);
+
+  const heroChips = Array.from(new Set(services.map((s) => t.services.categories[s.category]))).slice(0, 4);
+
+  const handleQuickBook = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (quickService) params.set('layanan', quickService);
+    if (quickDoctor) params.set('dokter', quickDoctor);
+    const query = params.toString();
+    navigate(localePath(`/booking${query ? `?${query}` : ''}`));
   };
-
-  useEffect(() => {
-    if (isHeroPaused || displayDoctors.length <= 1) return;
-
-    const timer = window.setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % displayDoctors.length);
-    }, 4500);
-    return () => window.clearInterval(timer);
-  }, [isHeroPaused, displayDoctors.length]);
 
   useEffect(() => {
     let isMounted = true;
@@ -185,207 +183,117 @@ export const HomePage: React.FC = () => {
         jsonLd={jsonLdDentist}
       />
 
-      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 7fr/5fr, compact stacked doctor photo deck, max 2 CTAs, 2 facts in one plain sentence */}
+      {/* 1. HERO (Enamel #F6F7F4): headline + 2 CTAs + quick booking form on the left, single large photo with floating review card and service chips on the right */}
       <section className="bg-bg border-b border-border overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-10 lg:gap-12 items-start">
-            {/* Left: Headline, concrete description, 2 CTAs, plain sentence for rating + doctor count */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 items-center">
+            {/* Left */}
             <div className="min-w-0">
-              <h1 className="font-heading text-[3rem] sm:text-[4.25rem] lg:text-[5.25rem] font-bold text-text leading-[0.98] tracking-[-0.035em] mb-8">
+              <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.02] tracking-[-0.03em] mb-6">
                 <span className="block">{t.home.heroTitlePart1}</span>
-                <span className="inline-block mt-3 px-4 sm:px-5 pb-1.5 rounded-[10px] bg-primary text-bg">
+                <span className="block text-primary">
                   {t.home.heroTitleAccent} {t.home.heroTitlePart2}
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-text mb-9 leading-relaxed max-w-[48ch]">
+              <p className="text-lg text-text-muted mb-8 leading-relaxed max-w-[48ch]">
                 {t.home.heroDesc}
               </p>
 
-              {/* Max 2 CTAs: Buat janji temu (Pine) + Tanya via WhatsApp (Gum) */}
-              <div className="flex flex-wrap items-center gap-4 mb-10">
-                <Link
-                  to={localePath('/booking')}
-                  className="btn-primary text-lg px-8 py-4 min-h-[56px]"
-                >
+              {/* Max 2 CTAs */}
+              <div className="flex flex-wrap items-center gap-3.5 mb-8">
+                <Link to={localePath('/booking')} className="btn-primary text-base px-7 py-3.5">
                   {t.home.heroPrimaryCta}
                 </Link>
-
                 <a
                   href={waAskLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-whatsapp text-lg px-8 py-4 min-h-[56px]"
+                  className="btn-whatsapp text-base px-7 py-3.5"
                 >
                   {t.home.heroSecondaryCta}
                 </a>
               </div>
 
-              {/* Plain sentence merging rating + doctor count (no big-number stat block) */}
-              <p className="text-base sm:text-lg text-text-muted pt-6 border-t border-border max-w-[54ch]">
-                {lang === 'en' ? (
-                  <>
-                    Rated <strong className="text-text font-semibold">4.9 / 5.0</strong> across 380+ Google Maps reviews · Practice staffed by <strong className="text-text font-semibold">{doctors.length || 3} permanent dental specialists</strong> (Sp.KG, Sp.Ort, Sp.BM).
-                  </>
-                ) : (
-                  <>
-                    Rating <strong className="text-text font-semibold">4,9 / 5,0</strong> dari 380+ ulasan Google Maps · Praktik <strong className="text-text font-semibold">{doctors.length || 3} dokter gigi spesialis tetap</strong> (Sp.KG, Sp.Ort, Sp.BM).
-                  </>
-                )}
-              </p>
+              {/* Quick booking form: passes existing ?layanan= / ?dokter= params to the unchanged booking flow */}
+              <form
+                onSubmit={handleQuickBook}
+                className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 max-w-[560px]"
+              >
+                <label className="sr-only" htmlFor="hero-service">
+                  {lang === 'en' ? 'Treatment' : 'Layanan'}
+                </label>
+                <select
+                  id="hero-service"
+                  value={quickService}
+                  onChange={(e) => setQuickService(e.target.value)}
+                  className="form-input"
+                >
+                  <option value="">{lang === 'en' ? 'Any treatment' : 'Pilih layanan'}</option>
+                  {services.map((s) => (
+                    <option key={s.id} value={s.slug}>
+                      {lang === 'en' ? s.nameEn : s.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label className="sr-only" htmlFor="hero-doctor">
+                  {lang === 'en' ? 'Specialist' : 'Dokter spesialis'}
+                </label>
+                <select
+                  id="hero-doctor"
+                  value={quickDoctor}
+                  onChange={(e) => setQuickDoctor(e.target.value)}
+                  className="form-input"
+                >
+                  <option value="">{lang === 'en' ? 'Any specialist' : 'Pilih dokter'}</option>
+                  {doctors.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+
+                <button type="submit" className="btn-primary px-6">
+                  {lang === 'en' ? 'Check slots' : 'Cek jadwal'}
+                </button>
+              </form>
             </div>
 
-            {/* Right: Compact, fixed-dimension paper-stack slider so left column never shifts */}
-            <div
-              className="w-full max-w-[520px] mx-auto lg:ml-auto lg:mr-0 min-w-0 select-none"
-              onMouseEnter={() => setIsHeroPaused(true)}
-              onMouseLeave={() => setIsHeroPaused(false)}
-              onFocusCapture={() => setIsHeroPaused(true)}
-              onBlurCapture={() => setIsHeroPaused(false)}
-              onTouchStart={(e) => setHeroTouchStartX(e.touches[0].clientX)}
-              onTouchEnd={(e) => {
-                if (heroTouchStartX === null) return;
-                const delta = e.changedTouches[0].clientX - heroTouchStartX;
-                if (Math.abs(delta) > 40) goToHero(safeHeroIndex + (delta < 0 ? 1 : -1));
-                setHeroTouchStartX(null);
-              }}
-            >
-              {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="relative h-[330px] sm:h-[380px] w-full overflow-hidden px-5 py-5">
-                <div className="relative w-full h-full">
-                  {displayDoctors.map((doc, idx) => {
-                    const total = displayDoctors.length;
-                    const rel = ((idx - safeHeroIndex) % total + total) % total;
-                    const isActive = rel === 0;
-                    const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
-                    const docShortName = doc.name.split(',')[0];
+            {/* Right: one large photo, floating review card, service chips */}
+            <div className="relative w-full max-w-[600px] mx-auto lg:mr-0 lg:ml-auto">
+              {/* TODO: Replace stock photo with real in-clinic photography */}
+              <div className="relative aspect-[4/5] sm:aspect-[5/5] lg:aspect-[6/6.4] w-full overflow-hidden photo-asymmetric border border-border bg-bg-alt">
+                <img
+                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1400&q=80"
+                  alt={lang === 'en' ? 'Patient during a dental checkup' : 'Pasien saat pemeriksaan gigi'}
+                  loading="eager"
+                  className="w-full h-full object-cover"
+                />
 
-                    // Paper-stack (xếp giấy) fan geometry inside a strictly fixed pixel stage
-                    let styleTransform = 'translate3d(0px, 0px, 0px) rotate(0deg) scale(1)';
-                    let styleFilter = 'blur(0px)';
-                    let styleOpacity = 1;
-                    let zIndex = 30;
-
-                    if (rel === 1) {
-                      styleTransform = 'translate3d(14px, -10px, 0px) rotate(3.8deg) scale(0.98)';
-                      styleFilter = 'blur(3px)';
-                      styleOpacity = 0.85;
-                      zIndex = 20;
-                    } else if (rel >= 2) {
-                      styleTransform = 'translate3d(-12px, 12px, 0px) rotate(-3.4deg) scale(0.96)';
-                      styleFilter = 'blur(5px)';
-                      styleOpacity = 0.7;
-                      zIndex = 10;
-                    }
-
-                    return (
-                      <div
-                        key={doc.slug || doc.id}
-                        aria-hidden={!isActive}
-                        onClick={() => {
-                          if (!isActive) goToHero(idx);
-                        }}
-                        style={{
-                          transform: styleTransform,
-                          filter: styleFilter,
-                          opacity: styleOpacity,
-                          zIndex,
-                        }}
-                        className={`hero-stack-layer absolute inset-0 origin-center ${
-                          isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
-                        }`}
+                {heroChips.length > 0 && (
+                  <div className="absolute inset-x-4 bottom-4 flex flex-wrap gap-2">
+                    {heroChips.map((chip) => (
+                      <span
+                        key={chip}
+                        className="bg-bg/90 text-text text-sm font-medium px-3 py-1.5 rounded-[6px] border border-border"
                       >
-                        <div className="w-full h-full bg-bg overflow-hidden rounded-[14px] p-2 border border-border shadow-[0_12px_28px_-12px_rgba(18,57,47,0.22)]">
-                          <div className="w-full h-full overflow-hidden rounded-[8px] bg-bg-alt relative">
-                            <img
-                              src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
-                              alt={doc.name}
-                              loading="eager"
-                              decoding="sync"
-                              onError={() =>
-                                setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
-                              }
-                              className="w-full h-full object-cover object-top select-none"
-                            />
-                            {!isActive && (
-                              <span className="absolute top-2.5 right-2.5 bg-primary/85 text-bg text-xs font-medium px-2 py-0.5 rounded-[6px]">
-                                {docShortName}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Active doctor caption + Previous / Next slide buttons (strictly fixed height) */}
-              {(() => {
-                const activeDoc = displayDoctors[safeHeroIndex];
-                if (!activeDoc) return null;
-                const activeSpecialty =
-                  lang === 'en' ? activeDoc.specialtyEn : activeDoc.specialty;
-
-                return (
-                  <div className="pt-1 px-5 h-[56px] flex items-center justify-between gap-3 overflow-hidden">
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <Link
-                        to={localePath(`/dokter/${activeDoc.slug}`)}
-                        className="font-heading text-lg font-bold text-text hover:text-primary block truncate leading-tight"
-                      >
-                        {activeDoc.name}
-                      </Link>
-                      <span className="block text-sm sm:text-base text-text-muted truncate leading-tight mt-0.5">
-                        {activeSpecialty}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span
-                        className="text-sm font-medium text-text-muted tabular-nums mr-1"
-                        aria-live="polite"
-                      >
-                        {safeHeroIndex + 1}/{displayDoctors.length}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => goToHero(safeHeroIndex - 1)}
-                        aria-label={lang === 'en' ? 'Previous specialist' : 'Dokter sebelumnya'}
-                        className="w-9 h-9 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => goToHero(safeHeroIndex + 1)}
-                        aria-label={lang === 'en' ? 'Next specialist' : 'Dokter berikutnya'}
-                        className="w-9 h-9 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()}
+              {/* Floating review card */}
+              <div className="absolute left-3 sm:-left-6 bottom-20 sm:bottom-24 bg-bg border border-border rounded-[14px] px-4 py-3 shadow-[0_12px_28px_-14px_rgba(18,57,47,0.35)] max-w-[220px]">
+                <p className="font-heading text-xl font-bold text-text leading-tight">
+                  4,9 / 5,0
+                </p>
+                <p className="text-sm text-text-muted leading-snug mt-0.5">
+                  {lang === 'en' ? '380+ Google Maps reviews' : '380+ ulasan Google Maps'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
