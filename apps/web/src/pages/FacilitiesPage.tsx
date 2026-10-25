@@ -3,6 +3,15 @@ import { useI18n } from '../i18n';
 import { AppHelmet } from '../components/common/AppHelmet';
 import { PhotoPlaceholder } from '../components/common/PhotoPlaceholder';
 
+const FACILITY_PHOTOS = [
+  'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=900&q=80',
+];
+
 export const FacilitiesPage: React.FC = () => {
   const { lang, t } = useI18n();
 
@@ -14,7 +23,7 @@ export const FacilitiesPage: React.FC = () => {
         path="/fasilitas"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 max-w-3xl">
             <span className="badge badge-primary mb-3">
@@ -32,12 +41,14 @@ export const FacilitiesPage: React.FC = () => {
             {t.facilities.items.map((facility, index) => (
               <div key={index} className="trust-card bg-bg-card overflow-hidden p-0 flex flex-col justify-between">
                 <div>
-                  <PhotoPlaceholder
-                    label={`[FOTO FASILITAS 0${index + 1}]`}
-                    sublabel={facility.title}
-                    aspect="16:9"
-                    className="rounded-none border-0 border-b border-border"
-                  />
+                  <div className="w-full aspect-[16/9] overflow-hidden border-b border-border bg-bg-alt">
+                    <img
+                      src={FACILITY_PHOTOS[index % FACILITY_PHOTOS.length]}
+                      alt={facility.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="p-6">
                     <span className="badge badge-primary mb-3">
                       0{index + 1} · TEKNOLOGI

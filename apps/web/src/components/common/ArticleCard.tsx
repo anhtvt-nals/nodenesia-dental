@@ -14,39 +14,32 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const categoryName = lang === 'en' ? article.categoryNameEn : article.categoryName;
 
   return (
-    <article className="trust-card flex flex-col justify-between h-full group">
+    <article className="py-6 border-b border-border flex flex-col justify-between h-full">
       <div>
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <span className="px-3 py-1 rounded-full bg-primary/10 text-primary-hover text-xs font-semibold">
-            {categoryName}
-          </span>
-          <span className="text-xs text-text-muted font-medium">
-            {article.readTime}
-          </span>
+        <div className="flex items-center justify-between gap-2 text-xs text-text-muted mb-2">
+          <span className="font-medium">{categoryName}</span>
+          <span>{article.readTime}</span>
         </div>
 
-        <h3 className="font-heading text-xl font-bold text-text mb-3 group-hover:text-primary transition-colors leading-snug">
-          <Link to={localePath(`/artikel/${article.slug}`)}>
+        <h3 className="font-heading text-xl font-bold text-text mb-2 leading-snug">
+          <Link to={localePath(`/artikel/${article.slug}`)} className="hover:text-primary transition-colors">
             {title}
           </Link>
         </h3>
-        <p className="text-sm text-text-muted leading-relaxed line-clamp-3 mb-6">
+        <p className="text-sm text-text-muted leading-relaxed mb-4">
           {summary}
         </p>
       </div>
 
-      <div className="pt-4 border-t border-border flex items-center justify-between gap-3 text-xs">
-        <span className="text-text-muted font-medium truncate max-w-[200px]">
+      <div className="pt-3 flex items-center justify-between gap-3 text-xs">
+        <span className="text-text-muted font-medium truncate">
           {article.authorName}
         </span>
         <Link
           to={localePath(`/artikel/${article.slug}`)}
-          className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline shrink-0"
+          className="text-sm text-primary font-semibold hover:underline underline-offset-4 shrink-0"
         >
-          <span>{t.common.moreDetail}</span>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-          </svg>
+          {t.common.moreDetail}
         </Link>
       </div>
     </article>

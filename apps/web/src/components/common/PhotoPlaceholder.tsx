@@ -8,7 +8,7 @@ interface PhotoPlaceholderProps {
 }
 
 export const PhotoPlaceholder: React.FC<PhotoPlaceholderProps> = ({
-  label = '[FOTO]',
+  label = 'Dokumentasi Klinik',
   sublabel,
   aspect = '4:3',
   className = '',

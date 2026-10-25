@@ -71,7 +71,7 @@ export const DoctorDetailPage: React.FC = () => {
         path={`/dokter/${doctor.slug}`}
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link
@@ -88,7 +88,7 @@ export const DoctorDetailPage: React.FC = () => {
           <div className="trust-card p-6 sm:p-8 bg-bg-card grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
             {/* Doctor Photo */}
             <div className="md:col-span-5">
-              {doctor.photoUrl && !doctor.photoUrl.includes('unsplash.com') && !photoFailed ? (
+              {doctor.photoUrl && !photoFailed ? (
                 <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative">
                   <img
                     src={doctor.photoUrl}
@@ -104,7 +104,7 @@ export const DoctorDetailPage: React.FC = () => {
                 </div>
               ) : (
                 <PhotoPlaceholder
-                  label={`[FOTO ${doctor.name.toUpperCase()}]`}
+                  label={doctor.name}
                   sublabel={specialty}
                   aspect="3:4"
                 />

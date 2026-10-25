@@ -1,14 +1,11 @@
 import React from 'react';
 
 interface SectionLabelProps {
-  number: string;
-  className?: string;
+  number?: string;
 }
 
-export const SectionLabel: React.FC<SectionLabelProps> = ({ number, className = '' }) => {
-  return (
-    <div className={`badge badge-primary mb-4 select-none ${className}`}>
-      <span>{number}</span>
-    </div>
-  );
-};
+/**
+ * Intentionally renders nothing per anti-AI-slop rules:
+ * numbered section labels ("01 / Layanan") and eyebrow labels above headings are removed.
+ */
+export const SectionLabel: React.FC<SectionLabelProps> = () => null;

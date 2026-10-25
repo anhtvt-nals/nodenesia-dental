@@ -27,7 +27,7 @@ export const TestimonialsPage: React.FC = () => {
         path="/testimoni"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-3xl">
             <span className="badge badge-primary mb-3">

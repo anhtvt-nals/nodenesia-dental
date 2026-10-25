@@ -131,6 +131,8 @@ export interface GalleryItem {
   serviceSlug: string;
   serviceName: string;
   serviceNameEn: string;
+  beforeUrl?: string;
+  afterUrl?: string;
   beforeLabel: string;
   afterLabel: string;
   caption: string;

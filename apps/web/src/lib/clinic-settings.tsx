@@ -7,20 +7,30 @@ import type { ClinicSettings } from '../types';
  * layout stable avoids a flash of empty contact details / opening hours.
  */
 export const fallbackClinicSettings: ClinicSettings = {
-  name: 'Klinik Gigi',
-  tagline: '',
-  taglineEn: '',
-  address: '',
-  city: '',
-  phone: '',
-  whatsappNumber: '',
-  instagramHandle: '',
-  googleMapsUrl: '',
+  name: 'Klinik Gigi Senyum Sehat',
+  tagline: 'Perawatan Gigi Spesialis yang Nyaman, Lembut, dan Transparan',
+  taglineEn: 'Comfortable, Gentle, and Transparent Specialist Dental Care',
+  address: 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan 12180',
+  city: 'Jakarta Selatan',
+  phone: '+62 21 7208 4500',
+  whatsappNumber: '6281289001234',
+  instagramHandle: '@senyumsehat.dental',
+  googleMapsUrl: 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan',
   timezone: 'Asia/Jakarta',
-  openHoursDesc: '',
-  openHoursDescEn: '',
-  regularHours: { weekdays: '', weekdaysTime: '', sunday: '', sundayTime: '', breakTime: '' },
-  stats: [],
+  openHoursDesc: 'Senin – Sabtu: 09:00 – 20:00 WIB (Istirahat 12:00 – 13:00)',
+  openHoursDescEn: 'Monday – Saturday: 09:00 – 20:00 WIB (Break 12:00 – 13:00)',
+  regularHours: {
+    weekdays: 'Senin – Sabtu',
+    weekdaysTime: '09:00 – 20:00 WIB',
+    sunday: 'Minggu',
+    sundayTime: 'Tutup (Darurat via WhatsApp)',
+    breakTime: 'Istirahat: 12:00 – 13:00 WIB',
+  },
+  stats: [
+    { label: 'Rating Google Maps (380+ Ulasan)', labelEn: 'Google Maps Rating (380+ Reviews)', value: '4.9 / 5.0', unit: 'bintang' },
+    { label: 'Dokter Gigi Spesialis (SIP)', labelEn: 'Licensed Specialist Dentists (SIP)', value: '3 drg. Sp.', unit: 'spesialis' },
+    { label: 'Pengalaman Klinis Tim', labelEn: 'Clinical Team Experience', value: '12+ Thn', unit: 'tahun' },
+  ],
 };
 
 const ClinicSettingsContext = createContext<ClinicSettings>(fallbackClinicSettings);

@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n';
 import { useClinicSettings } from '../../lib/clinic-settings';
 import { buildWhatsAppLink } from '../../lib/utils';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const Navbar: React.FC = () => {
   const { lang, t, localePath } = useI18n();
@@ -35,8 +36,8 @@ export const Navbar: React.FC = () => {
   const emergencyWaLink = buildWhatsAppLink(
     settings.whatsappNumber || '6281289001234',
     lang === 'en'
-      ? 'Hello [NAMA KLINIK], I need emergency dental assistance.'
-      : 'Halo [NAMA KLINIK], saya memerlukan bantuan darurat sakit gigi.'
+      ? `Hello ${settings.name || 'Klinik Gigi Senyum Sehat'}, I need emergency dental assistance.`
+      : `Halo ${settings.name || 'Klinik Gigi Senyum Sehat'}, saya memerlukan bantuan darurat sakit gigi.`
   );
 
   return (
@@ -46,21 +47,10 @@ export const Navbar: React.FC = () => {
           {/* Zone 1: Brand icon + title + subtitle */}
           <Link
             to={localePath('/')}
-            className="flex items-center gap-3 shrink-0 group cursor-pointer"
+            className="flex items-center shrink-0 cursor-pointer"
+            aria-label={`${t.brandName} — ${t.tagline}`}
           >
-            <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center shadow-xs group-hover:bg-primary-hover transition-colors shrink-0">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <span className="font-heading text-base sm:text-lg font-bold text-text block truncate max-w-[155px] sm:max-w-[220px] lg:max-w-[175px] xl:max-w-none leading-tight">
-                {t.brandName}
-              </span>
-              <span className="block text-xs text-text-muted truncate max-w-[155px] sm:max-w-[220px] lg:max-w-[175px] xl:max-w-none">
-                {t.tagline}
-              </span>
-            </div>
+            <BrandLogo title={t.brandName} className="h-10 w-auto font-heading" />
           </Link>
 
           {/* Zone 2: Desktop Navigation Links */}
@@ -69,11 +59,10 @@ export const Navbar: React.FC = () => {
               <Link
                 key={item.path}
                 to={localePath(item.path)}
-                className={`text-xs xl:text-sm font-medium whitespace-nowrap rounded-lg px-1.5 xl:px-2 py-1.5 transition-colors cursor-pointer ${
-                  isActive(item.path)
+                className={`text-xs xl:text-sm font-medium whitespace-nowrap rounded-lg px-1.5 xl:px-2 py-1.5 transition-colors cursor-pointer ${isActive(item.path)
                     ? 'text-primary font-semibold bg-primary/8'
                     : 'text-text-muted hover:text-primary'
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
@@ -143,11 +132,10 @@ export const Navbar: React.FC = () => {
                 key={item.path}
                 to={localePath(item.path)}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`p-3 min-h-[48px] flex items-center justify-center text-center rounded-xl border font-semibold transition-colors cursor-pointer ${
-                  isActive(item.path)
+                className={`p-3 min-h-[48px] flex items-center justify-center text-center rounded-xl border font-semibold transition-colors cursor-pointer ${isActive(item.path)
                     ? 'bg-primary text-white border-primary'
                     : 'bg-bg-alt text-text border-border hover:border-primary'
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
@@ -155,8 +143,8 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="pt-3 border-t border-border">
-            <div className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2.5">
-              {lang === 'en' ? 'More Information' : 'Menu Lainnya'}
+            <div className="text-xs font-medium text-text-muted mb-2.5">
+              {lang === 'en' ? 'More pages' : 'Halaman lainnya'}
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {secondaryLinks.map((item) => (
@@ -164,7 +152,7 @@ export const Navbar: React.FC = () => {
                   key={item.path}
                   to={localePath(item.path)}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-3 py-2.5 min-h-[44px] flex items-center justify-center text-center rounded-xl bg-bg-alt text-text-muted font-medium hover:text-primary border border-border transition-colors cursor-pointer"
+                  className="px-3 py-2.5 min-h-[44px] flex items-center justify-center text-center rounded-[10px] bg-bg-alt text-text font-medium hover:text-primary border border-border transition-colors cursor-pointer"
                 >
                   {item.label}
                 </Link>

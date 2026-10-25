@@ -1017,7 +1017,7 @@ export const TeethScene: React.FC<TeethSceneProps> = ({
         {status === 'error' && (
           <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-bg-alt">
             <span className="badge badge-primary mb-3 text-xs">
-              <span>[3D MODEL PREVIEW]</span>
+              <span>Model 3D Anatomi Gigi</span>
             </span>
             <p className="font-heading text-xl font-bold text-text max-w-sm">
               Anatomi Gigi & Lengkung Rahang Interaktif

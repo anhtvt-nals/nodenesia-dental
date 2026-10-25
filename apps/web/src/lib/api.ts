@@ -505,6 +505,8 @@ export async function getGallery(): Promise<GalleryItem[]> {
       serviceSlug: service?.slug ?? '',
       serviceName: service?.name ?? '',
       serviceNameEn: service?.nameEn ?? service?.name ?? '',
+      beforeUrl: item.beforeUrl ?? undefined,
+      afterUrl: item.afterUrl ?? undefined,
       beforeLabel: item.beforeLabel ?? '',
       afterLabel: item.afterLabel ?? '',
       caption: item.caption ?? '',

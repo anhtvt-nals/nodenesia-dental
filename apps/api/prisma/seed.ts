@@ -46,10 +46,32 @@ type DoctorSeed = {
 const portrait = (id: string): string =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&crop=faces&w=1200&h=750&q=80`;
 
-const weekdayHours = [1, 2, 3, 4, 5, 6].flatMap((weekday) => [
-  { weekday, start: '09:00', end: '12:00' },
-  { weekday, start: '13:00', end: '20:00' },
-]);
+const drgAyuHours = [
+  { weekday: 1, start: '09:00', end: '15:00' },
+  { weekday: 2, start: '13:00', end: '19:30' },
+  { weekday: 3, start: '09:00', end: '15:00' },
+  { weekday: 4, start: '13:00', end: '19:30' },
+  { weekday: 5, start: '09:00', end: '15:00' },
+  { weekday: 6, start: '09:00', end: '16:00' },
+];
+
+const drgBimaHours = [
+  { weekday: 1, start: '14:00', end: '20:00' },
+  { weekday: 2, start: '10:00', end: '16:00' },
+  { weekday: 3, start: '14:00', end: '20:00' },
+  { weekday: 4, start: '10:00', end: '16:00' },
+  { weekday: 5, start: '14:00', end: '20:00' },
+  { weekday: 6, start: '10:00', end: '17:00' },
+];
+
+const drgCitraHours = [
+  { weekday: 1, start: '10:00', end: '17:00' },
+  { weekday: 2, start: '09:00', end: '14:00' },
+  { weekday: 3, start: '13:00', end: '19:00' },
+  { weekday: 4, start: '09:00', end: '14:00' },
+  { weekday: 5, start: '11:00', end: '18:00' },
+  { weekday: 6, start: '11:00', end: '18:00' },
+];
 
 const serviceSeeds: ServiceSeed[] = [
   {
@@ -172,10 +194,10 @@ const doctorSeeds: DoctorSeed[] = [
   {
     slug: 'drg-ayu',
     name: 'drg. Ayu Larasati, Sp.KG',
-    title: 'Spesialis Konservasi Gigi (Endodontis & Restorasi)',
-    titleEn: 'Endodontics & Restorative Dental Specialist',
-    specialty: 'Konservasi Gigi & Estetik',
-    specialtyEn: 'Conservative Dentistry & Aesthetics',
+    title: 'Dokter Gigi Spesialis Konservasi Gigi (Sp.KG)',
+    titleEn: 'Specialist in Conservative Dentistry & Endodontics (Sp.KG)',
+    specialty: 'Konservasi Gigi & Estetik (Sp.KG)',
+    specialtyEn: 'Conservative Dentistry & Aesthetics (Sp.KG)',
     bio: 'Fokus pada perawatan saluran akar mikroskopis, veneer porselen minimal-prep, dan restorasi komposit estetika tinggi dengan sentuhan yang sangat halus dan teliti.',
     bioEn: 'Specializes in microscopic root canal therapy, minimal-prep porcelain veneers, and high-aesthetic composite restorations with gentle precision.',
     photoUrl: portrait('photo-1559839734-2b71ea197ec2'),
@@ -184,15 +206,15 @@ const doctorSeeds: DoctorSeed[] = [
     education: ['Spesialis Konservasi Gigi - Universitas Indonesia', 'Pendidikan Dokter Gigi - Universitas Airlangga'],
     sortOrder: 0,
     serviceSlugs: ['scaling', 'tambal', 'bleaching', 'veneer'],
-    hours: weekdayHours,
+    hours: drgAyuHours,
   },
   {
     slug: 'drg-bima',
     name: 'drg. Bima Wicaksono, Sp.Ort',
-    title: 'Spesialis Ortodonti (Behel & Aligner)',
-    titleEn: 'Orthodontics & Dentofacial Orthopedics Specialist',
-    specialty: 'Ortodonti & Perataan Gigi',
-    specialtyEn: 'Orthodontics & Bite Alignment',
+    title: 'Dokter Gigi Spesialis Ortodonti (Sp.Ort)',
+    titleEn: 'Specialist in Orthodontics & Dentofacial Orthopedics (Sp.Ort)',
+    specialty: 'Ortodonti & Perataan Gigi (Sp.Ort)',
+    specialtyEn: 'Orthodontics & Bite Alignment (Sp.Ort)',
     bio: 'Berpengalaman menangani ratusan kasus maloklusi rumit, behel self-ligating, serta aligner transparan untuk remaja dan dewasa.',
     bioEn: 'Extensive experience treating complex malocclusion, self-ligating bracket dynamics, and clear aligners for adults and teens.',
     photoUrl: portrait('photo-1612349317150-e413f6a5b16d'),
@@ -201,15 +223,15 @@ const doctorSeeds: DoctorSeed[] = [
     education: ['Spesialis Ortodonti - Universitas Gadjah Mada', 'Pendidikan Dokter Gigi - Universitas Indonesia'],
     sortOrder: 1,
     serviceSlugs: ['behel', 'scaling'],
-    hours: weekdayHours,
+    hours: drgBimaHours,
   },
   {
     slug: 'drg-citra',
     name: 'drg. Citra Dewi, Sp.BM',
-    title: 'Spesialis Bedah Mulut & Maksilofasial',
-    titleEn: 'Oral & Maxillofacial Surgeon',
-    specialty: 'Implan Gigi & Odontektomi',
-    specialtyEn: 'Implantology & Wisdom Tooth Surgery',
+    title: 'Dokter Gigi Spesialis Bedah Mulut & Maksilofasial (Sp.BM)',
+    titleEn: 'Specialist in Oral & Maxillofacial Surgery (Sp.BM)',
+    specialty: 'Implan Gigi & Bedah Mulut (Sp.BM)',
+    specialtyEn: 'Implantology & Oral Surgery (Sp.BM)',
     bio: 'Menangani pemasangan implan gigi dengan pemandu 3D CBCT, pencabutan gigi bungsu impaksi yang minim trauma, dan rekonstruksi tulang rahang.',
     bioEn: 'Dedicated to CBCT-guided dental implant placement, atraumatic wisdom tooth extractions, and alveolar bone ridge augmentations.',
     photoUrl: portrait('photo-1594824476967-48c8b964273f'),
@@ -218,7 +240,7 @@ const doctorSeeds: DoctorSeed[] = [
     education: ['Spesialis Bedah Mulut - Universitas Padjadjaran', 'Pendidikan Dokter Gigi - Universitas Padjadjaran'],
     sortOrder: 2,
     serviceSlugs: ['implan', 'scaling'],
-    hours: weekdayHours,
+    hours: drgCitraHours,
   },
 ];
 
@@ -361,19 +383,19 @@ async function main() {
   // `yarn seed` refreshes the canonical demo rows instead of silently skipping
   // them when the record already exists.
   const settingsData = {
-    name: 'Klinik Demo',
-    phone: '+6221000000',
-    waNumber: '+628120000000',
-    address: 'Jakarta, Indonesia',
+    name: 'Senyum Sehat Dental Care',
+    phone: '+62 21 7208 4500',
+    waNumber: '+6281289001234',
+    address: 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan 12180',
     timezone: 'Asia/Jakarta',
     chairsCount: 3,
     reminderTemplates: {},
     socials: {},
-    tagline: 'Perawatan Gigi Modern dengan Pendekatan Ramah dan Transparan',
-    taglineEn: 'Modern Dental Care with a Gentle and Transparent Approach',
+    tagline: 'Perawatan Gigi Spesialis yang Nyaman, Lembut, dan Transparan',
+    taglineEn: 'Comfortable, Gentle, and Transparent Specialist Dental Care',
     city: 'Jakarta Selatan',
-    instagramHandle: '@klinikgigi_demo',
-    googleMapsUrl: 'https://maps.google.com/?q=Jakarta',
+    instagramHandle: '@senyumsehat.dental',
+    googleMapsUrl: 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan',
     openHours: {
       openHoursDesc: 'Senin – Sabtu: 09:00 – 20:00 WIB (Istirahat 12:00 – 13:00)',
       openHoursDescEn: 'Monday – Saturday: 09:00 – 20:00 WIB (Break 12:00 – 13:00)',
@@ -381,15 +403,14 @@ async function main() {
         weekdays: 'Senin – Sabtu',
         weekdaysTime: '09:00 – 20:00 WIB',
         sunday: 'Minggu',
-        sundayTime: 'Tutup',
+        sundayTime: 'Tutup (Darurat via WhatsApp)',
         breakTime: 'Istirahat: 12:00 – 13:00 WIB',
       },
     },
     stats: [
-      { label: 'Pasien Puas', labelEn: 'Satisfied Patients', value: '[JUMLAH]+', unit: 'orang' },
-      { label: 'Tahun Pengalaman', labelEn: 'Years Experience', value: '[TAHUN]', unit: 'tahun' },
-      { label: 'Rating Rata-rata', labelEn: 'Average Rating', value: '4.9', unit: '/ 5.0' },
-      { label: 'Dokter Spesialis', labelEn: 'Specialist Doctors', value: '3', unit: 'drg. Sp.' },
+      { label: 'Rating Google Maps (380+ Ulasan)', labelEn: 'Google Maps Rating (380+ Reviews)', value: '4.9 / 5.0', unit: 'bintang' },
+      { label: 'Dokter Gigi Spesialis (SIP)', labelEn: 'Licensed Specialist Dentists (SIP)', value: '3 drg. Sp.', unit: 'spesialis' },
+      { label: 'Pengalaman Klinis Tim', labelEn: 'Clinical Team Experience', value: '12+ Thn', unit: 'tahun' },
     ],
   };
 
@@ -450,10 +471,50 @@ async function main() {
 
   await prisma.galleryItem.deleteMany({});
   const gallerySeeds = [
-    { slug: 'bleaching', type: 'before_after' as const, beforeLabel: 'Kuning Noda Kopi (Shade A3.5)', afterLabel: 'Hasil 1 Sesi (Shade B1)', caption: 'Pencerahan noda intrinsik akibat konsumsi teh dan kopi pekat.', captionEn: 'Enamel brightening on stubborn coffee staining in a single visit.', treatmentDuration: '60 Menit' },
-    { slug: 'veneer', type: 'before_after' as const, beforeLabel: 'Gigi Sompel & Diastema', afterLabel: 'Smile Makeover e.max', caption: 'Penutupan celah gigi depan (diastema) dengan laminasi porselen tahan noda.', captionEn: 'Anterior midline diastema closure with stain-resistant ceramic veneers.', treatmentDuration: '2 Kunjungan' },
-    { slug: 'behel', type: 'before_after' as const, beforeLabel: 'Crowding Rahang Atas', afterLabel: 'Lengkung Rapi Teratur', caption: 'Perataan gigi berjejal tanpa pencabutan gigi premolar.', captionEn: 'Non-extraction orthodontic expansion resolving severe crowding.', treatmentDuration: '18 Bulan' },
-    { slug: 'tambal', type: 'before_after' as const, beforeLabel: 'Karies Dalam Gigi 46', afterLabel: 'Anatomi Oklusal Alami', caption: 'Restorasi resin komposit nano-hibrid dengan pewarnaan fisur alami.', captionEn: 'Layered nano-hybrid composite sculpting with natural fissure tinting.', treatmentDuration: '45 Menit' },
+    {
+      slug: 'bleaching',
+      type: 'before_after' as const,
+      beforeUrl: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80',
+      afterUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
+      beforeLabel: 'Kuning Noda Kopi (Shade A3.5)',
+      afterLabel: 'Hasil 1 Sesi (Shade B1)',
+      caption: 'Pencerahan noda intrinsik akibat konsumsi teh dan kopi pekat.',
+      captionEn: 'Enamel brightening on stubborn coffee staining in a single visit.',
+      treatmentDuration: '60 Menit',
+    },
+    {
+      slug: 'veneer',
+      type: 'before_after' as const,
+      beforeUrl: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80',
+      afterUrl: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=800&q=80',
+      beforeLabel: 'Gigi Sompel & Diastema',
+      afterLabel: 'Smile Makeover e.max',
+      caption: 'Penutupan celah gigi depan (diastema) dengan laminasi porselen tahan noda.',
+      captionEn: 'Anterior midline diastema closure with stain-resistant ceramic veneers.',
+      treatmentDuration: '2 Kunjungan',
+    },
+    {
+      slug: 'behel',
+      type: 'before_after' as const,
+      beforeUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80',
+      afterUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80',
+      beforeLabel: 'Crowding Rahang Atas',
+      afterLabel: 'Lengkung Rapi Teratur',
+      caption: 'Perataan gigi berjejal tanpa pencabutan gigi premolar.',
+      captionEn: 'Non-extraction orthodontic expansion resolving severe crowding.',
+      treatmentDuration: '18 Bulan',
+    },
+    {
+      slug: 'tambal',
+      type: 'before_after' as const,
+      beforeUrl: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=800&q=80',
+      afterUrl: 'https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&fit=crop&w=800&q=80',
+      beforeLabel: 'Karies Dalam Gigi 46',
+      afterLabel: 'Anatomi Oklusal Alami',
+      caption: 'Restorasi resin komposit nano-hibrid dengan pewarnaan fisur alami.',
+      captionEn: 'Layered nano-hybrid composite sculpting with natural fissure tinting.',
+      treatmentDuration: '45 Menit',
+    },
   ];
   for (const [index, item] of gallerySeeds.entries()) {
     const service = serviceBySlug.get(item.slug);
@@ -461,8 +522,8 @@ async function main() {
     await prisma.galleryItem.create({
       data: {
         type: item.type,
-        beforeUrl: `https://placehold.co/800x600?text=Before+${index + 1}`,
-        afterUrl: `https://placehold.co/800x600?text=After+${index + 1}`,
+        beforeUrl: item.beforeUrl,
+        afterUrl: item.afterUrl,
         beforeLabel: item.beforeLabel,
         afterLabel: item.afterLabel,
         caption: item.caption,

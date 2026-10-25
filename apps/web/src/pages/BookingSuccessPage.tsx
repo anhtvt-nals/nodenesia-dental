@@ -73,7 +73,7 @@ export const BookingSuccessPage: React.FC = () => {
   const timePart = booking.startsAt.split('T')[1]?.slice(0, 5) + ' WIB';
 
   // WhatsApp prefilled message
-  const waConfirmMessage = `Halo [NAMA KLINIK], saya telah membuat reservasi online:\n- Kode Booking: ${booking.code}\n- Nama: ${booking.patient.name}\n- Layanan: ${serviceName}\n- Jadwal: ${datePart} pukul ${timePart}\nMohon konfirmasinya. Terima kasih!`;
+  const waConfirmMessage = `Halo ${settings.name || 'Klinik Gigi Senyum Sehat'}, saya telah membuat reservasi online:\n- Kode Booking: ${booking.code}\n- Nama: ${booking.patient.name}\n- Layanan: ${serviceName}\n- Jadwal: ${datePart} pukul ${timePart}\nMohon konfirmasinya. Terima kasih!`;
 
   const waLink = buildWhatsAppLink(settings.whatsappNumber, waConfirmMessage);
 
@@ -85,7 +85,7 @@ export const BookingSuccessPage: React.FC = () => {
         path={`/booking/sukses/${booking.code}`}
       />
 
-      <div className="py-12 md:py-20 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-12 md:py-20 bg-bg">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-10">
@@ -104,7 +104,7 @@ export const BookingSuccessPage: React.FC = () => {
           </div>
 
           {/* Booking Code Callout */}
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-primary to-bg-dark text-white text-center mb-8 shadow-lg">
+          <div className="p-8 rounded-[10px] bg-primary text-bg text-center mb-8">
             <span className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-2">
               {t.bookingSuccess.codeLabel}
             </span>

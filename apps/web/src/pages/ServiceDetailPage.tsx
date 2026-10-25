@@ -82,7 +82,7 @@ export const ServiceDetailPage: React.FC = () => {
         path={`/layanan/${service.slug}`}
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <div className="mb-6">

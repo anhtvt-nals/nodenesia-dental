@@ -14,7 +14,7 @@ export const NotFoundPage: React.FC = () => {
         path="/404"
       />
 
-      <div className="py-20 md:py-32 text-center bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-20 md:py-32 text-center bg-bg">
         <div className="max-w-md mx-auto px-4">
           <div className="trust-card p-8 sm:p-10 bg-bg-card">
             <span className="stat-number text-6xl md:text-7xl block mb-3">

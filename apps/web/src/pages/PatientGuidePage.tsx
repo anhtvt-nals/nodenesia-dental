@@ -25,7 +25,7 @@ export const PatientGuidePage: React.FC = () => {
         path="/pasien"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 max-w-3xl">
             <span className="badge badge-primary mb-3">

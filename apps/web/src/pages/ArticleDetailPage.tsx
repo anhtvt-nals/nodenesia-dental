@@ -70,7 +70,7 @@ export const ArticleDetailPage: React.FC = () => {
         path={`/artikel/${article.slug}`}
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link

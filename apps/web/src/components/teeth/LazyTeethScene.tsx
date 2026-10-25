@@ -76,7 +76,7 @@ export const LazyTeethScene: React.FC<LazyTeethSceneProps> = (props) => {
       className={`w-full ${props.fill ? 'h-full min-h-[280px] sm:min-h-[340px]' : 'h-[280px] sm:h-[340px] md:h-[460px]'} rounded-2xl border border-border bg-bg-alt flex flex-col items-center justify-center p-6 text-center cursor-pointer`}
     >
       <span className="badge badge-primary mb-2 text-xs">
-        [3D MODEL PREVIEW]
+        Model 3D Interaktif
       </span>
       <span className="font-heading font-bold text-base text-text mb-1">
         Anatomi Gigi & Lengkung Rahang Interaktif

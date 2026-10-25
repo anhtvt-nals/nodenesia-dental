@@ -6,113 +6,85 @@
 
 ---
 
-**Project:** Klinik Gigi
-**Generated:** 2026-10-19
+**Project:** Klinik Gigi (Senyum Sehat Dental Care)
+**Updated:** 2026-10-25
 **Category:** Healthcare / Dental Clinic Web Application (Indonesia)
-**Precedence:** Demo Theme (`https://uupm.cc/demo/medical-clinic`) wins for color, typography, and component look. `ui-ux-pro-max` skill rules, anti-patterns, and pre-delivery checklist apply on top.
+**Stack Detected:** React 18 + Vite 5 + React Router 6 + Tailwind CSS v4 (`@import "tailwindcss";` + `@theme` in `apps/web/src/index.css`)
+**Precedence:** Step 2–4 Explicit Non-Negotiable Overrides > `ui-ux-pro-max` UX/Accessibility Guidelines.
 
 ---
 
-## Conflict Resolution & Precedence Decisions
+## 1. Conflict Resolution (`ui-ux-pro-max` Output vs. Explicit Overrides)
 
-1. **Color Palette (`Demo Theme` vs `ui-ux-pro-max` Neumorphism Generator)**:
-   - *Skill Generator Output:* Cyan/Green Neumorphism (`#0891B2` primary, `#22D3EE` secondary, `#059669` accent, `#ECFEFF` tinted cyan background).
-   - *Demo Theme Extracted:* Clinical Trust Blue & Medical Teal (`#0066CC` primary, `#00A67E` secondary, `#10B981` success, `#F59E0B` warning/accent, `#EF4444` emergency/error, `#FAFBFC` background, `#F0F4F8` surface/alt background, `#FFFFFF` card, `#1E3A5F` dark footer, `#1A202C` text, `#4A5568` muted text, `#E2E8F0` border).
-   - *Decision:* **Demo theme tokens win** for all colors. However, where `#718096` (`--color-text-subtle`) is used for normal-sized text on `#FAFBFC` or `#F0F4F8` (contrast ~3.8:1), we enforce the **skill's >= 4.5:1 contrast rule** by using `#4A5568` (`--color-text-muted`, contrast 7.5:1 on `#FAFBFC` and 6.8:1 on `#F0F4F8`) for all readable text, reserving `#64748B` (contrast 4.6:1 on `#FFFFFF`) or `#4A5568` for helper labels.
-
-2. **Typography (`Demo Theme` vs `ui-ux-pro-max` Generator & Domain Search)**:
-   - *Skill Generator Output:* `Atkinson Hyperlegible` (generator) / `Figtree + Noto Sans` (`--domain typography`).
-   - *Demo Theme Extracted:* `Plus Jakarta Sans` (500, 600, 700) for headings (`--font-heading`) and `Inter` (400, 500, 600, 700) for body (`--font-body`), plus `JetBrains Mono` / system monospace for booking codes.
-   - *Decision:* **Demo theme fonts win** (`Plus Jakarta Sans` + `Inter`). Both have excellent Indonesian/English character support and legibility.
-
-3. **Card & Surface Style (`Demo Theme` vs `ui-ux-pro-max` Neumorphism)**:
-   - *Skill Generator Output:* Neumorphism with dual embossed/debossed shadows on `#ECFEFF`.
-   - *Demo Theme Extracted:* Clean bordered cards (`background: #FFFFFF`, `border: 1px solid #E2E8F0`, `border-radius: 16px`, `padding: 24px`/`28px`) with subtle hover lift (`translateY(-2px)` on interactive cards, `box-shadow: 0 8px 24px rgba(0, 102, 204, 0.10)`).
-   - *Decision:* **Demo theme card & surface styles win**, combined with the skill's `prefers-reduced-motion: reduce` rule to disable hover transforms/transitions when requested.
-
-4. **Section Order & Content Rules (`Demo Theme` vs Repo & Indonesian Context)**:
-   - *Skill Generator Output:* `Hero > Problem statement > Solution overview > Testimonials carousel > CTA`.
-   - *Project Rule:* Keep existing `HomePage` section order intact. Add the demo's hero accreditation badge, 3-stat row (with `[JUMLAH]` placeholders — never invent stats), and hero image card with 2 floating trust badges. Replace US-specific elements (JCAHO, HIPAA, ADA, Medicare/Aetna, US phone `(555)`, Patient Portal sign-in) with Indonesian equivalents (`[AKREDITASI KLINIK]`, `Terdaftar Resmi Kemenkes RI`, `Standar Sterilisasi Medis`, `Ramah Anak & Lansia`, WhatsApp contact, `Kelola Booking` -> `/booking/kelola`, and Indonesian payment/insurance placeholders).
+| Dimension | `ui-ux-pro-max` Search Output | Final Decision (Overrides Win) |
+|-----------|-------------------------------|--------------------------------|
+| **Color Palette** | Sky blue `#0EA5E9`, ice `#F0F9FF` | **Enamel & Pine Editorial Palette**: `enamel #F6F7F4` (bg), `mint #DDEAE3` (alt sections), `pine #12392F` (primary), `pine-2 #1E5245` (hover), `gum #E59A93` (WhatsApp button & focus ring only), `ink #1B2623` (foreground), `ink-2 #51605B` (muted), `line #CBD6D0` (hairlines). **No blue primary, no gradients, no gradient text, no purple/pink washes.** |
+| **Typography** | Generator: `Poppins / Open Sans`; Domain: `Baloo 2 / Varela Round / Plus Jakarta Sans` | **Bricolage Grotesque** (headings `500`, `700`) + **Figtree** (body `400`, `500`, `600`). Replaces Plus Jakarta Sans, Inter, and Manrope. Sentence case headings with `text-wrap: balance`. |
+| **Anti-AI-Slop Rules** | Soft UI cards, badges, icons | **Strict Removal of AI Tells**: Remove numbered section labels (`01 / Layanan`) and eyebrow labels above headings; remove tracked all-caps labels; remove trailing `→` on links/buttons; remove repeated trust badges (keep ONE trust line in the footer only: `Kemenkes RI, STR & SIP, Autoclave Kelas B`); remove icon-in-tinted-square on every card; remove identical rounded cards with soft shadows, hover-lift (`translateY`), and fade-slide-up entrances. |
+| **Border Radius by Role** | Uniform rounded cards | **Distinct Radius per Role**: Buttons = `10px`; Photos = asymmetric (`rounded-[24px_8px_24px_8px]` or `rounded-[28px_0_0_28px]` for edge-bleed); Table/list rows = `0px` (sharp hairlines). |
+| **Section Layouts** | Hero + Card grids | **Every Section Has a Distinct Structure**: Hero (`7fr/5fr` asymmetric with right-bleeding doctor photo, max 2 CTAs, 2 facts only); Services (1 hairline table list, no icons/cards); Doctors (full-width alternating left/right editorial blocks); Reviews (1 large pull quote + 2–3 plain list quotes, no 5-star icon rows); Schedule (plain weekly table, no pill tabs); Articles (plain list rows, no cards); Location (map + plain text address/parking/transit, no boxed sub-cards). |
 
 ---
 
-## Global Rules & Tokens
+## 2. Semantic Design Tokens (`apps/web/src/index.css`)
 
-### Color Palette
+### Color Tokens
 
-| Role | Hex | CSS Variable | Tailwind Token | Contrast Notes |
-|------|-----|--------------|----------------|----------------|
-| Primary | `#0066CC` | `--color-primary` | `bg-primary` / `text-primary` | 5.56:1 on `#FFFFFF` (AA Pass) |
-| Primary Hover | `#0052A3` | `--color-primary-hover` | `hover:bg-primary-hover` | 7.95:1 on `#FFFFFF` (AAA Pass) |
-| Secondary (Teal) | `#00A67E` | `--color-secondary` | `bg-secondary` / `text-secondary` | Used for accents, gradients, icon badges |
-| Accent / Warning | `#F59E0B` | `--color-warning` | `bg-warning` / `text-warning` | Used for stars, highlights, caution badges |
-| Info | `#3B82F6` | `--color-info` | `bg-info` / `text-info` | Informational badges |
-| Success | `#10B981` | `--color-success` | `bg-success` / `text-success` | Accredited/Open badges (text uses `#047857` for >=4.5:1 contrast on light pills) |
-| Error / Emergency | `#EF4444` | `--color-error` | `bg-error` / `text-error` | Emergency CTA (`#DC2626` for accessible button fill / text contrast) |
-| Background | `#FAFBFC` | `--color-bg` | `bg-bg` | Main page background |
-| Background Alt / Surface | `#F0F4F8` | `--color-bg-alt` | `bg-bg-alt` / `bg-surface` | Alternating section & chip background |
-| Card Surface | `#FFFFFF` | `--color-bg-card` | `bg-card` | Elevated card & input background |
-| Dark Surface (Footer) | `#1E3A5F` | `--color-bg-dark` | `bg-bg-dark` | 4-column footer & dark callouts (11.5:1 with `#FFFFFF`) |
-| Primary Text | `#1A202C` | `--color-text` | `text-text` | 15.8:1 on `#FAFBFC` |
-| Muted Text | `#4A5568` | `--color-text-muted` | `text-text-muted` | 7.5:1 on `#FAFBFC`, 6.8:1 on `#F0F4F8` |
-| Subtle Text | `#64748B` | `--color-text-subtle` | `text-text-subtle` | 4.75:1 on `#FFFFFF` (upgraded from `#718096` to pass AA 4.5:1) |
-| Border | `#E2E8F0` | `--color-border` | `border-border` | Card, input, and section dividers |
+| Token / Variable | Hex | Role & Contrast |
+|------------------|-----|-----------------|
+| `--color-bg` / `--color-background` | `#F6F7F4` | **Enamel** — Primary background |
+| `--color-bg-alt` / `--color-surface` | `#DDEAE3` | **Mint** — Alternating section background |
+| `--color-bg-card` | `#F6F7F4` | Surface fill (matches enamel; no drop-shadow white card boxes on landing) |
+| `--color-primary` / `--color-bg-dark` | `#12392F` | **Pine** — Primary actions, footer background (`12.1:1` vs `#F6F7F4`) |
+| `--color-primary-hover` | `#1E5245` | **Pine-2** — Primary hover state (`8.6:1` vs `#FFFFFF`) |
+| `--color-accent` / `--color-ring` | `#E59A93` | **Gum** — Single accent: WhatsApp button fill (`#1B2623` ink text on `#E59A93` = `6.4:1` AA pass) & `:focus-visible` ring only |
+| `--color-text` / `--color-foreground` | `#1B2623` | **Ink** — Primary text (`14.3:1` on `#F6F7F4`, `11.8:1` on `#DDEAE3`) |
+| `--color-text-muted` / `--color-text-subtle` | `#51605B` | **Ink-2** — Secondary text (`5.8:1` on `#F6F7F4`, `4.8:1` on `#DDEAE3` — passes WCAG AA `>= 4.5:1`) |
+| `--color-border` | `#CBD6D0` | **Line** — Hairline dividers and table borders |
 
-### Typography
+### Typography Tokens
 
-- **Heading Font (`--font-heading`):** `"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` (weights: 500, 600, 700; line-height: 1.25–1.3)
-- **Body Font (`--font-body`):** `"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` (weights: 400, 500, 600, 700; line-height: 1.6)
-- **Monospace Font (`--font-mono`):** `"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace` (for booking codes, timestamps, prices)
+- **Heading (`--font-heading`):** `"Bricolage Grotesque", system-ui, -apple-system, sans-serif` (weights `500`, `700`; sentence case; `text-wrap: balance`; bounded `max-inline-size`)
+- **Body (`--font-body`, `--font-sans`):** `"Figtree", system-ui, -apple-system, sans-serif` (weights `400`, `500`, `600`; line-height `1.6`)
+- **Google Fonts URL:**
+  `https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap`
 
-**Google Fonts Import:**
-```html
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-```
+### Shape & Radius Rules
 
-### Radius, Shadows & Spacing Rhythm
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--radius-sm` | `8px` (`0.5rem`) | Language pills, small tags, inner controls |
-| `--radius-md` | `12px` (`0.75rem`) | Buttons (`.btn-primary`, `.btn-secondary`, `.btn-emergency`), inputs (`.form-input`), icon boxes |
-| `--radius-lg` | `16px` (`1rem`) | `.trust-card`, `.service-card`, `.doctor-card`, standard cards |
-| `--radius-xl` | `20px` (`1.25rem`) | `.portal-preview`, 3D explorer container, featured hero frame |
-| `--radius-full` | `9999px` (`50px`) | `.badge`, `.badge-primary`, `.badge-success` |
-| `--shadow-card` | `0 8px 24px rgba(0, 102, 204, 0.10)` | Card hover state |
-| `--shadow-doctor` | `0 12px 32px rgba(0, 102, 204, 0.12)` | Doctor card hover state |
-| `--shadow-portal` | `0 20px 60px rgba(0, 102, 204, 0.10)` | Dashboard mock / 3D stage elevation |
-| `--space-xs` .. `--space-3xl` | `4px`, `8px`, `16px`, `24px`, `32px`, `48px`, `64px` | 4/8px spacing rhythm (`py-16 sm:py-24` sections, `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`) |
+- **Buttons (`.btn-primary`, `.btn-secondary`, `.btn-whatsapp`):** `border-radius: 10px` (`--radius-btn: 10px`). No hover lift.
+- **Photos (`.photo-asymmetric`, `.photo-bleed-right`):** Asymmetric corners (`border-radius: 24px 8px 24px 8px` for editorial portraits; `border-radius: 28px 0 0 28px` for right-bleeding hero photo).
+- **Table & List Rows:** `border-radius: 0px`, separated by `1px solid #CBD6D0` (`--color-border`).
 
 ---
 
-## Component Specifications (Demo Theme + A11y Rules)
+## 3. Section-by-Section Structural Contract (Landing Page)
 
-- **Navbar (`.navbar-medical`):** Fixed/sticky top bar, `background: rgba(255, 255, 255, 0.98)`, `backdrop-filter: blur(10px)`, `border-bottom: 1px solid var(--color-border)`. Includes brand mark (rounded-xl primary icon + title + subtitle), navigation links, WhatsApp/Darurat button (`.btn-emergency`), and primary Booking CTA (`.btn-primary`).
-- **Buttons:**
-  - `.btn-primary`: `bg-[#0066CC] hover:bg-[#0052A3] text-white font-semibold rounded-[12px] min-h-[48px] px-6 py-3 transition-all duration-200 cursor-pointer`
-  - `.btn-secondary`: `bg-white text-[#0066CC] border-2 border-[#0066CC] hover:bg-[#0066CC] hover:text-white font-semibold rounded-[12px] min-h-[48px] px-6 py-3 transition-all duration-200 cursor-pointer`
-  - `.btn-emergency`: `bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold rounded-[12px] min-h-[48px] px-5 py-3 transition-all duration-200 cursor-pointer`
-- **Badges:**
-  - `.badge`: `inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold`
-  - `.badge-primary`: `bg-[#0066CC]/10 text-[#0052A3]` (ensures >4.5:1 contrast)
-  - `.badge-success`: `bg-[#10B981]/15 text-[#047857]` (ensures >4.5:1 contrast)
-- **Cards:**
-  - `.trust-card`: `bg-white border border-[#E2E8F0] rounded-[16px] p-6 transition-all duration-200 hover:border-[#0066CC] hover:shadow-[0_8px_24px_rgba(0,102,204,0.1)]`
-  - `.service-card`: `bg-white border border-[#E2E8F0] rounded-[16px] p-7 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#0066CC] hover:shadow-[0_8px_24px_rgba(0,102,204,0.1)] cursor-pointer`
-  - `.doctor-card`: `bg-white border border-[#E2E8F0] rounded-[16px] overflow-hidden transition-all duration-200 hover:shadow-[0_12px_32px_rgba(0,102,204,0.12)]`
-- **Forms:**
-  - `.form-label`: `block text-[0.9375rem] font-semibold text-[#1A202C] mb-2`
-  - `.form-input`: `w-full bg-white border-2 border-[#E2E8F0] rounded-[12px] min-h-[48px] px-[18px] py-3 text-base text-[#1A202C] transition-all duration-200 focus:border-[#0066CC] focus:outline-none focus:ring-4 focus:ring-[#0066CC]/15`
+1. **Hero (`enamel #F6F7F4`):**
+   - Asymmetric `7fr / 5fr` layout on desktop (`lg:grid-cols-12`).
+   - Left (`7fr`): Concrete sentence-case headline (`"Gigi sehat, tanpa buru-buru."`), specific body copy (45-minute appointments, same specialist from checkup to completion, cost confirmed before procedure), max **2 CTAs** (`Buat janji temu` in Pine `#12392F`, `Tanya via WhatsApp` in Gum `#E59A93` with Ink `#1B2623` text), and **2 facts only** (`4,9 dari 380+ ulasan Google`, `3 dokter gigi spesialis`).
+   - Right (`5fr`): Real doctor portrait bleeding to the right viewport edge, with subtle cross-fade switcher (`drg. Ayu`, `drg. Bima`, `drg. Citra`). No 3D jaw model, no floating trust badges on the photo, no extra stat boxes.
 
----
+2. **Services (`mint #DDEAE3`):**
+   - **ONE table-style list** replacing both the 6 service cards and the duplicate fee table.
+   - Each row (`border-b border-border rounded-none py-5`): `Service Name` | `One-line concrete description + duration` | `Mulai dari Rp ...` | `Lihat detail` text link. No icons, no card borders, hairlines only.
 
-## Anti-Patterns & Pre-Delivery Checklist
+3. **Doctors (`enamel #F6F7F4`):**
+   - **Full-width editorial block per doctor**, with asymmetric photo alternating **left / right** on desktop, replacing the 3-card grid. Shows name, specialist degree (`Sp.KG`, `Sp.Ort`, `Sp.BM`), SIP license, concrete clinical focus, education, and a plain text link to book or view profile.
 
-- [x] **No emojis as icons** — Use Lucide / clean SVG icons with `aria-hidden="true"` when decorative.
-- [x] **No US-specific medical copy** — No HIPAA, JCAHO, ADA, Medicare, Aetna, US `(555)` numbers, or patient portal login. Use Indonesian equivalents (`Kelola Booking` -> `/booking/kelola`, WhatsApp, Kemenkes/Sterilisasi badges, QRIS/Debit/Transfer placeholders).
-- [x] **No invented statistics or hotlinked Unsplash photos** — Keep `[JUMLAH]` and `[FOTO ...]` placeholders intact.
-- [x] **Contrast >= 4.5:1** — All body, badge, and muted text passes WCAG AA.
-- [x] **Visible `:focus-visible`** — 2px/4px `#0066CC` focus ring with offset on all interactive elements.
-- [x] **`cursor-pointer`** — Present on all buttons, cards, tabs, accordions, and interactive controls.
-- [x] **`prefers-reduced-motion: reduce`** — Disables smooth scroll, hover transforms, and transitions.
-- [x] **Responsive across 375px, 768px, 1024px, 1440px** — No horizontal overflow or clipped chips.
+4. **Reviews (`mint #DDEAE3`):**
+   - **One large pull quote** (`Bricolage Grotesque` 500, large editorial type) + **2–3 smaller quotes as a plain vertical/horizontal hairline list**. No repeated 5-star SVG rows, no boxed review cards.
+
+5. **Schedule (`enamel #F6F7F4`):**
+   - **Plain weekly HTML table** (`Senin` through `Sabtu` columns or doctor rows × weekday columns) showing exact hours for all 3 specialists at a glance. No interactive pill tabs.
+
+6. **Articles (`mint #DDEAE3`):**
+   - **Plain hairline list rows** (`Title` | `Author & Read time` | `Excerpt` | `Baca artikel`), no cards.
+
+7. **Location & Access (`enamel #F6F7F4`):**
+   - **Map embed + plain text columns** for address, parking capacity (6 cars, 15 motorcycles at lobby), and transit (5 mins from MRT Blok M/Senayan & TransJakarta), plus payment/insurance note. No boxed sub-cards.
+
+8. **Footer (`pine #12392F`):**
+   - Deep pine background with enamel text. Contains the **single trust line** (`Terdaftar Kemenkes RI · Dokter Berizin STR & SIP · Sterilisasi Autoclave Kelas B`).
+
+9. **Floating WhatsApp & Sticky Mobile Bar (`<800px`):**
+   - Floating WhatsApp button using Gum `#E59A93` (with `#1B2623` ink icon/text for contrast) and `max-[799px]:flex` sticky bottom CTA bar on mobile (`<800px`).

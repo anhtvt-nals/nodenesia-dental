@@ -28,7 +28,7 @@ export const SchedulePage: React.FC = () => {
         path="/jadwal"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-3xl">
             <div className="flex flex-wrap items-center gap-3 mb-3">

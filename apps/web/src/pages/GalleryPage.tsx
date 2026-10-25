@@ -28,7 +28,7 @@ export const GalleryPage: React.FC = () => {
         path="/hasil-kami"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-3xl">
             <span className="badge badge-primary mb-3">
@@ -66,23 +66,45 @@ export const GalleryPage: React.FC = () => {
                       {/* Before / After Dual Frame */}
                       <div className="grid grid-cols-2 gap-3.5 mb-5">
                         <div>
-                          <PhotoPlaceholder
-                            label="[FOTO SEBELUM]"
-                            sublabel={item.beforeLabel}
-                            aspect="4:3"
-                          />
+                          {item.beforeUrl ? (
+                            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-border bg-bg-alt relative">
+                              <img
+                                src={item.beforeUrl}
+                                alt={item.beforeLabel}
+                                loading="lazy"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <PhotoPlaceholder
+                              label="Kondisi Awal"
+                              sublabel={item.beforeLabel}
+                              aspect="4:3"
+                            />
+                          )}
                           <span className="block text-xs font-medium text-text-muted mt-2 text-center">
-                            Sebelum Perawatan
+                            Sebelum: {item.beforeLabel}
                           </span>
                         </div>
                         <div>
-                          <PhotoPlaceholder
-                            label="[FOTO SESUDAH]"
-                            sublabel={item.afterLabel}
-                            aspect="4:3"
-                          />
+                          {item.afterUrl ? (
+                            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-border bg-bg-alt relative">
+                              <img
+                                src={item.afterUrl}
+                                alt={item.afterLabel}
+                                loading="lazy"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <PhotoPlaceholder
+                              label="Hasil Akhir"
+                              sublabel={item.afterLabel}
+                              aspect="4:3"
+                            />
+                          )}
                           <span className="block text-xs font-bold text-secondary mt-2 text-center">
-                            Hasil Sesudah
+                            Sesudah: {item.afterLabel}
                           </span>
                         </div>
                       </div>

@@ -18,7 +18,7 @@ export const LegalPage: React.FC = () => {
         path={isPrivacy ? '/privacy' : '/terms'}
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="trust-card p-6 sm:p-10 bg-bg-card">
             <div className="mb-8 pb-6 border-b border-border">

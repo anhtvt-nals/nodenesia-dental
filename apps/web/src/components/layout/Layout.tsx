@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { MobileBar } from './MobileBar';
+import { FloatingWhatsApp } from '../common/FloatingWhatsApp';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,11 +18,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <Navbar />
 
-      <main id="main-content" className="flex-1 focus:outline-none pb-24 lg:pb-0">
+      <main id="main-content" className="flex-1 focus:outline-none pb-20 min-[800px]:pb-0">
         {children}
       </main>
 
       <Footer />
+      <FloatingWhatsApp />
       <MobileBar />
     </div>
   );
