@@ -3,6 +3,7 @@ import { useI18n } from '../i18n';
 import { useClinicSettings } from '../lib/clinic-settings';
 import { OpenNowBadge } from '../components/common/OpenNowBadge';
 import { AppHelmet } from '../components/common/AppHelmet';
+import { StaticMap } from '../components/common/StaticMap';
 import { PhotoPlaceholder } from '../components/common/PhotoPlaceholder';
 import { buildWhatsAppLink } from '../lib/utils';
 
@@ -139,16 +140,14 @@ export const ContactPage: React.FC = () => {
                 </a>
               </div>
 
-              {/* Embedded Map Block */}
-              <div className="trust-card p-0 bg-bg-alt overflow-hidden h-[340px] sm:h-[380px]">
-                <iframe
-                  title="Peta Lokasi Klinik Gigi Senyum Sehat"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=106.7985%2C-6.2440%2C106.8085%2C-6.2375&layer=mapnik&marker=-6.2408%2C106.8032"
-                  className="w-full h-full border-0 block"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              {/* Map: raster tiles (no iframe / key / WebGL) */}
+              <StaticMap
+                lat={-6.2408}
+                lng={106.8032}
+                href={settings.googleMapsUrl || 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan'}
+                label={lang === 'en' ? 'Open clinic location in maps' : 'Buka lokasi klinik di peta'}
+                className="trust-card p-0 h-[340px] sm:h-[380px]"
+              />
             </div>
           </div>
         </div>

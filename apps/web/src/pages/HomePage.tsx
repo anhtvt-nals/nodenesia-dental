@@ -17,6 +17,7 @@ import {
 } from '../types';
 import { ScheduleTabs } from '../components/common/ScheduleTabs';
 import { AppHelmet } from '../components/common/AppHelmet';
+import { StaticMap } from '../components/common/StaticMap';
 import { formatRupiah, buildWhatsAppLink } from '../lib/utils';
 
 // TODO: Replace demo stock portraits with verified in-clinic photography of each specialist
@@ -86,7 +87,6 @@ export const HomePage: React.FC = () => {
   const [brokenPhotos, setBrokenPhotos] = useState<Record<string, boolean>>({});
   const [quickService, setQuickService] = useState('');
   const [quickDoctor, setQuickDoctor] = useState('');
-  const [mapLoaded, setMapLoaded] = useState(false);
 
   const displayDoctors = doctors.length > 0 ? doctors : DEFAULT_HERO_DOCTORS;
 
@@ -688,29 +688,14 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Map Embed (OpenStreetMap — no Google iframe top-left white info box or API key error) */}
-            <div className="lg:col-span-7 relative border border-border overflow-hidden photo-asymmetric bg-bg-alt h-[360px] sm:h-[420px]">
-              {!mapLoaded && (
-                <div
-                  className="absolute inset-0 flex items-center justify-center bg-bg-alt text-base text-text-muted p-6 text-center"
-                  aria-live="polite"
-                >
-                  {lang === 'en'
-                    ? 'Loading map of Jl. Wolter Monginsidi No. 88, Kebayoran Baru…'
-                    : 'Memuat peta Jl. Wolter Monginsidi No. 88, Kebayoran Baru…'}
-                </div>
-              )}
-              <iframe
-                title="Peta Lokasi Klinik Gigi Senyum Sehat"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=106.7985%2C-6.2440%2C106.8085%2C-6.2375&layer=mapnik&marker=-6.2408%2C106.8032"
-                onLoad={() => setMapLoaded(true)}
-                className={`w-full h-full border-0 block transition-opacity duration-300 ${
-                  mapLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+            {/* Map: raster tiles (no iframe / key / WebGL) so no blank box or spinner can appear */}
+            <StaticMap
+              lat={-6.2408}
+              lng={106.8032}
+              href={settings?.googleMapsUrl || 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan'}
+              label={lang === 'en' ? 'Open clinic location in maps' : 'Buka lokasi klinik di peta'}
+              className="lg:col-span-7 border border-border photo-asymmetric h-[360px] sm:h-[420px]"
+            />
           </div>
         </div>
       </section>
