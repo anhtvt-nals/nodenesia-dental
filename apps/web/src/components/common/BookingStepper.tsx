@@ -20,16 +20,25 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({ currentStep, onS
     <nav aria-label="Progress Reservasi" className="w-full mb-8">
       <ol className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {steps.map((step) => {
-          const isCompleted = currentStep > step.num;
-          const isCurrent = currentStep === step.num;
-          const isNavigable = isCompleted && onStepClick;
+          const isCompleted = currentStep > step.num || (currentStep === 4 && step.num <= 3);
+          const isCurrent = currentStep === step.num || ((currentStep === 2 || currentStep === 3) && step.num === 2);
+          const isNavigable = (isCompleted || isCurrent) && onStepClick;
+
+          const handleClick = () => {
+            if (!isNavigable || !onStepClick) return;
+            if (step.num === 3) {
+              onStepClick(2);
+            } else {
+              onStepClick(step.num);
+            }
+          };
 
           return (
             <li key={step.num} className="flex items-center">
               <button
                 type="button"
                 disabled={!isNavigable}
-                onClick={() => isNavigable && onStepClick(step.num)}
+                onClick={handleClick}
                 className={`text-left w-full p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
                   isCurrent
                     ? 'bg-primary text-white border-primary shadow-sm'

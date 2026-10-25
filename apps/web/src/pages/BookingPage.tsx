@@ -13,6 +13,7 @@ import {
   BookingSlot,
 } from '../types';
 import { BookingStepper } from '../components/common/BookingStepper';
+import { WhitebloomBookingModal } from '../components/common/WhitebloomBookingModal';
 import { DateStrip } from '../components/common/DateStrip';
 import { SlotPicker } from '../components/common/SlotPicker';
 import { AppHelmet } from '../components/common/AppHelmet';
@@ -87,6 +88,14 @@ export const BookingPage: React.FC = () => {
         setSelectedServiceId(allServices[0].id);
       }
 
+      // Auto-select doctor if slug or ID in URL
+      if (prefilledDoctorId && prefilledDoctorId !== 'any') {
+        const docFound = allDocs.find((d) => d.slug === prefilledDoctorId || d.id === prefilledDoctorId);
+        if (docFound) {
+          setSelectedDoctorId(docFound.id);
+        }
+      }
+
       // Default date to tomorrow if not set
       if (!selectedDate) {
         const tmrw = new Date();
@@ -98,7 +107,7 @@ export const BookingPage: React.FC = () => {
       setLoadingInitial(false);
     }
     loadInitial();
-  }, [prefilledServiceSlug]);
+  }, [prefilledServiceSlug, prefilledDoctorId]);
 
   // Update query params as state changes
   const updateUrlState = (updates: Record<string, string | null>) => {
@@ -118,18 +127,21 @@ export const BookingPage: React.FC = () => {
     updateUrlState({ step: String(step) });
   };
 
-  // Fetch slots whenever service, doctor, or date changes
+  // Fetch slots whenever service or date changes across all doctors
   useEffect(() => {
     async function fetchAvailability() {
-      if (!selectedServiceId || !selectedDate) return;
+      if (!selectedServiceId || !selectedDate || doctors.length === 0) return;
       setLoadingSlots(true);
       try {
-        const result = await getSlots({
-          serviceId: selectedServiceId,
-          doctorId: selectedDoctorId,
-          date: selectedDate,
-        });
-        setSlots(result);
+        const slotPromises = doctors.map((doc) =>
+          getSlots({
+            serviceId: selectedServiceId,
+            doctorId: doc.id,
+            date: selectedDate,
+          }).catch(() => [])
+        );
+        const results = await Promise.all(slotPromises);
+        setSlots(results.flat());
       } catch (err) {
         console.error('Failed to load slots', err);
       } finally {
@@ -137,7 +149,7 @@ export const BookingPage: React.FC = () => {
       }
     }
     fetchAvailability();
-  }, [selectedServiceId, selectedDoctorId, selectedDate]);
+  }, [selectedServiceId, selectedDate, doctors]);
 
   // Selection handlers
   const handleSelectService = (service: Service) => {
@@ -206,7 +218,7 @@ export const BookingPage: React.FC = () => {
       if (err.status === 409) {
         setErrorMessage(t.booking.conflictError);
         // Step back to slot selection
-        goToStep(3);
+        goToStep(2);
       } else {
         setErrorMessage(err.message || t.booking.generalError);
       }
@@ -285,10 +297,9 @@ export const BookingPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Main Demo Form Card Container */}
-              <div className="trust-card p-5 sm:p-8 bg-bg-card">
-                {/* STEP 1: LAYANAN */}
-                {currentStep === 1 && (
+              {/* STEP 1: LAYANAN */}
+              {currentStep === 1 && (
+                <div className="trust-card p-5 sm:p-8 bg-bg-card">
                   <div>
                     <h2 className="font-heading text-xl sm:text-2xl font-bold text-text mb-1.5">
                       {t.booking.selectServicePrompt}
@@ -378,176 +389,34 @@ export const BookingPage: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* STEP 2: DOKTER & TANGGAL */}
-                {currentStep === 2 && (
-                  <div>
-                    {/* Doctor Selection */}
-                    <div className="mb-8 pb-8 border-b border-border">
-                      <h2 className="font-heading text-xl sm:text-2xl font-bold text-text mb-1.5">
-                        {t.booking.selectDoctorPrompt}
-                      </h2>
-                      <p className="text-sm text-text-muted mb-5">
-                        {lang === 'en'
-                          ? 'Choose a specific specialist or let our clinic assign the earliest available dentist'
-                          : 'Pilih dokter spesialis atau serahkan penentuan dokter kepada pihak klinik'}
-                      </p>
+              {/* STEP 2 & 3: JADWAL & DOKTER (MATCHING booking.png REFERENCE DESIGN) */}
+              {(currentStep === 2 || currentStep === 3) && (
+                <WhitebloomBookingModal
+                  embedded={true}
+                  doctors={doctors}
+                  selectedDate={selectedDate}
+                  onSelectDate={handleSelectDate}
+                  selectedDoctorId={selectedDoctorId}
+                  onSelectDoctor={(docId) => {
+                    setSelectedDoctorId(docId);
+                    updateUrlState({ dokter: docId });
+                  }}
+                  selectedTime={selectedTime}
+                  onSelectTime={handleSelectSlot}
+                  slots={slots}
+                  loadingSlots={loadingSlots}
+                  serviceName={currentService ? (lang === 'en' ? currentService.nameEn : currentService.name) : undefined}
+                  onBack={() => goToStep(1)}
+                  onContinue={() => goToStep(4)}
+                />
+              )}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedDoctorId('any');
-                            updateUrlState({ dokter: 'any' });
-                          }}
-                          className={`p-4 rounded-xl text-left border transition-all cursor-pointer ${
-                            selectedDoctorId === 'any'
-                              ? 'bg-primary text-white border-primary shadow-md'
-                              : 'bg-bg-card text-text border-border hover:border-primary/50 hover:bg-bg-alt'
-                          }`}
-                        >
-                          <span className="font-heading font-bold text-base block mb-1">
-                            {t.booking.anyDoctor}
-                          </span>
-                          <span className={`text-xs block ${selectedDoctorId === 'any' ? 'text-white/85' : 'text-text-muted'}`}>
-                            {lang === 'en' ? 'Most flexible time slots' : 'Slot waktu paling fleksibel'}
-                          </span>
-                        </button>
-
-                        {doctors.map((doc) => (
-                          <button
-                            key={doc.id}
-                            type="button"
-                            onClick={() => {
-                              setSelectedDoctorId(doc.id);
-                              updateUrlState({ dokter: doc.id });
-                            }}
-                            className={`p-4 rounded-xl text-left border transition-all cursor-pointer ${
-                              selectedDoctorId === doc.id
-                                ? 'bg-primary text-white border-primary shadow-md'
-                                : 'bg-bg-card text-text border-border hover:border-primary/50 hover:bg-bg-alt'
-                            }`}
-                          >
-                            <span className="font-heading font-bold text-base block mb-1">
-                              {doc.name}
-                            </span>
-                            <span className={`text-xs block ${selectedDoctorId === doc.id ? 'text-white/85' : 'text-text-muted'}`}>
-                              {lang === 'en' ? doc.specialtyEn : doc.specialty}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Date Selection */}
-                    <div className="mb-8">
-                      <h2 className="font-heading text-xl sm:text-2xl font-bold text-text mb-1.5">
-                        {t.booking.selectDatePrompt}
-                      </h2>
-                      <p className="text-sm text-text-muted mb-4">
-                        {lang === 'en'
-                          ? 'Clinic open Monday to Saturday (Closed on Sundays)'
-                          : 'Klinik buka Senin hingga Sabtu (Minggu tutup)'}
-                      </p>
-                      <DateStrip
-                        selectedDate={selectedDate}
-                        onSelectDate={handleSelectDate}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between pt-6 border-t border-border">
-                      <button
-                        type="button"
-                        onClick={() => goToStep(1)}
-                        className="btn-secondary text-sm py-2.5 px-5 cursor-pointer"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
-                        </svg>
-                        <span>{t.booking.prevStep}</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => goToStep(3)}
-                        className="btn-primary text-sm py-2.5 px-6 cursor-pointer"
-                      >
-                        <span>{t.booking.nextStep}</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 3: JAM PRAKTEK (SLOT PICKER) */}
-                {currentStep === 3 && (
-                  <div>
-                    <div className="flex flex-wrap items-baseline justify-between gap-4 mb-2">
-                      <h2 className="font-heading text-xl sm:text-2xl font-bold text-text">
-                        {t.booking.selectSlotPrompt}
-                      </h2>
-                      <span className="badge badge-primary">
-                        {t.booking.serviceDurationNote} {currentService?.durationMinutes} {t.common.minutes}
-                      </span>
-                    </div>
-                    <p className="text-sm text-text-muted mb-6">
-                      {lang === 'en' ? 'Date:' : 'Tanggal:'} <strong className="text-text">{selectedDate}</strong> · {lang === 'en' ? 'Doctor:' : 'Dokter:'}{' '}
-                      <strong className="text-text">{currentDoctor ? currentDoctor.name : t.booking.anyDoctor}</strong>
-                    </p>
-
-                    <SlotPicker
-                      slots={slots}
-                      selectedSlot={selectedTime}
-                      onSelectSlot={handleSelectSlot}
-                      isLoading={loadingSlots}
-                    />
-
-                    {selectedTime && (
-                      <div className="mt-6 p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm text-primary font-medium flex items-center gap-2.5">
-                        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>
-                          {lang === 'en' ? 'Selected time slot:' : 'Jam yang dipilih:'}{' '}
-                          <strong className="font-bold">{selectedTime} WIB</strong>
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between pt-6 border-t border-border mt-8">
-                      <button
-                        type="button"
-                        onClick={() => goToStep(2)}
-                        className="btn-secondary text-sm py-2.5 px-5 cursor-pointer"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
-                        </svg>
-                        <span>{t.booking.prevStep}</span>
-                      </button>
-                      <button
-                        type="button"
-                        disabled={!selectedTime}
-                        onClick={() => selectedTime && goToStep(4)}
-                        className={`text-sm py-2.5 px-6 rounded-xl font-semibold inline-flex items-center gap-2 transition-all ${
-                          selectedTime
-                            ? 'btn-primary cursor-pointer'
-                            : 'bg-bg-alt text-text-subtle border border-border cursor-not-allowed'
-                        }`}
-                      >
-                        <span>{t.booking.nextStep}</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 4: DATA DIRI & KONFIRMASI */}
-                {currentStep === 4 && (
+              {/* STEP 4: DATA DIRI & KONFIRMASI */}
+              {currentStep === 4 && (
+                <div className="trust-card p-5 sm:p-8 bg-bg-card">
                   <form onSubmit={handleFormSubmit}>
                     <div className="mb-8">
                       <h2 className="font-heading text-xl sm:text-2xl font-bold text-text mb-1.5">
@@ -666,7 +535,7 @@ export const BookingPage: React.FC = () => {
                     <div className="flex items-center justify-between pt-6 border-t border-border">
                       <button
                         type="button"
-                        onClick={() => goToStep(3)}
+                        onClick={() => goToStep(2)}
                         className="btn-secondary text-sm py-2.5 px-5 cursor-pointer"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -686,8 +555,8 @@ export const BookingPage: React.FC = () => {
                       </button>
                     </div>
                   </form>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Demo Contact & Indonesian Trust/Payment Info Sidebar */}
