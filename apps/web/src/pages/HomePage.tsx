@@ -362,9 +362,6 @@ export const HomePage: React.FC = () => {
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
               {t.home.secDoctorTitle}
             </h2>
-            <p className="text-base text-text-muted mt-2 leading-relaxed">
-              {t.home.secDoctorDesc}
-            </p>
           </div>
 
           <div className="divide-y divide-border border-t border-border">
@@ -463,16 +460,10 @@ export const HomePage: React.FC = () => {
       {featuredReview && (
         <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+            <div className="mb-10">
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
                 {lang === 'en' ? 'What patients say after their visit' : 'Cerita pasien seusai kunjungan'}
               </h2>
-              <Link
-                to={localePath('/testimoni')}
-                className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80"
-              >
-                {lang === 'en' ? 'Read all patient reviews' : 'Lihat semua ulasan pasien'}
-              </Link>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 pt-8 border-t border-border items-start">
@@ -510,19 +501,16 @@ export const HomePage: React.FC = () => {
         </section>
       )}
 
-      {/* 5. SCHEDULE (Enamel #F6F7F4): Plain weekly table, no pill tabs */}
-      <section className="py-16 md:py-24 bg-bg border-b border-border">
+      {/* 5. SCHEDULE (Pine #12392F for section rhythm): Plain weekly table, no pill tabs */}
+      <section className="py-16 md:py-24 bg-primary text-bg border-b border-bg/15">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8 max-w-2xl">
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-bg tracking-tight">
               {t.home.secScheduleTitle}
             </h2>
-            <p className="text-base text-text-muted leading-relaxed">
-              {t.home.secScheduleDesc}
-            </p>
           </div>
 
-          <ScheduleTabs doctors={displayDoctors} />
+          <ScheduleTabs doctors={displayDoctors} variant="pine" />
         </div>
       </section>
 
@@ -530,21 +518,10 @@ export const HomePage: React.FC = () => {
       {articles.length > 0 && (
         <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-              <div>
-                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
-                  {t.home.secArticlesTitle}
-                </h2>
-                <p className="text-base text-text-muted max-w-2xl mt-2 leading-relaxed">
-                  {t.home.secArticlesDesc}
-                </p>
-              </div>
-              <Link
-                to={localePath('/artikel')}
-                className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 shrink-0 self-start md:self-auto"
-              >
-                {t.home.viewAllArticles}
-              </Link>
+            <div className="mb-10 max-w-2xl">
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
+                {t.home.secArticlesTitle}
+              </h2>
             </div>
 
             <div className="border-t border-border divide-y divide-border">
@@ -592,14 +569,9 @@ export const HomePage: React.FC = () => {
       <section className="py-16 md:py-24 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 max-w-2xl">
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
               {lang === 'en' ? 'Location, parking, and visit details' : 'Lokasi klinik, parkir, dan pembayaran'}
             </h2>
-            <p className="text-base text-text-muted">
-              {lang === 'en'
-                ? 'Ground-floor clinic access in Kebayoran Baru with private parking directly in front of the lobby.'
-                : 'Akses lantai dasar di Kebayoran Baru dengan area parkir pribadi tepat di depan lobi.'}
-            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">

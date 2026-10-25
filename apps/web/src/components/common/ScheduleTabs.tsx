@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Doctor } from '../../types';
 import { useI18n } from '../../i18n';
@@ -6,147 +6,107 @@ import { useI18n } from '../../i18n';
 interface ScheduleTabsProps {
   doctors: Doctor[];
   initialDay?: number;
+  variant?: 'light' | 'pine';
 }
 
-export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, initialDay }) => {
+/**
+ * Plain weekly schedule table (Monday–Saturday) without interactive pill tabs.
+ */
+export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ doctors, variant = 'light' }) => {
   const { lang, t, localePath } = useI18n();
+  const weekdays = [1, 2, 3, 4, 5, 6];
+  const isPine = variant === 'pine';
 
-  // Current day in Jakarta (1=Mon, ..., 6=Sat, 0=Sun)
-  const currentDayOfWeek = new Date().getDay();
-  const defaultTab =
-    initialDay !== undefined
-      ? initialDay
-      : currentDayOfWeek >= 1 && currentDayOfWeek <= 6
-      ? currentDayOfWeek
-      : 1;
-
-  const [selectedDay, setSelectedDay] = useState<number>(defaultTab);
-
-  // Tabs for Monday (1) to Saturday (6)
-  const daysList = [1, 2, 3, 4, 5, 6];
-
-  // Filter doctors working on selectedDay
-  const rows: { doctor: Doctor; start: string; end: string }[] = [];
-  doctors.forEach((doc) => {
-    const shift = doc.workingHours.find((w) => w.weekday === selectedDay);
-    if (shift) {
-      rows.push({
-        doctor: doc,
-        start: shift.start,
-        end: shift.end,
-      });
-    }
-  });
-
-  rows.sort((a, b) => a.start.localeCompare(b.start));
-
-  const isToday = selectedDay === currentDayOfWeek;
+  if (doctors.length === 0) {
+    return (
+      <div
+        className={`py-8 border-t border-b text-base ${
+          isPine ? 'border-bg/20 text-bg/80' : 'border-border text-text-muted'
+        }`}
+      >
+        {t.common.loading}
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full">
-      {/* Day Tabs */}
-      <div
-        role="tablist"
-        aria-label="Pilih hari praktek dokter"
-        className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-none"
-      >
-        {daysList.map((dayNum) => {
-          const isActive = selectedDay === dayNum;
-          const dayName = t.schedule.days[dayNum as keyof typeof t.schedule.days];
-          const isDayToday = dayNum === currentDayOfWeek;
-
-          return (
-            <button
-              key={dayNum}
-              role="tab"
-              aria-selected={isActive}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => setSelectedDay(dayNum)}
-              className={`px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 flex items-center gap-2 cursor-pointer border ${
-                isActive
-                  ? 'bg-primary text-white border-primary shadow-xs'
-                  : 'bg-bg-card text-text-muted border-border hover:border-primary hover:text-primary'
-              }`}
-            >
-              <span>{dayName}</span>
-              {isDayToday && (
-                <span
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                    isActive ? 'bg-white text-primary-hover' : 'bg-success/15 text-success-dark'
-                  }`}
-                >
-                  {t.common.today}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Schedule Table / List */}
-      {isToday && (
-        <div className="mb-5 badge badge-success text-xs py-2 px-4">
-          <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-          <span>{t.schedule.todaySlotBadge}</span>
-          <span aria-hidden="true">·</span>
-          <span className="font-normal">Reservasi sebelum jam 17:00 untuk tindakan hari ini</span>
-        </div>
-      )}
-
-      {rows.length === 0 ? (
-        <div className="p-8 rounded-2xl border border-border bg-bg-card text-center text-sm text-text-muted">
-          Tidak ada dokter yang berpraktek pada hari ini.
-        </div>
-      ) : (
-        <div className="rounded-2xl border border-border bg-bg-card divide-y divide-border overflow-hidden">
-          {rows.map(({ doctor, start, end }) => {
-            const specialty = lang === 'en' ? doctor.specialtyEn : doctor.specialty;
+    <div className={`w-full overflow-x-auto border-t ${isPine ? 'border-bg/20' : 'border-border'}`}>
+      <table className="w-full text-left border-collapse min-w-[720px]" aria-label={t.schedule.pageTitle}>
+        <thead>
+          <tr
+            className={`border-b text-sm font-semibold ${
+              isPine ? 'border-bg/20 text-bg/80' : 'border-border text-text-muted'
+            }`}
+          >
+            <th scope="col" className="py-3.5 pr-4">{t.schedule.doctorHeader}</th>
+            {weekdays.map((dayNum) => (
+              <th key={dayNum} scope="col" className="py-3.5 px-3">
+                {t.schedule.days[dayNum as keyof typeof t.schedule.days]}
+              </th>
+            ))}
+            <th scope="col" className="py-3.5 pl-4 text-right">{t.schedule.actionHeader}</th>
+          </tr>
+        </thead>
+        <tbody className={`divide-y text-base ${isPine ? 'divide-bg/15' : 'divide-border'}`}>
+          {doctors.map((doc) => {
+            const specialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
 
             return (
-              <div
-                key={doctor.id}
-                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-alt/50 transition-colors"
-              >
-                <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
-                  <div className="inline-flex items-center gap-1.5 font-heading text-xs sm:text-sm font-bold text-primary bg-primary/10 px-3 py-2 rounded-xl whitespace-nowrap shrink-0">
-                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{start} – {end} WIB</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-heading text-base sm:text-lg font-bold text-text truncate">
-                      <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-primary transition-colors">
-                        {doctor.name}
-                      </Link>
-                    </h3>
-                    <p className="text-xs sm:text-sm text-text-muted font-medium truncate">
-                      {specialty}
-                    </p>
-                  </div>
-                </div>
+              <tr key={doc.id} className="align-top">
+                <td className="py-4 pr-4">
+                  <Link
+                    to={localePath(`/dokter/${doc.slug}`)}
+                    className={`font-heading font-bold text-base block ${
+                      isPine ? 'text-bg hover:opacity-85' : 'text-text hover:text-primary'
+                    }`}
+                  >
+                    {doc.name}
+                  </Link>
+                  <span className={`text-sm block mt-0.5 ${isPine ? 'text-bg/75' : 'text-text-muted'}`}>
+                    {specialty}
+                  </span>
+                </td>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end pt-3 sm:pt-0 border-t border-border sm:border-t-0">
+                {weekdays.map((dayNum) => {
+                  const shifts = doc.workingHours.filter((w) => w.weekday === dayNum);
+                  return (
+                    <td
+                      key={dayNum}
+                      className={`py-4 px-3 text-sm sm:text-base tabular-nums ${
+                        isPine ? 'text-bg' : 'text-text'
+                      }`}
+                    >
+                      {shifts.length > 0 ? (
+                        shifts.map((s, i) => (
+                          <div key={i} className="whitespace-nowrap">
+                            {s.start}–{s.end}
+                          </div>
+                        ))
+                      ) : (
+                        <span className={isPine ? 'text-bg/45' : 'text-text-muted'}>—</span>
+                      )}
+                    </td>
+                  );
+                })}
+
+                <td className="py-4 pl-4 text-right whitespace-nowrap">
                   <Link
-                    to={localePath(`/dokter/${doctor.slug}`)}
-                    className="text-sm font-semibold text-primary hover:underline py-1"
+                    to={localePath(`/booking?dokter=${doc.id}`)}
+                    className={`text-sm font-semibold hover:underline underline-offset-4 ${
+                      isPine ? 'text-bg' : 'text-primary'
+                    }`}
                   >
-                    Profil
+                    {t.common.bookNow}
                   </Link>
-                  <Link
-                    to={localePath(`/booking?dokter=${doctor.id}`)}
-                    className="btn-primary text-xs py-2.5 px-4 min-h-[40px] whitespace-nowrap"
-                  >
-                    <span>{t.schedule.bookSlot}</span>
-                  </Link>
-                </div>
-              </div>
+                </td>
+              </tr>
             );
           })}
-        </div>
-      )}
+        </tbody>
+      </table>
+      <p className={`text-sm mt-3 ${isPine ? 'text-bg/75' : 'text-text-muted'}`}>
+        {t.schedule.closedSunday}
+      </p>
     </div>
   );
 };
