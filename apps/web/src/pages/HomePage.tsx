@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import {
   getSettings,
@@ -74,11 +74,9 @@ const DEFAULT_HERO_DOCTORS: Doctor[] = [
   },
 ];
 
-// Reviews stay hidden until real, verified data is wired in (set VITE_SHOW_REVIEWS=true to enable).
-const SHOW_REVIEWS = import.meta.env.VITE_SHOW_REVIEWS === 'true';
-
 export const HomePage: React.FC = () => {
   const { lang, t, localePath } = useI18n();
+  const navigate = useNavigate();
 
   const [settings, setSettings] = useState<ClinicSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
@@ -86,9 +84,22 @@ export const HomePage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [reviews, setReviews] = useState<Testimonial[]>([]);
   const [brokenPhotos, setBrokenPhotos] = useState<Record<string, boolean>>({});
+  const [quickService, setQuickService] = useState('');
+  const [quickDoctor, setQuickDoctor] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const displayDoctors = doctors.length > 0 ? doctors : DEFAULT_HERO_DOCTORS;
+
+  const heroChips = Array.from(new Set(services.map((s) => t.services.categories[s.category]))).slice(0, 4);
+
+  const handleQuickBook = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (quickService) params.set('layanan', quickService);
+    if (quickDoctor) params.set('dokter', quickDoctor);
+    const query = params.toString();
+    navigate(localePath(`/booking${query ? `?${query}` : ''}`));
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -172,59 +183,167 @@ export const HomePage: React.FC = () => {
         jsonLd={jsonLdDentist}
       />
 
-      {/* 1. HERO (Enamel): headline, one paragraph, 2 CTAs, one plain rating line; photo bleeds to the right viewport edge */}
+      {/* 1. HERO: replicates hero.png layout - eyebrow, 2-line headline, pill CTAs with arrow circles, stacked booking fields, large rounded photo with floating stat card and glass chips */}
       <section className="bg-bg border-b border-border overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 items-center">
-            <div className="min-w-0">
-              <h1 className="font-heading text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold text-primary leading-[1.08] tracking-[-0.025em] mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 md:pt-14 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            {/* Left */}
+            <div className="min-w-0 lg:pt-2">
+              <p className="inline-flex items-center gap-2 text-base font-medium text-primary mb-5">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M10 1.5l2.6 5.5 6 .8-4.4 4.2 1.1 6L10 15.1 4.7 18l1.1-6L1.4 7.8l6-.8L10 1.5z" />
+                </svg>
+                {lang === 'en' ? 'Open Monday – Saturday, 09:00 – 20:00' : 'Buka Senin – Sabtu, 09.00 – 20.00 WIB'}
+              </p>
+
+              <h1 className="font-heading text-[2.5rem] sm:text-5xl lg:text-[3.5rem] font-bold text-primary leading-[1.1] tracking-[-0.02em] mb-5 max-w-[14ch] sm:max-w-none">
                 <span className="block">{t.home.heroTitlePart1}</span>
                 <span className="block">
                   {t.home.heroTitleAccent} {t.home.heroTitlePart2}
                 </span>
               </h1>
 
-              <p className="text-lg text-text-muted mb-8 leading-relaxed max-w-[50ch]">
+              <p className="text-base sm:text-[1.0625rem] text-text-muted mb-8 leading-relaxed max-w-[52ch]">
                 {t.home.heroDesc}
               </p>
 
-              <div className="flex flex-wrap items-center gap-3.5 mb-7">
-                <Link to={localePath('/booking')} className="btn-primary text-base px-7 py-3.5">
+              {/* Max 2 CTAs, pill shape with arrow circle */}
+              <div className="flex flex-wrap items-center gap-3 mb-8">
+                <Link
+                  to={localePath('/booking')}
+                  className="group inline-flex items-center gap-3 rounded-full bg-primary text-bg pl-6 pr-2 py-2 text-base font-medium hover:bg-primary-hover transition-colors"
+                >
                   {t.home.heroPrimaryCta}
+                  <span className="w-9 h-9 rounded-full bg-bg text-primary inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </Link>
+
                 <a
                   href={waAskLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-whatsapp text-base px-7 py-3.5"
+                  className="inline-flex items-center gap-3 rounded-full bg-accent text-text border border-text/15 pl-6 pr-2 py-2 text-base font-medium hover:opacity-90 transition-opacity"
                 >
                   {t.home.heroSecondaryCta}
+                  <span className="w-9 h-9 rounded-full bg-text text-bg inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </a>
               </div>
 
-              <p className="text-base text-text-muted">
-                {lang === 'en'
-                  ? 'Rating 4.9 / 5.0 · 380+ Google Maps reviews'
-                  : 'Rating 4,9 / 5,0 · 380+ ulasan Google Maps'}
-              </p>
+              {/* Quick booking: stacked fields -> existing /booking?layanan=&dokter= params */}
+              <form onSubmit={handleQuickBook} className="space-y-3 max-w-[510px]">
+                <div className="relative">
+                  <label className="sr-only" htmlFor="hero-service">
+                    {lang === 'en' ? 'Treatment' : 'Layanan'}
+                  </label>
+                  <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 3h10a2 2 0 012 2v14l-4-2-3 2-3-2-4 2V5a2 2 0 012-2zM9 8h6M9 12h6" />
+                  </svg>
+                  <select
+                    id="hero-service"
+                    value={quickService}
+                    onChange={(e) => setQuickService(e.target.value)}
+                    className="w-full appearance-none rounded-[14px] bg-bg-alt text-primary font-medium text-base pl-12 pr-11 py-3.5 min-h-[56px] cursor-pointer border border-transparent focus:border-primary"
+                  >
+                    <option value="">{lang === 'en' ? 'Treatment' : 'Layanan'}</option>
+                    {services.map((sv) => (
+                      <option key={sv.id} value={sv.slug}>
+                        {lang === 'en' ? sv.nameEn : sv.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
+
+                <div className="relative">
+                  <label className="sr-only" htmlFor="hero-doctor">
+                    {lang === 'en' ? 'Specialist' : 'Dokter spesialis'}
+                  </label>
+                  <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+                  </svg>
+                  <select
+                    id="hero-doctor"
+                    value={quickDoctor}
+                    onChange={(e) => setQuickDoctor(e.target.value)}
+                    className="w-full appearance-none rounded-[14px] bg-bg-alt text-primary font-medium text-base pl-12 pr-11 py-3.5 min-h-[56px] cursor-pointer border border-transparent focus:border-primary"
+                  >
+                    <option value="">{lang === 'en' ? 'Specialist' : 'Dokter spesialis'}</option>
+                    {doctors.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
+
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary text-bg px-6 py-3 text-base font-medium hover:bg-primary-hover transition-colors cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path strokeLinecap="round" d="M20 20l-3.5-3.5" />
+                  </svg>
+                  {lang === 'en' ? 'Check slots' : 'Cek jadwal'}
+                </button>
+              </form>
             </div>
 
-            {/* TODO: Replace stock photo with real in-clinic photography */}
-            <div className="lg:-mr-[max(2rem,calc((100vw-80rem)/2+2rem))]">
-              <div className="aspect-[4/3] lg:aspect-[5/4] w-full overflow-hidden bg-bg-alt photo-bleed-right max-lg:rounded-[28px_6px_28px_6px]">
+            {/* Right: large rounded photo, floating stat card, glass chips */}
+            <div className="relative w-full max-w-[540px] mx-auto lg:mr-0 lg:ml-auto">
+              {/* TODO: Replace stock photo with real in-clinic photography */}
+              <div className="relative aspect-[533/604] w-full overflow-hidden rounded-[36px] bg-bg-alt">
                 <img
-                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1600&q=80"
+                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1200&q=80"
                   alt={lang === 'en' ? 'Patient during a dental checkup' : 'Pasien saat pemeriksaan gigi'}
                   loading="eager"
                   className="w-full h-full object-cover"
                 />
+
+                {heroChips.length > 0 && (
+                  <div className="absolute inset-x-4 bottom-4 flex flex-wrap gap-2">
+                    {heroChips.map((chip) => (
+                      <span
+                        key={chip}
+                        className="rounded-full bg-primary/70 backdrop-blur-md border border-bg/40 text-bg text-sm font-medium px-4 py-2"
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Floating stat card overlapping the photo's left edge */}
+              <div className="absolute -left-4 sm:-left-10 top-[56%] bg-bg rounded-[20px] px-5 py-4 shadow-[0_16px_36px_-16px_rgba(18,57,47,0.4)] max-w-[220px]">
+                <p className="font-heading text-lg font-bold text-text leading-tight">
+                  {lang === 'en' ? '380+ reviews' : '380+ ulasan'}
+                </p>
+                <p className="text-sm text-text-muted leading-snug mt-1">
+                  {lang === 'en'
+                    ? 'Rated 4.9 / 5.0 on Google Maps'
+                    : 'Rating 4,9 / 5,0 di Google Maps'}
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. SERVICES (Mint): one hairline table with a fixed grid shared by every row */}
+      {/* 2. SERVICES (Mint #DDEAE3): ONE hairline table-style list replacing both cards & duplicate fee table */}
       <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
@@ -252,7 +371,7 @@ export const HomePage: React.FC = () => {
               return (
                 <div
                   key={service.id}
-                  className="py-5 rounded-none grid grid-cols-1 md:grid-cols-[1fr_1.6fr_96px_170px_96px] gap-1.5 md:gap-6 md:items-baseline"
+                  className="py-5 rounded-none grid grid-cols-1 md:grid-cols-[1fr_1.6fr_auto] gap-2 md:gap-8 items-baseline"
                 >
                   <div>
                     <Link
@@ -263,23 +382,20 @@ export const HomePage: React.FC = () => {
                     </Link>
                   </div>
 
-                  <div className="text-base text-text-muted leading-relaxed">{shortDesc}</div>
-
-                  <div className="text-base text-text-muted tabular-nums md:whitespace-nowrap">
-                    {service.durationMinutes} {t.common.minutes}
+                  <div className="text-base text-text-muted leading-relaxed">
+                    {shortDesc} ({service.durationMinutes} {t.common.minutes})
                   </div>
 
-                  <div className="text-base text-text tabular-nums md:text-right md:whitespace-nowrap">
-                    <span className="text-text-muted mr-1.5">{t.services.startingFrom}</span>
-                    <strong className="font-heading font-bold text-lg">
-                      {formatRupiah(service.priceFrom, lang === 'en')}
-                    </strong>
-                  </div>
-
-                  <div className="md:text-right">
+                  <div className="md:text-right text-base text-text tabular-nums whitespace-nowrap flex flex-wrap md:justify-end items-baseline gap-x-4 gap-y-1">
+                    <span>
+                      <span className="text-text-muted mr-1.5">{t.services.startingFrom}</span>
+                      <strong className="font-heading font-bold text-lg text-text">
+                        {formatRupiah(service.priceFrom, lang === 'en')}
+                      </strong>
+                    </span>
                     <Link
                       to={localePath(`/layanan/${service.slug}`)}
-                      className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                      className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80"
                     >
                       {t.common.moreDetail}
                     </Link>
@@ -291,7 +407,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. DOCTORS (Enamel): identical 4/5 photo frame for all, alternating left/right; lead is larger via text only */}
+      {/* 3. DOCTORS (Enamel #F6F7F4): Lead doctor block larger; others compact. Photo alternating left/right, 1 CTA per doctor */}
       <section className="py-16 md:py-24 bg-bg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
@@ -312,15 +428,22 @@ export const HomePage: React.FC = () => {
               return (
                 <article
                   key={doc.id}
-                  className="py-10 md:py-14 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center"
+                  className={
+                    isLead
+                      ? 'py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center'
+                      : 'py-8 md:py-10 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10 items-center'
+                  }
                 >
+                  {/* Doctor Portrait */}
                   <div
-                    className={`md:col-span-5 flex ${
-                      isPhotoRight ? 'md:order-2 md:justify-end' : 'md:order-1 md:justify-start'
+                    className={`${isLead ? 'md:col-span-6' : 'md:col-span-4'} ${
+                      isPhotoRight ? 'md:order-2' : 'md:order-1'
                     }`}
                   >
                     <div
-                      className={`aspect-[4/5] w-full max-w-[340px] bg-bg-alt overflow-hidden border border-border ${
+                      className={`${
+                        isLead ? 'aspect-[4/3]' : 'aspect-[16/10]'
+                      } w-full bg-bg-alt overflow-hidden border border-border ${
                         isPhotoRight ? 'photo-asymmetric-alt' : 'photo-asymmetric'
                       }`}
                     >
@@ -336,7 +459,12 @@ export const HomePage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className={`md:col-span-7 ${isPhotoRight ? 'md:order-1' : 'md:order-2'}`}>
+                  {/* Doctor Editorial Copy */}
+                  <div
+                    className={`${isLead ? 'md:col-span-6' : 'md:col-span-8'} ${
+                      isPhotoRight ? 'md:order-1' : 'md:order-2'
+                    }`}
+                  >
                     <p className="text-base font-medium text-primary mb-1">
                       {docSpecialty}
                       {doc.experienceYears
@@ -345,7 +473,7 @@ export const HomePage: React.FC = () => {
                     </p>
                     <h3
                       className={`font-heading font-bold text-text mb-1 ${
-                        isLead ? 'text-3xl sm:text-5xl' : 'text-2xl sm:text-3xl'
+                        isLead ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl'
                       }`}
                     >
                       <Link to={localePath(`/dokter/${doc.slug}`)} className="hover:text-primary">
@@ -357,11 +485,7 @@ export const HomePage: React.FC = () => {
                       {doc.sipNumber ? ` · ${doc.sipNumber}` : ''}
                     </p>
 
-                    <p
-                      className={`text-text-muted leading-relaxed mb-4 max-w-[60ch] ${
-                        isLead ? 'text-lg' : 'text-base'
-                      }`}
-                    >
+                    <p className="text-base text-text-muted leading-relaxed mb-4 max-w-[60ch]">
                       {docBio}
                     </p>
 
@@ -373,6 +497,7 @@ export const HomePage: React.FC = () => {
                       </ul>
                     )}
 
+                    {/* One CTA per doctor */}
                     <div>
                       <Link
                         to={localePath(`/booking?dokter=${doc.id}`)}
@@ -390,7 +515,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 4. REVIEWS (Mint #DDEAE3): Hidden if no real review data; otherwise 1 large pull quote + 2-3 small quotes showing real name + treatment only */}
-      {SHOW_REVIEWS && featuredReview && (
+      {featuredReview && (
         <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-10">
@@ -445,7 +570,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. ARTICLES (Mint): each row is itself the link, no separate link label */}
+      {/* 6. ARTICLES (Mint #DDEAE3): List rows, no cards */}
       {articles.length > 0 && (
         <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -461,24 +586,34 @@ export const HomePage: React.FC = () => {
                 const summary = lang === 'en' ? art.summaryEn : art.summary;
 
                 return (
-                  <Link
+                  <article
                     key={art.id}
-                    to={localePath(`/artikel/${art.slug}`)}
-                    className="group py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-baseline"
+                    className="py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-baseline"
                   >
                     <div className="md:col-span-5">
-                      <h3 className="font-heading text-xl font-bold text-text leading-snug group-hover:text-primary transition-colors">
-                        {title}
+                      <h3 className="font-heading text-xl font-bold text-text leading-snug">
+                        <Link to={localePath(`/artikel/${art.slug}`)} className="hover:text-primary">
+                          {title}
+                        </Link>
                       </h3>
                       <span className="block text-base text-text-muted mt-1">
                         {art.authorName} · {art.readTime}
                       </span>
                     </div>
 
-                    <p className="md:col-span-7 text-base text-text-muted leading-relaxed">
+                    <p className="md:col-span-5 text-base text-text-muted leading-relaxed">
                       {summary}
                     </p>
-                  </Link>
+
+                    <div className="md:col-span-2 md:text-right">
+                      <Link
+                        to={localePath(`/artikel/${art.slug}`)}
+                        className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                      >
+                        {lang === 'en' ? 'Read article' : 'Baca artikel'}
+                      </Link>
+                    </div>
+                  </article>
                 );
               })}
             </div>
