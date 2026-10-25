@@ -185,12 +185,12 @@ export const HomePage: React.FC = () => {
         jsonLd={jsonLdDentist}
       />
 
-      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 6fr/6fr with larger doctor photo bleeding to right viewport edge, max 2 CTAs, 2 facts in one plain sentence */}
+      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 7fr/5fr, compact stacked doctor photo deck, max 2 CTAs, 2 facts in one plain sentence */}
       <section className="bg-bg border-b border-border overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[6fr_6fr] gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-10 lg:gap-12 items-start">
             {/* Left: Headline, concrete description, 2 CTAs, plain sentence for rating + doctor count */}
-            <div>
+            <div className="min-w-0">
               <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.04] tracking-[-0.03em] mb-7">
                 <span className="block">{t.home.heroTitlePart1}</span>
                 <span className="block mt-1.5 text-primary">
@@ -229,9 +229,9 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Right: Layered stack slider with blurred background cards and slide controls */}
+            {/* Right: Compact, fixed-dimension paper-stack slider so left column never shifts */}
             <div
-              className="w-full"
+              className="w-full max-w-[440px] mx-auto lg:ml-auto lg:mr-0 min-w-0 select-none"
               onMouseEnter={() => setIsHeroPaused(true)}
               onMouseLeave={() => setIsHeroPaused(false)}
               onFocusCapture={() => setIsHeroPaused(true)}
@@ -245,8 +245,8 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="pt-6 pb-8 px-5 sm:px-8">
-                <div className="relative aspect-[4/3] w-full">
+              <div className="relative h-[290px] sm:h-[320px] w-full overflow-hidden px-5 py-5">
+                <div className="relative w-full h-full">
                   {displayDoctors.map((doc, idx) => {
                     const total = displayDoctors.length;
                     const rel = ((idx - safeHeroIndex) % total + total) % total;
@@ -254,20 +254,20 @@ export const HomePage: React.FC = () => {
                     const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
                     const docShortName = doc.name.split(',')[0];
 
-                    // Paper-stack (xếp giấy) fan geometry inside a locked 4:3 stage so height never shifts
+                    // Paper-stack (xếp giấy) fan geometry inside a strictly fixed pixel stage
                     let styleTransform = 'translate3d(0px, 0px, 0px) rotate(0deg) scale(1)';
                     let styleFilter = 'blur(0px)';
                     let styleOpacity = 1;
                     let zIndex = 30;
 
                     if (rel === 1) {
-                      styleTransform = 'translate3d(20px, -14px, 0px) rotate(4.5deg) scale(0.99)';
-                      styleFilter = 'blur(3.5px)';
+                      styleTransform = 'translate3d(14px, -10px, 0px) rotate(3.8deg) scale(0.98)';
+                      styleFilter = 'blur(3px)';
                       styleOpacity = 0.85;
                       zIndex = 20;
                     } else if (rel >= 2) {
-                      styleTransform = 'translate3d(-16px, 18px, 0px) rotate(-4deg) scale(0.98)';
-                      styleFilter = 'blur(5.5px)';
+                      styleTransform = 'translate3d(-12px, 12px, 0px) rotate(-3.4deg) scale(0.96)';
+                      styleFilter = 'blur(5px)';
                       styleOpacity = 0.7;
                       zIndex = 10;
                     }
@@ -289,7 +289,7 @@ export const HomePage: React.FC = () => {
                           isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
                         }`}
                       >
-                        <div className="w-full h-full bg-bg overflow-hidden rounded-[14px] p-2 sm:p-2.5 border border-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.25)]">
+                        <div className="w-full h-full bg-bg overflow-hidden rounded-[14px] p-2 border border-border shadow-[0_12px_28px_-12px_rgba(18,57,47,0.22)]">
                           <div className="w-full h-full overflow-hidden rounded-[8px] bg-bg-alt relative">
                             <img
                               src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
@@ -302,7 +302,7 @@ export const HomePage: React.FC = () => {
                               className="w-full h-full object-cover object-top select-none"
                             />
                             {!isActive && (
-                              <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
+                              <span className="absolute top-2.5 right-2.5 bg-primary/85 text-bg text-xs font-medium px-2 py-0.5 rounded-[6px]">
                                 {docShortName}
                               </span>
                             )}
@@ -314,7 +314,7 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Active doctor caption + Previous / Next slide buttons (fixed height so hero never jumps) */}
+              {/* Active doctor caption + Previous / Next slide buttons (strictly fixed height) */}
               {(() => {
                 const activeDoc = displayDoctors[safeHeroIndex];
                 if (!activeDoc) return null;
@@ -322,32 +322,31 @@ export const HomePage: React.FC = () => {
                   lang === 'en' ? activeDoc.specialtyEn : activeDoc.specialty;
 
                 return (
-                  <div className="pt-2 px-5 sm:px-8 h-[60px] flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
+                  <div className="pt-1 px-5 h-[56px] flex items-center justify-between gap-3 overflow-hidden">
+                    <div className="min-w-0 flex-1 overflow-hidden">
                       <Link
                         to={localePath(`/dokter/${activeDoc.slug}`)}
-                        className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary block truncate leading-snug"
+                        className="font-heading text-lg font-bold text-text hover:text-primary block truncate leading-tight"
                       >
                         {activeDoc.name}
                       </Link>
-                      <span className="block text-base text-text-muted truncate leading-snug">
+                      <span className="block text-sm sm:text-base text-text-muted truncate leading-tight mt-0.5">
                         {activeSpecialty}
-                        {activeDoc.sipNumber ? ` · ${activeDoc.sipNumber}` : ''}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <span
-                        className="text-base font-medium text-text-muted tabular-nums mr-1"
+                        className="text-sm font-medium text-text-muted tabular-nums mr-1"
                         aria-live="polite"
                       >
-                        {safeHeroIndex + 1} / {displayDoctors.length}
+                        {safeHeroIndex + 1}/{displayDoctors.length}
                       </span>
                       <button
                         type="button"
                         onClick={() => goToHero(safeHeroIndex - 1)}
                         aria-label={lang === 'en' ? 'Previous specialist' : 'Dokter sebelumnya'}
-                        className="w-10 h-10 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
+                        className="w-9 h-9 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
                       >
                         <svg
                           className="w-4 h-4"
@@ -364,7 +363,7 @@ export const HomePage: React.FC = () => {
                         type="button"
                         onClick={() => goToHero(safeHeroIndex + 1)}
                         aria-label={lang === 'en' ? 'Next specialist' : 'Dokter berikutnya'}
-                        className="w-10 h-10 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
+                        className="w-9 h-9 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
                       >
                         <svg
                           className="w-4 h-4"
