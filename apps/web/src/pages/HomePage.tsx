@@ -245,74 +245,76 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="relative grid pt-6 pb-8 px-5 sm:px-8">
-                {displayDoctors.map((doc, idx) => {
-                  const total = displayDoctors.length;
-                  const rel = ((idx - safeHeroIndex) % total + total) % total;
-                  const isActive = rel === 0;
-                  const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
-                  const docShortName = doc.name.split(',')[0];
+              <div className="pt-6 pb-8 px-5 sm:px-8">
+                <div className="relative aspect-[4/3] w-full">
+                  {displayDoctors.map((doc, idx) => {
+                    const total = displayDoctors.length;
+                    const rel = ((idx - safeHeroIndex) % total + total) % total;
+                    const isActive = rel === 0;
+                    const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
+                    const docShortName = doc.name.split(',')[0];
 
-                  // Paper-stack (xếp giấy) fan geometry: background sheets keep full size (scale 1)
-                  // and tilt in alternating directions so their corners jut out around the top photo.
-                  let styleTransform = 'translate3d(0px, 0px, 0px) rotate(0deg) scale(1)';
-                  let styleFilter = 'blur(0px)';
-                  let styleOpacity = 1;
-                  let zIndex = 30;
+                    // Paper-stack (xếp giấy) fan geometry inside a locked 4:3 stage so height never shifts
+                    let styleTransform = 'translate3d(0px, 0px, 0px) rotate(0deg) scale(1)';
+                    let styleFilter = 'blur(0px)';
+                    let styleOpacity = 1;
+                    let zIndex = 30;
 
-                  if (rel === 1) {
-                    styleTransform = 'translate3d(20px, -14px, 0px) rotate(4.5deg) scale(0.99)';
-                    styleFilter = 'blur(3.5px)';
-                    styleOpacity = 0.85;
-                    zIndex = 20;
-                  } else if (rel >= 2) {
-                    styleTransform = 'translate3d(-16px, 18px, 0px) rotate(-4deg) scale(0.98)';
-                    styleFilter = 'blur(5.5px)';
-                    styleOpacity = 0.7;
-                    zIndex = 10;
-                  }
+                    if (rel === 1) {
+                      styleTransform = 'translate3d(20px, -14px, 0px) rotate(4.5deg) scale(0.99)';
+                      styleFilter = 'blur(3.5px)';
+                      styleOpacity = 0.85;
+                      zIndex = 20;
+                    } else if (rel >= 2) {
+                      styleTransform = 'translate3d(-16px, 18px, 0px) rotate(-4deg) scale(0.98)';
+                      styleFilter = 'blur(5.5px)';
+                      styleOpacity = 0.7;
+                      zIndex = 10;
+                    }
 
-                  return (
-                    <div
-                      key={doc.slug || doc.id}
-                      aria-hidden={!isActive}
-                      onClick={() => {
-                        if (!isActive) goToHero(idx);
-                      }}
-                      style={{
-                        transform: styleTransform,
-                        filter: styleFilter,
-                        opacity: styleOpacity,
-                        zIndex,
-                      }}
-                      className={`hero-stack-layer col-start-1 row-start-1 origin-center ${
-                        isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
-                      }`}
-                    >
-                      <div className="relative aspect-[4/3] w-full bg-bg overflow-hidden rounded-[14px] p-2 sm:p-2.5 border border-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.25)]">
-                        <div className="w-full h-full overflow-hidden rounded-[8px] bg-bg-alt relative">
-                          <img
-                            src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
-                            alt={doc.name}
-                            loading={idx === 0 ? 'eager' : 'lazy'}
-                            onError={() =>
-                              setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
-                            }
-                            className="w-full h-full object-cover object-top select-none"
-                          />
-                          {!isActive && (
-                            <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
-                              {docShortName}
-                            </span>
-                          )}
+                    return (
+                      <div
+                        key={doc.slug || doc.id}
+                        aria-hidden={!isActive}
+                        onClick={() => {
+                          if (!isActive) goToHero(idx);
+                        }}
+                        style={{
+                          transform: styleTransform,
+                          filter: styleFilter,
+                          opacity: styleOpacity,
+                          zIndex,
+                        }}
+                        className={`hero-stack-layer absolute inset-0 origin-center ${
+                          isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
+                        }`}
+                      >
+                        <div className="w-full h-full bg-bg overflow-hidden rounded-[14px] p-2 sm:p-2.5 border border-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.25)]">
+                          <div className="w-full h-full overflow-hidden rounded-[8px] bg-bg-alt relative">
+                            <img
+                              src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
+                              alt={doc.name}
+                              loading="eager"
+                              decoding="sync"
+                              onError={() =>
+                                setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
+                              }
+                              className="w-full h-full object-cover object-top select-none"
+                            />
+                            {!isActive && (
+                              <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
+                                {docShortName}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Active doctor caption + Previous / Next slide buttons */}
+              {/* Active doctor caption + Previous / Next slide buttons (fixed height so hero never jumps) */}
               {(() => {
                 const activeDoc = displayDoctors[safeHeroIndex];
                 if (!activeDoc) return null;
@@ -320,15 +322,15 @@ export const HomePage: React.FC = () => {
                   lang === 'en' ? activeDoc.specialtyEn : activeDoc.specialty;
 
                 return (
-                  <div className="pt-2 flex items-center justify-between gap-4">
-                    <div className="min-w-0">
+                  <div className="pt-2 px-5 sm:px-8 h-[60px] flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
                       <Link
                         to={localePath(`/dokter/${activeDoc.slug}`)}
-                        className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary block truncate"
+                        className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary block truncate leading-snug"
                       >
                         {activeDoc.name}
                       </Link>
-                      <span className="block text-base text-text-muted truncate">
+                      <span className="block text-base text-text-muted truncate leading-snug">
                         {activeSpecialty}
                         {activeDoc.sipNumber ? ` · ${activeDoc.sipNumber}` : ''}
                       </span>
