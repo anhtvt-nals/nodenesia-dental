@@ -245,7 +245,7 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="relative grid pt-2 pb-10 pr-12 sm:pr-20 lg:pr-24">
+              <div className="relative grid pt-6 pb-8 px-5 sm:px-8">
                 {displayDoctors.map((doc, idx) => {
                   const total = displayDoctors.length;
                   const rel = ((idx - safeHeroIndex) % total + total) % total;
@@ -253,21 +253,22 @@ export const HomePage: React.FC = () => {
                   const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
                   const docShortName = doc.name.split(',')[0];
 
-                  // Calculate explicit stacked offset so background layers clearly peek out on the right & bottom
-                  let styleTransform = 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)';
+                  // Paper-stack (xếp giấy) fan geometry: background sheets keep full size (scale 1)
+                  // and tilt in alternating directions so their corners jut out around the top photo.
+                  let styleTransform = 'translate3d(0px, 0px, 0px) rotate(0deg) scale(1)';
                   let styleFilter = 'blur(0px)';
                   let styleOpacity = 1;
                   let zIndex = 30;
 
                   if (rel === 1) {
-                    styleTransform = 'translate3d(38px, 16px, 0px) scale(0.93) rotate(1.75deg)';
+                    styleTransform = 'translate3d(20px, -14px, 0px) rotate(4.5deg) scale(0.99)';
                     styleFilter = 'blur(3.5px)';
-                    styleOpacity = 0.82;
+                    styleOpacity = 0.85;
                     zIndex = 20;
                   } else if (rel >= 2) {
-                    styleTransform = 'translate3d(74px, 32px, 0px) scale(0.86) rotate(3.5deg)';
-                    styleFilter = 'blur(6px)';
-                    styleOpacity = 0.6;
+                    styleTransform = 'translate3d(-16px, 18px, 0px) rotate(-4deg) scale(0.98)';
+                    styleFilter = 'blur(5.5px)';
+                    styleOpacity = 0.7;
                     zIndex = 10;
                   }
 
@@ -284,25 +285,27 @@ export const HomePage: React.FC = () => {
                         opacity: styleOpacity,
                         zIndex,
                       }}
-                      className={`hero-stack-layer col-start-1 row-start-1 origin-top-left ${
+                      className={`hero-stack-layer col-start-1 row-start-1 origin-center ${
                         isActive ? 'cursor-default' : 'cursor-pointer hover:opacity-95'
                       }`}
                     >
-                      <div className="relative aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border-2 border-bg ring-1 ring-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.22)]">
-                        <img
-                          src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
-                          alt={doc.name}
-                          loading={idx === 0 ? 'eager' : 'lazy'}
-                          onError={() =>
-                            setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
-                          }
-                          className="w-full h-full object-cover object-top select-none"
-                        />
-                        {!isActive && (
-                          <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
-                            {docShortName}
-                          </span>
-                        )}
+                      <div className="relative aspect-[4/3] w-full bg-bg overflow-hidden rounded-[14px] p-2 sm:p-2.5 border border-border shadow-[0_14px_34px_-12px_rgba(18,57,47,0.25)]">
+                        <div className="w-full h-full overflow-hidden rounded-[8px] bg-bg-alt relative">
+                          <img
+                            src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
+                            alt={doc.name}
+                            loading={idx === 0 ? 'eager' : 'lazy'}
+                            onError={() =>
+                              setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
+                            }
+                            className="w-full h-full object-cover object-top select-none"
+                          />
+                          {!isActive && (
+                            <span className="absolute top-3 right-3 bg-primary/85 text-bg text-xs font-medium px-2.5 py-1 rounded-[6px]">
+                              {docShortName}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
