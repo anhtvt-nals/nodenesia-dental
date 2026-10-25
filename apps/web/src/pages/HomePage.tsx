@@ -176,18 +176,16 @@ export const HomePage: React.FC = () => {
         jsonLd={jsonLdDentist}
       />
 
-      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 7fr/5fr, contained doctor photo with auto cross-fade, max 2 CTAs, 2 facts only */}
+      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 6fr/6fr with larger doctor photo bleeding to right viewport edge, max 2 CTAs, 2 facts in one plain sentence */}
       <section className="bg-bg border-b border-border overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-10 lg:gap-12 items-center">
-            {/* Left 7fr: Headline, concrete description, 2 CTAs, 2 facts */}
+          <div className="grid grid-cols-1 lg:grid-cols-[6fr_6fr] gap-10 lg:gap-12 items-center">
+            {/* Left: Headline, concrete description, 2 CTAs, plain sentence for rating + doctor count */}
             <div>
               <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.04] tracking-[-0.03em] mb-7">
                 <span className="block">{t.home.heroTitlePart1}</span>
                 <span className="block mt-1.5 text-primary">
-                  <span className="underline decoration-accent decoration-[4px] underline-offset-[10px]">
-                    {t.home.heroTitleAccent} {t.home.heroTitlePart2}
-                  </span>
+                  {t.home.heroTitleAccent} {t.home.heroTitlePart2}
                 </span>
               </h1>
 
@@ -196,7 +194,7 @@ export const HomePage: React.FC = () => {
               </p>
 
               {/* Max 2 CTAs: Buat janji temu (Pine) + Tanya via WhatsApp (Gum) */}
-              <div className="flex flex-wrap items-center gap-3.5 mb-12">
+              <div className="flex flex-wrap items-center gap-3.5 mb-8">
                 <Link
                   to={localePath('/booking')}
                   className="btn-primary text-base px-6 py-3.5"
@@ -214,30 +212,17 @@ export const HomePage: React.FC = () => {
                 </a>
               </div>
 
-              {/* 2 Concrete Facts Only */}
-              <dl className="grid grid-cols-2 gap-6 sm:gap-10 pt-6 border-t border-border max-w-md">
-                <div>
-                  <dt className="text-xs sm:text-sm text-text-muted mt-1">
-                    {lang === 'en' ? 'Google Maps rating (380+ reviews)' : 'Rating Google Maps (380+ ulasan)'}
-                  </dt>
-                  <dd className="font-heading text-2xl sm:text-3xl font-bold text-text tabular-nums order-first">
-                    4,9 / 5,0
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs sm:text-sm text-text-muted mt-1">
-                    {lang === 'en' ? 'Specialist dentists (Sp.KG, Sp.Ort, Sp.BM)' : 'Dokter gigi spesialis tetap'}
-                  </dt>
-                  <dd className="font-heading text-2xl sm:text-3xl font-bold text-text tabular-nums order-first">
-                    {doctors.length || 3} drg. Sp.
-                  </dd>
-                </div>
-              </dl>
+              {/* Plain sentence merging rating + doctor count (no big-number stat block) */}
+              <p className="text-base text-text-muted pt-5 border-t border-border max-w-[54ch]">
+                {lang === 'en'
+                  ? `Rated 4.9 / 5.0 across 380+ Google Maps reviews · Practice staffed by ${doctors.length || 3} permanent dental specialists (Sp.KG, Sp.Ort, Sp.BM).`
+                  : `Rating 4,9 / 5,0 dari 380+ ulasan Google Maps · Praktik ${doctors.length || 3} dokter gigi spesialis tetap (Sp.KG, Sp.Ort, Sp.BM).`}
+              </p>
             </div>
 
-            {/* Right 5fr: Contained doctor photo within grid container with auto cross-fade */}
+            {/* Right: Larger doctor photo bleeding to right viewport edge with auto cross-fade */}
             <div
-              className="w-full"
+              className="w-full lg:-mr-[max(2rem,calc((100vw-80rem)/2+2rem))]"
               onMouseEnter={() => setIsHeroPaused(true)}
               onMouseLeave={() => setIsHeroPaused(false)}
               onFocusCapture={() => setIsHeroPaused(true)}
@@ -265,7 +250,7 @@ export const HomePage: React.FC = () => {
                         isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'
                       }`}
                     >
-                      <div className="aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border border-border">
+                      <div className="aspect-[16/11] sm:aspect-[16/10] lg:min-h-[440px] w-full bg-bg-alt overflow-hidden photo-bleed-right border border-r-0 border-border">
                         <img
                           src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
                           alt={doc.name}
@@ -277,7 +262,7 @@ export const HomePage: React.FC = () => {
                         />
                       </div>
 
-                      <figcaption className="pt-4 flex flex-wrap items-baseline justify-between gap-2">
+                      <figcaption className="pt-4 pr-4 lg:pr-12 flex flex-wrap items-baseline justify-between gap-2">
                         <div>
                           <Link
                             to={localePath(`/dokter/${doc.slug}`)}
@@ -286,12 +271,12 @@ export const HomePage: React.FC = () => {
                           >
                             {doc.name}
                           </Link>
-                          <span className="block text-xs sm:text-sm text-text-muted">
+                          <span className="block text-base text-text-muted">
                             {docSpecialty}
                           </span>
                         </div>
                         {doc.sipNumber && (
-                          <span className="text-xs text-text-muted tabular-nums">
+                          <span className="text-base text-text-muted tabular-nums">
                             {doc.sipNumber}
                           </span>
                         )}
@@ -299,29 +284,6 @@ export const HomePage: React.FC = () => {
                     </figure>
                   );
                 })}
-              </div>
-
-              {/* Minimal fade switcher controls */}
-              <div className="mt-3 flex items-center justify-between gap-4">
-                <div className="flex flex-wrap items-center gap-2" role="tablist" aria-label={t.home.heroDoctorSwitch}>
-                  {displayDoctors.map((doc, i) => (
-                    <button
-                      key={doc.slug || doc.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={i === safeHeroIndex}
-                      aria-label={doc.name}
-                      onClick={() => setHeroIndex(i)}
-                      className={`px-2.5 py-1 text-xs font-medium rounded-[6px] border transition-colors cursor-pointer whitespace-nowrap ${
-                        i === safeHeroIndex
-                          ? 'bg-primary text-bg border-primary'
-                          : 'bg-bg text-text-muted border-border hover:text-text'
-                      }`}
-                    >
-                      {doc.name.split(',')[0]}
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
