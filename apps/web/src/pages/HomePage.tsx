@@ -355,7 +355,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. DOCTORS (Enamel #F6F7F4): Full-width block per doctor, photo alternating left/right */}
+      {/* 3. DOCTORS (Enamel #F6F7F4): Lead doctor block larger; others compact. Photo alternating left/right, 1 CTA per doctor */}
       <section className="py-16 md:py-24 bg-bg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
@@ -366,6 +366,7 @@ export const HomePage: React.FC = () => {
 
           <div className="divide-y divide-border border-t border-border">
             {displayDoctors.map((doc, idx) => {
+              const isLead = idx === 0;
               const isPhotoRight = idx % 2 === 1;
               const docTitle = lang === 'en' ? doc.titleEn : doc.title;
               const docSpecialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
@@ -375,16 +376,22 @@ export const HomePage: React.FC = () => {
               return (
                 <article
                   key={doc.id}
-                  className="py-10 md:py-14 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center"
+                  className={
+                    isLead
+                      ? 'py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center'
+                      : 'py-8 md:py-10 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10 items-center'
+                  }
                 >
                   {/* Doctor Portrait */}
                   <div
-                    className={`md:col-span-5 ${
+                    className={`${isLead ? 'md:col-span-6' : 'md:col-span-4'} ${
                       isPhotoRight ? 'md:order-2' : 'md:order-1'
                     }`}
                   >
                     <div
-                      className={`aspect-[4/3] w-full bg-bg-alt overflow-hidden border border-border ${
+                      className={`${
+                        isLead ? 'aspect-[4/3]' : 'aspect-[16/10]'
+                      } w-full bg-bg-alt overflow-hidden border border-border ${
                         isPhotoRight ? 'photo-asymmetric-alt' : 'photo-asymmetric'
                       }`}
                     >
@@ -402,50 +409,49 @@ export const HomePage: React.FC = () => {
 
                   {/* Doctor Editorial Copy */}
                   <div
-                    className={`md:col-span-7 ${
+                    className={`${isLead ? 'md:col-span-6' : 'md:col-span-8'} ${
                       isPhotoRight ? 'md:order-1' : 'md:order-2'
                     }`}
                   >
-                    <p className="text-sm font-medium text-primary mb-1">
+                    <p className="text-base font-medium text-primary mb-1">
                       {docSpecialty}
                       {doc.experienceYears
                         ? ` · ${doc.experienceYears} ${lang === 'en' ? 'years clinical practice' : 'tahun praktik klinis'}`
                         : ''}
                     </p>
-                    <h3 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-1">
+                    <h3
+                      className={`font-heading font-bold text-text mb-1 ${
+                        isLead ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl'
+                      }`}
+                    >
                       <Link to={localePath(`/dokter/${doc.slug}`)} className="hover:text-primary">
                         {doc.name}
                       </Link>
                     </h3>
-                    <p className="text-sm text-text-muted mb-4">
+                    <p className="text-base text-text-muted mb-3">
                       {docTitle}
                       {doc.sipNumber ? ` · ${doc.sipNumber}` : ''}
                     </p>
 
-                    <p className="text-base text-text leading-relaxed mb-5 max-w-[60ch]">
+                    <p className="text-base text-text-muted leading-relaxed mb-4 max-w-[60ch]">
                       {docBio}
                     </p>
 
-                    {doc.education && doc.education.length > 0 && (
-                      <ul className="text-xs sm:text-sm text-text-muted space-y-1 mb-6">
+                    {isLead && doc.education && doc.education.length > 0 && (
+                      <ul className="text-base text-text-muted space-y-1 mb-5">
                         {doc.education.map((edu, eduIdx) => (
                           <li key={eduIdx}>{edu}</li>
                         ))}
                       </ul>
                     )}
 
-                    <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+                    {/* One CTA per doctor */}
+                    <div>
                       <Link
                         to={localePath(`/booking?dokter=${doc.id}`)}
-                        className="text-primary underline underline-offset-4 hover:opacity-80"
+                        className="text-base font-semibold text-primary underline underline-offset-4 hover:opacity-80"
                       >
                         {t.doctors.bookWithDoctor}
-                      </Link>
-                      <Link
-                        to={localePath(`/dokter/${doc.slug}`)}
-                        className="text-text-muted hover:text-text underline underline-offset-4"
-                      >
-                        {t.home.heroDoctorProfile}
                       </Link>
                     </div>
                   </div>

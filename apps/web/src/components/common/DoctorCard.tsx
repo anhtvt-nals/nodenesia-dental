@@ -82,18 +82,12 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
         </div>
       </div>
 
-      <div className="pt-5 flex items-center justify-between gap-4 text-sm font-semibold">
-        <Link
-          to={localePath(`/dokter/${doctor.slug}`)}
-          className="text-text-muted hover:text-primary underline underline-offset-4"
-        >
-          {t.common.moreDetail}
-        </Link>
+      <div className="pt-5 text-base font-semibold">
         <Link
           to={localePath(`/booking?dokter=${doctor.id}`)}
           className="text-primary hover:underline underline-offset-4"
         >
-          {t.common.bookNow}
+          {t.doctors.bookWithDoctor}
         </Link>
       </div>
     </article>
