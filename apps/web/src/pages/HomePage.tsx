@@ -191,22 +191,22 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-10 lg:gap-12 items-start">
             {/* Left: Headline, concrete description, 2 CTAs, plain sentence for rating + doctor count */}
             <div className="min-w-0">
-              <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.04] tracking-[-0.03em] mb-7">
+              <h1 className="font-heading text-[3rem] sm:text-[4.25rem] lg:text-[5.25rem] font-bold text-text leading-[0.98] tracking-[-0.035em] mb-8">
                 <span className="block">{t.home.heroTitlePart1}</span>
-                <span className="block mt-1.5 text-primary">
+                <span className="inline-block mt-3 px-4 sm:px-5 pb-1.5 rounded-[10px] bg-primary text-bg">
                   {t.home.heroTitleAccent} {t.home.heroTitlePart2}
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-text-muted mb-8 leading-relaxed max-w-[54ch]">
+              <p className="text-lg sm:text-xl text-text mb-9 leading-relaxed max-w-[48ch]">
                 {t.home.heroDesc}
               </p>
 
               {/* Max 2 CTAs: Buat janji temu (Pine) + Tanya via WhatsApp (Gum) */}
-              <div className="flex flex-wrap items-center gap-3.5 mb-8">
+              <div className="flex flex-wrap items-center gap-4 mb-10">
                 <Link
                   to={localePath('/booking')}
-                  className="btn-primary text-base px-6 py-3.5"
+                  className="btn-primary text-lg px-8 py-4 min-h-[56px]"
                 >
                   {t.home.heroPrimaryCta}
                 </Link>
@@ -215,17 +215,23 @@ export const HomePage: React.FC = () => {
                   href={waAskLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-whatsapp text-base px-6 py-3.5"
+                  className="btn-whatsapp text-lg px-8 py-4 min-h-[56px]"
                 >
                   {t.home.heroSecondaryCta}
                 </a>
               </div>
 
               {/* Plain sentence merging rating + doctor count (no big-number stat block) */}
-              <p className="text-base text-text-muted pt-5 border-t border-border max-w-[54ch]">
-                {lang === 'en'
-                  ? `Rated 4.9 / 5.0 across 380+ Google Maps reviews · Practice staffed by ${doctors.length || 3} permanent dental specialists (Sp.KG, Sp.Ort, Sp.BM).`
-                  : `Rating 4,9 / 5,0 dari 380+ ulasan Google Maps · Praktik ${doctors.length || 3} dokter gigi spesialis tetap (Sp.KG, Sp.Ort, Sp.BM).`}
+              <p className="text-base sm:text-lg text-text-muted pt-6 border-t border-border max-w-[54ch]">
+                {lang === 'en' ? (
+                  <>
+                    Rated <strong className="text-text font-semibold">4.9 / 5.0</strong> across 380+ Google Maps reviews · Practice staffed by <strong className="text-text font-semibold">{doctors.length || 3} permanent dental specialists</strong> (Sp.KG, Sp.Ort, Sp.BM).
+                  </>
+                ) : (
+                  <>
+                    Rating <strong className="text-text font-semibold">4,9 / 5,0</strong> dari 380+ ulasan Google Maps · Praktik <strong className="text-text font-semibold">{doctors.length || 3} dokter gigi spesialis tetap</strong> (Sp.KG, Sp.Ort, Sp.BM).
+                  </>
+                )}
               </p>
             </div>
 
