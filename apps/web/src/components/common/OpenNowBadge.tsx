@@ -28,31 +28,27 @@ export const OpenNowBadge: React.FC<OpenNowBadgeProps> = ({
 
   const badgeStyles =
     variant === 'dark'
-      ? status.isOpen
-        ? 'bg-success/20 text-white border border-success/40'
-        : 'bg-white/10 text-white border border-white/20'
-      : status.isOpen
-      ? 'bg-success/12 text-success-dark border border-success/30'
-      : 'bg-warning/15 text-text border border-warning/40';
+      ? 'bg-bg/10 text-bg border border-bg/20'
+      : 'bg-bg-alt text-text border border-border';
 
   return (
     <div
-      className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full ${badgeStyles} ${className}`}
+      className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium px-3 py-1.5 rounded-[6px] max-w-full ${badgeStyles} ${className}`}
       aria-label={`Status klinik: ${text}`}
     >
       <span
         className={`w-2 h-2 rounded-full shrink-0 ${
-          status.isOpen ? 'bg-success' : 'bg-warning'
+          variant === 'dark' ? 'bg-bg' : 'bg-primary'
         }`}
         aria-hidden="true"
       />
-      <span className="tracking-wide">{text}</span>
+      <span>{text}</span>
       {showDetail && (
         <>
-          <span className={variant === 'dark' ? 'text-white/40 select-none' : 'text-text-muted/50 select-none'} aria-hidden="true">
+          <span className={variant === 'dark' ? 'text-bg/40 select-none' : 'text-text-muted select-none'} aria-hidden="true">
             ·
           </span>
-          <span className={variant === 'dark' ? 'text-white/85 font-normal' : 'text-text-muted font-normal'}>
+          <span className={variant === 'dark' ? 'text-bg/85 font-normal' : 'text-text-muted font-normal'}>
             {detail}
           </span>
         </>

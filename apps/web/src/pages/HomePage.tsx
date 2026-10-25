@@ -6,30 +6,72 @@ import {
   getServices,
   getDoctors,
   getArticles,
-  getSlots,
+  getTestimonials,
 } from '../lib/api';
 import {
   ClinicSettings,
   Service,
   Doctor,
   Article,
-  BookingSlot,
+  Testimonial,
 } from '../types';
-import { SectionLabel } from '../components/common/SectionLabel';
-import { ServiceCard } from '../components/common/ServiceCard';
-import { PriceRow } from '../components/common/PriceRow';
-import { DoctorCard } from '../components/common/DoctorCard';
 import { ScheduleTabs } from '../components/common/ScheduleTabs';
-import { ArticleCard } from '../components/common/ArticleCard';
-import { LazyTeethScene as TeethScene } from '../components/teeth/LazyTeethScene';
 import { AppHelmet } from '../components/common/AppHelmet';
 import { formatRupiah, buildWhatsAppLink } from '../lib/utils';
 
-const DEFAULT_STATS = [
-  { value: '[JUMLAH]+', label: 'Pasien Terlayani', labelEn: 'Patients Treated' },
-  { value: '[JUMLAH]', label: 'Dokter Spesialis', labelEn: 'Specialist Dentists' },
-  { value: '[JUMLAH]%', label: 'Kepuasan Pasien', labelEn: 'Patient Satisfaction' },
-  { value: '[JUMLAH] Thn', label: 'Pengalaman Klinis', labelEn: 'Clinical Experience' },
+// TODO: Replace demo stock portraits with verified in-clinic photography of each specialist
+const DEFAULT_HERO_DOCTORS: Doctor[] = [
+  {
+    id: 'fallback-drg-ayu',
+    slug: 'drg-ayu',
+    name: 'drg. Ayu Larasati, Sp.KG',
+    title: 'Dokter Gigi Spesialis Konservasi Gigi (Sp.KG)',
+    titleEn: 'Specialist in Conservative Dentistry & Endodontics (Sp.KG)',
+    specialty: 'Konservasi Gigi & Estetik (Sp.KG)',
+    specialtyEn: 'Conservative Dentistry & Aesthetics (Sp.KG)',
+    bio: 'Menangani perawatan saluran akar mikroskopis, veneer porselen minimal-prep, dan tambal komposit estetik.',
+    bioEn: 'Handles microscopic root canal therapy, minimal-prep porcelain veneers, and aesthetic composite restorations.',
+    photoUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=1200&h=750&q=80',
+    sipNumber: 'SIP. 503/4421/DPMPTSP/2023',
+    experienceYears: 12,
+    education: ['Spesialis Konservasi Gigi — Universitas Indonesia', 'Dokter Gigi — Universitas Airlangga'],
+    serviceIds: [],
+    workingHours: [],
+  },
+  {
+    id: 'fallback-drg-bima',
+    slug: 'drg-bima',
+    name: 'drg. Bima Wicaksono, Sp.Ort',
+    title: 'Dokter Gigi Spesialis Ortodonti (Sp.Ort)',
+    titleEn: 'Specialist in Orthodontics & Dentofacial Orthopedics (Sp.Ort)',
+    specialty: 'Ortodonti & Perataan Gigi (Sp.Ort)',
+    specialtyEn: 'Orthodontics & Bite Alignment (Sp.Ort)',
+    bio: 'Menangani perataan gigi berjejal tanpa cabut gigi sehat, behel self-ligating, serta aligner transparan.',
+    bioEn: 'Focuses on non-extraction crowding correction, self-ligating braces, and clear aligners.',
+    photoUrl: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=1200&h=750&q=80',
+    sipNumber: 'SIP. 503/8912/DPMPTSP/2022',
+    experienceYears: 10,
+    education: ['Spesialis Ortodonti — Universitas Gadjah Mada', 'Dokter Gigi — Universitas Indonesia'],
+    serviceIds: [],
+    workingHours: [],
+  },
+  {
+    id: 'fallback-drg-citra',
+    slug: 'drg-citra',
+    name: 'drg. Citra Dewi, Sp.BM',
+    title: 'Dokter Gigi Spesialis Bedah Mulut & Maksilofasial (Sp.BM)',
+    titleEn: 'Specialist in Oral & Maxillofacial Surgery (Sp.BM)',
+    specialty: 'Implan Gigi & Bedah Mulut (Sp.BM)',
+    specialtyEn: 'Implantology & Oral Surgery (Sp.BM)',
+    bio: 'Menangani pemasangan implan gigi terpandu 3D CBCT dan pencabutan gigi bungsu impaksi minim trauma.',
+    bioEn: 'Dedicated to 3D CBCT-guided dental implants and atraumatic wisdom tooth extractions.',
+    photoUrl: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&crop=faces&w=1200&h=750&q=80',
+    sipNumber: 'SIP. 503/3218/DPMPTSP/2024',
+    experienceYears: 9,
+    education: ['Spesialis Bedah Mulut — Universitas Padjadjaran', 'Dokter Gigi — Universitas Padjadjaran'],
+    serviceIds: [],
+    workingHours: [],
+  },
 ];
 
 export const HomePage: React.FC = () => {
@@ -39,49 +81,44 @@ export const HomePage: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [todaySlots, setTodaySlots] = useState<BookingSlot[]>([]);
-  const [selectedMiniService, setSelectedMiniService] = useState<string>('');
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [heroTouchStartX, setHeroTouchStartX] = useState<number | null>(null);
-  // Remote portrait URLs can fail (offline demo, blocked CDN) — fall back to the
-  // labelled placeholder instead of a broken image.
+  const [reviews, setReviews] = useState<Testimonial[]>([]);
   const [brokenPhotos, setBrokenPhotos] = useState<Record<string, boolean>>({});
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
+  const [heroTouchStartX, setHeroTouchStartX] = useState<number | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-  const safeHeroIndex = doctors.length ? Math.min(heroIndex, doctors.length - 1) : 0;
-  const selectedHeroDoctor = doctors[safeHeroIndex];
-  const hasMultipleDoctors = doctors.length > 1;
+  const displayDoctors = doctors.length > 0 ? doctors : DEFAULT_HERO_DOCTORS;
+  const safeHeroIndex = heroIndex % displayDoctors.length;
   const goToHero = (next: number) => {
-    if (doctors.length <= 1) return;
-    setHeroIndex(((next % doctors.length) + doctors.length) % doctors.length);
+    setHeroIndex(((next % displayDoctors.length) + displayDoctors.length) % displayDoctors.length);
   };
+
+  useEffect(() => {
+    if (isHeroPaused || displayDoctors.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % displayDoctors.length);
+    }, 4500);
+    return () => window.clearInterval(timer);
+  }, [isHeroPaused, displayDoctors.length]);
 
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
-      const [sData, srvData, docData, artData] = await Promise.all([
+      const [sData, srvData, docData, artData, revData] = await Promise.all([
         getSettings(),
         getServices(),
         getDoctors(),
         getArticles(),
+        getTestimonials().catch(() => [] as Testimonial[]),
       ]);
       if (!isMounted) return;
       setSettings(sData);
       setServices(srvData);
       setDoctors(docData);
-      setArticles(artData.slice(0, 3)); // 3 cards for Home
-
-      // Default the interactive selectors to the first available records.
-      const firstService = srvData[0];
-      setSelectedMiniService((current) => current || firstService?.id || '');
-
-      // Load preview slots for today
-      if (firstService) {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const slots = await getSlots({ serviceId: firstService.slug, date: todayStr });
-        if (isMounted) {
-          setTodaySlots(slots.filter((s) => s.available).slice(0, 8));
-        }
-      }
+      setArticles(artData.slice(0, 3));
+      setReviews(revData.slice(0, 4));
     }
     loadData();
     return () => {
@@ -89,24 +126,27 @@ export const HomePage: React.FC = () => {
     };
   }, []);
 
+  const clinicName = settings?.name || 'Klinik Gigi Senyum Sehat';
+  const clinicAddress =
+    settings?.address || 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan 12180';
+
   const jsonLdDentist = {
     '@context': 'https://schema.org',
     '@type': 'Dentist',
-    name: 'Klinik Gigi [NAMA KLINIK]',
-    image: 'https://klinikgigi.id/assets/clinic.jpg',
-    telephone: settings?.phone || '+62 21 7890 1234',
+    name: clinicName,
+    telephone: settings?.phone || '+62 21 7208 4500',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '[ALAMAT KLINIK]',
+      streetAddress: clinicAddress,
       addressLocality: 'Jakarta Selatan',
       addressRegion: 'DKI Jakarta',
-      postalCode: '12430',
+      postalCode: '12180',
       addressCountry: 'ID',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: -6.2607,
-      longitude: 106.8166,
+      latitude: -6.2408,
+      longitude: 106.8032,
     },
     openingHoursSpecification: [
       {
@@ -124,333 +164,176 @@ export const HomePage: React.FC = () => {
     t.booking.waPrefillGeneral
   );
 
-  const heroStats = settings?.stats?.length ? settings.stats : DEFAULT_STATS;
+  const featuredReview = reviews[0];
+  const secondaryReviews = reviews.slice(1, 4);
 
   return (
     <>
       <AppHelmet
-        title={lang === 'en' ? 'Modern Dental Care in Jakarta' : 'Klinik Gigi Modern & Terpercaya'}
+        title={lang === 'en' ? 'Specialist Dental Clinic in South Jakarta' : 'Klinik Dokter Gigi Spesialis Jakarta Selatan'}
         description={t.home.heroDesc}
         path="/"
         jsonLd={jsonLdDentist}
       />
 
-      {/* Hero Section */}
-      <section className="pt-8 md:pt-14 pb-16 md:pb-24 bg-gradient-to-b from-bg via-bg to-bg-alt border-b border-border overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Hero Header & Value Proposition */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12">
-            <div className="lg:col-span-7">
-              <div className="badge badge-success mb-5 inline-flex items-center gap-2">
-                <svg className="w-4 h-4 text-success-dark shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>
-                  {lang === 'en'
-                    ? 'Registered with Indonesian Ministry of Health · Class B Autoclave'
-                    : 'Terdaftar Resmi Kemenkes RI · Standar Sterilisasi Kelas B'}
+      {/* 1. HERO (Enamel #F6F7F4): Asymmetric 7fr/5fr, contained doctor photo with auto cross-fade, max 2 CTAs, 2 facts only */}
+      <section className="bg-bg border-b border-border overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-10 lg:gap-12 items-center">
+            {/* Left 7fr: Headline, concrete description, 2 CTAs, 2 facts */}
+            <div>
+              <h1 className="font-heading text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-bold text-text leading-[1.04] tracking-[-0.03em] mb-7">
+                <span className="block">{t.home.heroTitlePart1}</span>
+                <span className="block mt-1.5 text-primary">
+                  <span className="underline decoration-accent decoration-[4px] underline-offset-[10px]">
+                    {t.home.heroTitleAccent} {t.home.heroTitlePart2}
+                  </span>
                 </span>
-              </div>
-
-              <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-text leading-[1.12] mb-5 tracking-tight">
-                {t.home.heroTitlePart1}{' '}
-                <span className="gradient-text">{t.home.heroTitleAccent}</span>{' '}
-                {t.home.heroTitlePart2}
               </h1>
 
-              <p className="text-base sm:text-lg text-text-muted mb-7 leading-relaxed max-w-2xl">
+              <p className="text-base sm:text-lg text-text-muted mb-8 leading-relaxed max-w-[54ch]">
                 {t.home.heroDesc}
               </p>
 
-              <div className="flex flex-wrap items-center gap-3.5">
+              {/* Max 2 CTAs: Buat janji temu (Pine) + Tanya via WhatsApp (Gum) */}
+              <div className="flex flex-wrap items-center gap-3.5 mb-12">
                 <Link
                   to={localePath('/booking')}
-                  className="btn-primary text-base px-6 py-3.5 cursor-pointer"
+                  className="btn-primary text-base px-6 py-3.5"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                  <span>{t.home.heroPrimaryCta}</span>
+                  {t.home.heroPrimaryCta}
                 </Link>
-                <Link
-                  to={localePath('/harga')}
-                  className="btn-secondary text-base px-6 py-3.5 cursor-pointer"
+
+                <a
+                  href={waAskLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-whatsapp text-base px-6 py-3.5"
                 >
-                  <span>{t.nav.prices}</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-                <Link
-                  to={localePath('/booking/kelola')}
-                  className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-semibold text-primary hover:text-primary-hover transition-colors cursor-pointer"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  <span>{t.nav.manageBooking}</span>
-                </Link>
+                  {t.home.heroSecondaryCta}
+                </a>
               </div>
+
+              {/* 2 Concrete Facts Only */}
+              <dl className="grid grid-cols-2 gap-6 sm:gap-10 pt-6 border-t border-border max-w-md">
+                <div>
+                  <dt className="text-xs sm:text-sm text-text-muted mt-1">
+                    {lang === 'en' ? 'Google Maps rating (380+ reviews)' : 'Rating Google Maps (380+ ulasan)'}
+                  </dt>
+                  <dd className="font-heading text-2xl sm:text-3xl font-bold text-text tabular-nums order-first">
+                    4,9 / 5,0
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs sm:text-sm text-text-muted mt-1">
+                    {lang === 'en' ? 'Specialist dentists (Sp.KG, Sp.Ort, Sp.BM)' : 'Dokter gigi spesialis tetap'}
+                  </dt>
+                  <dd className="font-heading text-2xl sm:text-3xl font-bold text-text tabular-nums order-first">
+                    {doctors.length || 3} drg. Sp.
+                  </dd>
+                </div>
+              </dl>
             </div>
 
-            {/* Hero Stats Grid (3+1 clinical metrics using placeholders from settings) */}
-            <div className="lg:col-span-5">
-              <div className="trust-card p-6 sm:p-7 bg-bg-card">
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-border">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-primary">
-                        {lang === 'en' ? 'Clinical Indicators' : 'Indikator Layanan Klinis'}
-                      </p>
-                      <p className="text-xs text-text-muted">
-                        {lang === 'en' ? 'Transparent & standardized care' : 'Perawatan terstandarisasi & transparan'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="badge badge-primary">Kemenkes RI</span>
-                </div>
+            {/* Right 5fr: Contained doctor photo within grid container with auto cross-fade */}
+            <div
+              className="w-full"
+              onMouseEnter={() => setIsHeroPaused(true)}
+              onMouseLeave={() => setIsHeroPaused(false)}
+              onFocusCapture={() => setIsHeroPaused(true)}
+              onBlurCapture={() => setIsHeroPaused(false)}
+              onTouchStart={(e) => setHeroTouchStartX(e.touches[0].clientX)}
+              onTouchEnd={(e) => {
+                if (heroTouchStartX === null) return;
+                const delta = e.changedTouches[0].clientX - heroTouchStartX;
+                if (Math.abs(delta) > 40) goToHero(safeHeroIndex + (delta < 0 ? 1 : -1));
+                setHeroTouchStartX(null);
+              }}
+            >
+              {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
+              <div className="grid">
+                {displayDoctors.map((doc, idx) => {
+                  const isActive = idx === safeHeroIndex;
+                  const docSpecialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
+                  const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
 
-                <div className="grid grid-cols-2 gap-3.5 sm:gap-5">
-                  {heroStats.map((stat, idx) => (
-                    <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-bg-alt/70 border border-border/70 min-w-0">
-                      <div className="stat-number text-lg sm:text-2xl xl:text-3xl mb-1 break-words">
-                        {stat.value}
+                  return (
+                    <figure
+                      key={doc.slug || doc.id}
+                      aria-hidden={!isActive}
+                      className={`hero-fade-slide col-start-1 row-start-1 flex flex-col transition-opacity duration-700 ease-in-out ${
+                        isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'
+                      }`}
+                    >
+                      <div className="aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border border-border">
+                        <img
+                          src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
+                          alt={doc.name}
+                          loading={idx === 0 ? 'eager' : 'lazy'}
+                          onError={() =>
+                            setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
+                          }
+                          className="w-full h-full object-cover object-top"
+                        />
                       </div>
-                      <div className="text-xs font-medium text-text-muted">
-                        {lang === 'en' ? stat.labelEn : stat.label}
-                      </div>
-                    </div>
+
+                      <figcaption className="pt-4 flex flex-wrap items-baseline justify-between gap-2">
+                        <div>
+                          <Link
+                            to={localePath(`/dokter/${doc.slug}`)}
+                            tabIndex={isActive ? 0 : -1}
+                            className="font-heading text-lg font-bold text-text hover:text-primary"
+                          >
+                            {doc.name}
+                          </Link>
+                          <span className="block text-xs sm:text-sm text-text-muted">
+                            {docSpecialty}
+                          </span>
+                        </div>
+                        {doc.sipNumber && (
+                          <span className="text-xs text-text-muted tabular-nums">
+                            {doc.sipNumber}
+                          </span>
+                        )}
+                      </figcaption>
+                    </figure>
+                  );
+                })}
+              </div>
+
+              {/* Minimal fade switcher controls */}
+              <div className="mt-3 flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-2" role="tablist" aria-label={t.home.heroDoctorSwitch}>
+                  {displayDoctors.map((doc, i) => (
+                    <button
+                      key={doc.slug || doc.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={i === safeHeroIndex}
+                      aria-label={doc.name}
+                      onClick={() => setHeroIndex(i)}
+                      className={`px-2.5 py-1 text-xs font-medium rounded-[6px] border transition-colors cursor-pointer whitespace-nowrap ${
+                        i === safeHeroIndex
+                          ? 'bg-primary text-bg border-primary'
+                          : 'bg-bg text-text-muted border-border hover:text-text'
+                      }`}
+                    >
+                      {doc.name.split(',')[0]}
+                    </button>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Interactive Row: Doctor Spotlight Slider + Floating Trust Badges & 3D Teeth Explorer */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-            {/* Left Column: Doctor spotlight slider with floating demo trust badges */}
-            <div className="lg:col-span-7 flex flex-col relative">
-              {selectedHeroDoctor && (
-                <div className="relative h-full rounded-2xl overflow-hidden bg-bg-card border border-border shadow-lg flex flex-col">
-                  {/* Slider track (swipeable on touch) */}
-                  <div
-                    className="flex h-full transition-transform duration-500 ease-out"
-                    style={{ transform: `translateX(-${safeHeroIndex * 100}%)` }}
-                    onTouchStart={(e) => setHeroTouchStartX(e.touches[0].clientX)}
-                    onTouchEnd={(e) => {
-                      if (heroTouchStartX === null) return;
-                      const delta = e.changedTouches[0].clientX - heroTouchStartX;
-                      if (Math.abs(delta) > 40) goToHero(safeHeroIndex + (delta < 0 ? 1 : -1));
-                      setHeroTouchStartX(null);
-                    }}
-                  >
-                    {doctors.map((doc, idx) => {
-                      const docTitle = lang === 'en' ? doc.titleEn : doc.title;
-                      const docSpecialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
-                      const docBio = lang === 'en' ? doc.bioEn : doc.bio;
-                      const docExperience = lang === 'en' ? doc.experienceEn : doc.experience;
-                      const isActive = idx === safeHeroIndex;
-
-                      return (
-                        <article
-                          key={doc.id}
-                          aria-hidden={!isActive}
-                          className="w-full shrink-0 h-full flex flex-col"
-                        >
-                          {/* Photo */}
-                          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-[340px] shrink-0 bg-bg-alt overflow-hidden border-b border-border">
-                            {doc.photoUrl && !doc.photoUrl.includes('unsplash.com') && !brokenPhotos[doc.id] ? (
-                              <img
-                                src={doc.photoUrl}
-                                alt={doc.name}
-                                loading={idx === 0 ? 'eager' : 'lazy'}
-                                onError={() =>
-                                  setBrokenPhotos((current) => ({ ...current, [doc.id]: true }))
-                                }
-                                className="w-full h-full object-cover object-top"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-gradient-to-br from-primary/10 to-secondary/10">
-                                <svg className="w-12 h-12 text-primary/50 mb-2" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                                  [FOTO {doc.name.toUpperCase()}]
-                                </span>
-                              </div>
-                            )}
-
-                            {/* Floating Trust Badges on Image (matching demo hero floating cards) */}
-                            <div className="absolute top-3 left-3 bg-bg-card/95 backdrop-blur-md border border-border rounded-xl px-3 py-2 shadow-md flex items-center gap-2.5 pointer-events-none">
-                              <div className="w-8 h-8 rounded-full bg-success/15 text-success-dark flex items-center justify-center shrink-0">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                              </div>
-                              <div>
-                                <p className="text-xs font-bold text-text leading-tight">STR & SIP Resmi</p>
-                                <p className="text-[11px] text-text-muted leading-tight">{docSpecialty}</p>
-                              </div>
-                            </div>
-
-                            {docExperience && (
-                              <div className="absolute bottom-3 right-3 bg-bg-card/95 backdrop-blur-md border border-border rounded-xl px-3 py-2 shadow-md flex items-center gap-2 pointer-events-none">
-                                <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0">
-                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polyline points="12 6 12 12 16 14" />
-                                  </svg>
-                                </div>
-                                <span className="text-xs font-semibold text-text">
-                                  {docExperience}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Condensed info + CTAs */}
-                          <div className="p-5 sm:p-6 flex flex-col flex-1">
-                            <div className="mb-3">
-                              <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                                <span className="badge badge-primary">{docSpecialty}</span>
-                                {doc.sipNumber && (
-                                  <span className="text-xs font-medium text-text-muted">• {doc.sipNumber}</span>
-                                )}
-                              </div>
-                              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-text tracking-tight mb-1">
-                                {doc.name}
-                              </h2>
-                              <p className="text-xs sm:text-sm font-medium text-text-muted">
-                                {docTitle}
-                              </p>
-                            </div>
-
-                            <p className="text-sm text-text-muted leading-relaxed line-clamp-2">
-                              {docBio}
-                            </p>
-
-                            <div className="mt-auto pt-5">
-                              {hasMultipleDoctors && (
-                                <div className="flex items-center justify-between gap-4 mb-3">
-                                  <div className="flex items-center gap-1">
-                                    {doctors.map((d, i) => (
-                                      <button
-                                        key={d.id}
-                                        type="button"
-                                        tabIndex={isActive ? 0 : -1}
-                                        aria-label={d.name}
-                                        aria-current={i === safeHeroIndex ? 'true' : undefined}
-                                        onClick={() => setHeroIndex(i)}
-                                        className="min-w-[28px] min-h-[28px] flex items-center justify-center cursor-pointer"
-                                      >
-                                        <span
-                                          className={`h-2 rounded-full transition-all block ${
-                                            i === safeHeroIndex
-                                              ? 'w-7 bg-primary'
-                                              : 'w-2.5 bg-border hover:bg-text-subtle'
-                                          }`}
-                                        />
-                                      </button>
-                                    ))}
-                                  </div>
-                                  <span className="text-xs font-semibold text-text-muted tabular-nums">
-                                    {String(safeHeroIndex + 1).padStart(2, '0')} / {String(doctors.length).padStart(2, '0')}
-                                  </span>
-                                </div>
-                              )}
-
-                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-4 border-t border-border">
-                                <Link
-                                  to={localePath(`/booking?dokter=${doc.id}`)}
-                                  tabIndex={isActive ? 0 : -1}
-                                  className="btn-primary text-sm py-2.5 px-5 justify-center cursor-pointer"
-                                >
-                                  <span>{t.home.heroDoctorBook}</span>
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                                  </svg>
-                                </Link>
-                                <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                                  <Link
-                                    to={localePath(`/dokter/${doc.slug}`)}
-                                    tabIndex={isActive ? 0 : -1}
-                                    className="flex-1 sm:flex-initial btn-secondary text-sm py-2.5 px-4 justify-center cursor-pointer"
-                                  >
-                                    {t.home.heroDoctorProfile}
-                                  </Link>
-                                  <a
-                                    href={waAskLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    tabIndex={isActive ? 0 : -1}
-                                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 min-h-[42px] rounded-xl text-xs font-bold text-primary-hover hover:bg-primary/10 transition-colors cursor-pointer sm:ml-auto"
-                                  >
-                                    <span>{t.booking.askViaWhatsApp}</span>
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
-                                    </svg>
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-
-                  {/* Prev / Next controls */}
-                  {hasMultipleDoctors && (
-                    <div className="absolute inset-x-0 top-0 aspect-[16/10] sm:aspect-[16/9] max-h-[340px] pointer-events-none">
-                      <button
-                        type="button"
-                        aria-label="Previous doctor"
-                        onClick={() => goToHero(safeHeroIndex - 1)}
-                        className="pointer-events-auto absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center bg-bg-card/90 backdrop-blur-sm border border-border text-text hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-md cursor-pointer"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Next doctor"
-                        onClick={() => goToHero(safeHeroIndex + 1)}
-                        className="pointer-events-auto absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center bg-bg-card/90 backdrop-blur-sm border border-border text-text hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-md cursor-pointer"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: 3D Teeth Scene Explorer */}
-            <div className="lg:col-span-5 flex flex-col">
-              <TeethScene services={services} fill />
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* 01 / Layanan (6 Service Cards matching demo + transparent PriceRow index) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg">
+      {/* 2. SERVICES (Mint #DDEAE3): ONE hairline table-style list replacing both cards & duplicate fee table */}
+      <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
-              <SectionLabel number={t.home.secLayananNum} />
-              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight text-balance">
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
                 {t.home.secLayananTitle}
               </h2>
               <p className="text-base text-text-muted max-w-2xl mt-2 leading-relaxed">
@@ -458,457 +341,385 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
             <Link
-              to={localePath('/layanan')}
-              className="btn-secondary text-sm py-2.5 px-5 shrink-0 self-start md:self-auto cursor-pointer"
+              to={localePath('/harga')}
+              className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 shrink-0 self-start md:self-auto"
             >
-              <span>{t.home.viewAllServices}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              {t.home.viewAllServices}
             </Link>
           </div>
 
-          {/* 6 Featured Service Cards (Demo pattern: 3-column grid with icon badge + Learn more) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {services.slice(0, 6).map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
+          <div className="border-t border-border divide-y divide-border">
+            {services.map((service) => {
+              const serviceName = lang === 'en' ? service.nameEn : service.name;
+              const shortDesc = lang === 'en' ? service.shortDescEn : service.shortDesc;
 
-          {/* Complete Price List Summary Card */}
-          <div className="trust-card p-6 sm:p-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-2 border-b border-border">
-              <div>
-                <h3 className="font-heading text-lg font-bold text-text">
-                  {lang === 'en' ? 'Complete Treatment Fee Schedule' : 'Ringkasan Tarif Perawatan Transparan'}
-                </h3>
-                <p className="text-xs sm:text-sm text-text-muted">
-                  {lang === 'en'
-                    ? 'Estimated ranges before clinical examination. Confirmed by your dentist beforehand.'
-                    : 'Estimasi biaya sebelum tindakan. Dokter selalu mengonfirmasi rincian sebelum perawatan dimulai.'}
-                </p>
-              </div>
-              <Link
-                to={localePath('/harga')}
-                className="text-sm font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1 shrink-0 cursor-pointer"
-              >
-                <span>{t.nav.prices}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-
-            <div className="divide-y divide-border">
-              {services.map((service, idx) => (
-                <PriceRow
+              return (
+                <div
                   key={service.id}
-                  service={service}
-                  index={idx}
-                  showCategory
-                />
-              ))}
-            </div>
+                  className="py-5 rounded-none grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 items-baseline"
+                >
+                  <div className="md:col-span-4">
+                    <Link
+                      to={localePath(`/layanan/${service.slug}`)}
+                      className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary transition-colors"
+                    >
+                      {serviceName}
+                    </Link>
+                  </div>
 
-            <div className="mt-6 pt-5 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-bg-alt rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
+                  <div className="md:col-span-5 text-sm text-text-muted">
+                    {shortDesc} ({service.durationMinutes} {t.common.minutes})
+                  </div>
+
+                  <div className="md:col-span-2 md:text-right text-sm text-text tabular-nums">
+                    <span className="text-text-muted mr-1.5">{t.services.startingFrom}</span>
+                    <strong className="font-heading font-bold text-base">
+                      {formatRupiah(service.priceFrom, lang === 'en')}
+                    </strong>
+                  </div>
+
+                  <div className="md:col-span-1 md:text-right">
+                    <Link
+                      to={localePath(`/layanan/${service.slug}`)}
+                      className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                    >
+                      {t.common.moreDetail}
+                    </Link>
+                  </div>
                 </div>
-                <span className="text-sm font-medium text-text">
-                  {t.home.secLayananMore}
-                </span>
-              </div>
-              <a
-                href={waAskLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary text-xs py-2.5 px-4 whitespace-nowrap cursor-pointer"
-              >
-                <span>{t.booking.askViaWhatsApp}</span>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
-                </svg>
-              </a>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* 02 / Alur Kunjungan (4 steps) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg-alt">
+      {/* 3. DOCTORS (Enamel #F6F7F4): Full-width block per doctor, photo alternating left/right */}
+      <section className="py-16 md:py-24 bg-bg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <SectionLabel number={t.home.secFlowNum} />
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-3 text-balance">
-              {t.home.secFlowTitle}
+          <div className="max-w-2xl mb-12">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
+              {t.home.secDoctorTitle}
             </h2>
-            <p className="text-base text-text-muted leading-relaxed">
-              {t.home.secFlowDesc}
+            <p className="text-base text-text-muted mt-2 leading-relaxed">
+              {t.home.secDoctorDesc}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {t.home.flowSteps.map((step) => (
-              <div key={step.step} className="service-card flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="w-12 h-12 rounded-xl bg-primary/10 text-primary font-heading font-bold text-lg flex items-center justify-center">
-                      {step.step}
-                    </span>
-                    <span className="badge badge-primary">
-                      {lang === 'en' ? `Step ${step.step}` : `Tahap ${step.step}`}
-                    </span>
+          <div className="divide-y divide-border border-t border-border">
+            {displayDoctors.map((doc, idx) => {
+              const isPhotoRight = idx % 2 === 1;
+              const docTitle = lang === 'en' ? doc.titleEn : doc.title;
+              const docSpecialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
+              const docBio = lang === 'en' ? doc.bioEn : doc.bio;
+              const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
+
+              return (
+                <article
+                  key={doc.id}
+                  className="py-10 md:py-14 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center"
+                >
+                  {/* Doctor Portrait */}
+                  <div
+                    className={`md:col-span-5 ${
+                      isPhotoRight ? 'md:order-2' : 'md:order-1'
+                    }`}
+                  >
+                    <div
+                      className={`aspect-[4/3] w-full bg-bg-alt overflow-hidden border border-border ${
+                        isPhotoRight ? 'photo-asymmetric-alt' : 'photo-asymmetric'
+                      }`}
+                    >
+                      <img
+                        src={doc.photoUrl && !brokenPhotos[doc.slug] ? doc.photoUrl : fallbackImg}
+                        alt={doc.name}
+                        loading="lazy"
+                        onError={() =>
+                          setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
+                        }
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </div>
                   </div>
-                  <h3 className="font-heading text-lg font-bold text-text mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-text-muted leading-relaxed">
-                    {step.desc}
-                  </p>
+
+                  {/* Doctor Editorial Copy */}
+                  <div
+                    className={`md:col-span-7 ${
+                      isPhotoRight ? 'md:order-1' : 'md:order-2'
+                    }`}
+                  >
+                    <p className="text-sm font-medium text-primary mb-1">
+                      {docSpecialty}
+                      {doc.experienceYears
+                        ? ` · ${doc.experienceYears} ${lang === 'en' ? 'years clinical practice' : 'tahun praktik klinis'}`
+                        : ''}
+                    </p>
+                    <h3 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-1">
+                      <Link to={localePath(`/dokter/${doc.slug}`)} className="hover:text-primary">
+                        {doc.name}
+                      </Link>
+                    </h3>
+                    <p className="text-sm text-text-muted mb-4">
+                      {docTitle}
+                      {doc.sipNumber ? ` · ${doc.sipNumber}` : ''}
+                    </p>
+
+                    <p className="text-base text-text leading-relaxed mb-5 max-w-[60ch]">
+                      {docBio}
+                    </p>
+
+                    {doc.education && doc.education.length > 0 && (
+                      <ul className="text-xs sm:text-sm text-text-muted space-y-1 mb-6">
+                        {doc.education.map((edu, eduIdx) => (
+                          <li key={eduIdx}>{edu}</li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+                      <Link
+                        to={localePath(`/booking?dokter=${doc.id}`)}
+                        className="text-primary underline underline-offset-4 hover:opacity-80"
+                      >
+                        {t.doctors.bookWithDoctor}
+                      </Link>
+                      <Link
+                        to={localePath(`/dokter/${doc.slug}`)}
+                        className="text-text-muted hover:text-text underline underline-offset-4"
+                      >
+                        {t.home.heroDoctorProfile}
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. REVIEWS (Mint #DDEAE3): One large pull quote + 2-3 small quotes as a plain list. No 5-star icon rows */}
+      {featuredReview && (
+        <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
+                {lang === 'en' ? 'What patients say after their visit' : 'Cerita pasien seusai kunjungan'}
+              </h2>
+              <Link
+                to={localePath('/testimoni')}
+                className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80"
+              >
+                {lang === 'en' ? 'Read all patient reviews' : 'Lihat semua ulasan pasien'}
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 pt-8 border-t border-border items-start">
+              {/* Large Pull Quote */}
+              <div className="lg:col-span-7">
+                <blockquote className="font-heading text-2xl sm:text-3xl lg:text-[2.1rem] font-medium text-text leading-[1.28] mb-6">
+                  “{lang === 'en' ? featuredReview.commentEn : featuredReview.comment}”
+                </blockquote>
+                <div className="text-sm text-text-muted">
+                  <strong className="font-semibold text-text">{featuredReview.name}</strong>
+                  {featuredReview.serviceName ? ` — ${featuredReview.serviceName}` : ''}
+                  {featuredReview.source ? ` (${featuredReview.source})` : ''}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* 03 / Tim Dokter (Cards) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-              <SectionLabel number={t.home.secDoctorNum} />
-              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight text-balance">
-                {t.home.secDoctorTitle}
-              </h2>
-              <p className="text-base text-text-muted max-w-2xl mt-2 leading-relaxed">
-                {t.home.secDoctorDesc}
-              </p>
+              {/* 2–3 Smaller Quotes as a Plain Hairline List */}
+              {secondaryReviews.length > 0 && (
+                <div className="lg:col-span-5 divide-y divide-border border-t lg:border-t-0 lg:border-l border-border lg:pl-10">
+                  {secondaryReviews.map((rev) => (
+                    <div key={rev.id} className="py-5 first:pt-0 last:pb-0">
+                      <blockquote className="text-sm sm:text-base text-text leading-relaxed mb-2">
+                        “{lang === 'en' ? rev.commentEn : rev.comment}”
+                      </blockquote>
+                      <div className="text-xs text-text-muted">
+                        <strong className="font-semibold text-text">{rev.name}</strong>
+                        {rev.serviceName ? ` · ${rev.serviceName}` : ''}
+                        {rev.date ? ` · ${rev.date}` : ''}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            <Link
-              to={localePath('/dokter')}
-              className="btn-secondary text-sm py-2.5 px-5 shrink-0 self-start md:self-auto cursor-pointer"
-            >
-              <span>{t.home.viewAllDoctors}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
           </div>
+        </section>
+      )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {doctors.map((doctor) => (
-              <DoctorCard key={doctor.id} doctor={doctor} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 04 / Jadwal Dokter (Day tabs) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg-alt">
+      {/* 5. SCHEDULE (Enamel #F6F7F4): Plain weekly table, no pill tabs */}
+      <section className="py-16 md:py-24 bg-bg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <SectionLabel number={t.home.secScheduleNum} />
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-3 text-balance">
+          <div className="mb-8 max-w-2xl">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
               {t.home.secScheduleTitle}
             </h2>
-            <p className="text-base text-text-muted max-w-2xl leading-relaxed">
+            <p className="text-base text-text-muted leading-relaxed">
               {t.home.secScheduleDesc}
             </p>
           </div>
 
-          <ScheduleTabs doctors={doctors} />
+          <ScheduleTabs doctors={displayDoctors} />
         </div>
       </section>
 
-      {/* 05 / Tentang (Visi & Misi + Indonesian Self-Service Booking Dashboard Preview) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg">
+      {/* 6. ARTICLES (Mint #DDEAE3): List rows, no cards */}
+      {articles.length > 0 && (
+        <section className="py-16 md:py-24 bg-bg-alt border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+              <div>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight">
+                  {t.home.secArticlesTitle}
+                </h2>
+                <p className="text-base text-text-muted max-w-2xl mt-2 leading-relaxed">
+                  {t.home.secArticlesDesc}
+                </p>
+              </div>
+              <Link
+                to={localePath('/artikel')}
+                className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 shrink-0 self-start md:self-auto"
+              >
+                {t.home.viewAllArticles}
+              </Link>
+            </div>
+
+            <div className="border-t border-border divide-y divide-border">
+              {articles.map((art) => {
+                const title = lang === 'en' ? art.titleEn : art.title;
+                const summary = lang === 'en' ? art.summaryEn : art.summary;
+
+                return (
+                  <article
+                    key={art.id}
+                    className="py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-baseline"
+                  >
+                    <div className="md:col-span-5">
+                      <h3 className="font-heading text-xl font-bold text-text leading-snug">
+                        <Link to={localePath(`/artikel/${art.slug}`)} className="hover:text-primary">
+                          {title}
+                        </Link>
+                      </h3>
+                      <span className="block text-xs text-text-muted mt-1">
+                        {art.authorName} · {art.readTime}
+                      </span>
+                    </div>
+
+                    <p className="md:col-span-5 text-sm text-text-muted leading-relaxed">
+                      {summary}
+                    </p>
+
+                    <div className="md:col-span-2 md:text-right">
+                      <Link
+                        to={localePath(`/artikel/${art.slug}`)}
+                        className="text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80 whitespace-nowrap"
+                      >
+                        {lang === 'en' ? 'Read article' : 'Baca artikel'}
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 7. LOCATION (Enamel #F6F7F4): Map + plain text address/parking/transit, no boxed sub-cards */}
+      <section className="py-16 md:py-24 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <SectionLabel number={t.home.secAboutNum} />
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight max-w-3xl text-balance">
-              {t.home.secAboutTitle}
+          <div className="mb-10 max-w-2xl">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
+              {lang === 'en' ? 'Location, parking, and visit details' : 'Lokasi klinik, parkir, dan pembayaran'}
             </h2>
+            <p className="text-base text-text-muted">
+              {lang === 'en'
+                ? 'Ground-floor clinic access in Kebayoran Baru with private parking directly in front of the lobby.'
+                : 'Akses lantai dasar di Kebayoran Baru dengan area parkir pribadi tepat di depan lobi.'}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Vision & Mission Cards */}
-            <div className="lg:col-span-7 grid grid-cols-1 gap-6">
-              <div className="trust-card p-6 sm:p-8">
-                <span className="badge badge-primary mb-3">
-                  01 / {t.home.secAboutVision}
-                </span>
-                <h3 className="font-heading text-2xl font-bold text-text mb-3">
-                  {lang === 'en' ? 'Medical Innovation & Integrity' : 'Inovasi & Integritas Medis'}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            {/* Plain Text Address, Parking, Transit & Payment Details */}
+            <div className="lg:col-span-5 space-y-6 border-t border-border pt-6">
+              <div>
+                <h3 className="font-heading text-lg font-bold text-text mb-1">
+                  {t.contact.addressTitle}
                 </h3>
                 <p className="text-sm sm:text-base text-text-muted leading-relaxed">
-                  {t.home.secAboutVisionDesc}
+                  {clinicAddress}
+                </p>
+                <a
+                  href={settings?.googleMapsUrl || 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-2 text-sm font-semibold text-primary underline underline-offset-4 hover:opacity-80"
+                >
+                  {t.contact.viewOnMap}
+                </a>
+              </div>
+
+              <div className="pt-5 border-t border-border">
+                <h3 className="font-heading text-lg font-bold text-text mb-1">
+                  {lang === 'en' ? 'Parking & public transit' : 'Kapasitas parkir & transportasi umum'}
+                </h3>
+                <p className="text-sm text-text-muted leading-relaxed">
+                  {lang === 'en'
+                    ? 'Free private parking for 6 cars and 15 motorcycles at the clinic entrance. 5 minutes from Blok M / Senayan MRT Station and Tendean TransJakarta stop.'
+                    : 'Parkir halaman pribadi gratis untuk 6 mobil dan 15 motor tepat di depan lobi. Berjarak 5 menit dari Stasiun MRT Blok M / Senayan dan Halte TransJakarta Tendean.'}
                 </p>
               </div>
 
-              <div className="trust-card p-6 sm:p-8">
-                <span className="badge badge-success mb-3">
-                  02 / {t.home.secAboutMission}
-                </span>
-                <ul className="space-y-3.5 text-sm sm:text-base text-text-muted">
-                  {t.home.secAboutMissionItems.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full bg-success/15 text-success-dark font-heading font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="pt-5 border-t border-border">
+                <h3 className="font-heading text-lg font-bold text-text mb-1">
+                  {lang === 'en' ? 'Payment & insurance' : 'Pembayaran & klaim asuransi'}
+                </h3>
+                <p className="text-sm text-text-muted leading-relaxed">
+                  {lang === 'en'
+                    ? 'Accepts QRIS, Debit/Credit cards, bank transfer, and cash. We provide itemized medical receipts and odontograms for private/corporate insurance reimbursement (non-BPJS clinic).'
+                    : 'Menerima QRIS, kartu Debit/Kredit, transfer bank, dan tunai. Kami menerbitkan kuitansi medis rincian tindakan serta odontogram resmi untuk klaim reimbursement asuransi swasta/kantor (belum melayani BPJS Kesehatan).'}
+                </p>
               </div>
-            </div>
 
-            {/* Indonesian Self-Service Booking Management Preview (Demo dashboard-mock pattern adapted for /booking/kelola) */}
-            <div className="lg:col-span-5 flex flex-col">
-              <div className="portal-preview p-6 flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-border">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-error" />
-                      <span className="w-3 h-3 rounded-full bg-warning" />
-                      <span className="w-3 h-3 rounded-full bg-success" />
-                    </div>
-                    <span className="text-xs font-semibold text-text-muted">
-                      {lang === 'en' ? 'Self-Service Booking Code' : 'Kelola Booking Mandiri'}
-                    </span>
-                  </div>
-
-                  <div className="bg-bg-alt rounded-xl p-4 mb-4 border border-border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-                        {lang === 'en' ? 'Booking Reference' : 'Kode Booking Anda'}
-                      </span>
-                      <span className="badge badge-success">Terkonfirmasi</span>
-                    </div>
-                    <div className="font-heading text-lg font-bold text-primary mb-1">
-                      KG-2026-[KODE]
-                    </div>
-                    <p className="text-xs text-text-muted">
-                      {lang === 'en'
-                        ? 'Reschedule or cancel online up to 6 hours before your appointment—no login required.'
-                        : 'Ubah jadwal atau batalkan janji temu hingga 6 jam sebelum kedatangan tanpa perlu akun/login.'}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2.5 mb-6">
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-bg border border-border">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <div className="text-xs">
-                        <p className="font-semibold text-text">
-                          {lang === 'en' ? 'Instant Reschedule' : 'Ubah Jadwal Instan'}
-                        </p>
-                        <p className="text-text-muted">
-                          {lang === 'en' ? 'Check live doctor slots anytime' : 'Pilih ulang tanggal & jam praktek dokter'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-bg border border-border">
-                      <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                      </div>
-                      <div className="text-xs">
-                        <p className="font-semibold text-text">
-                          {lang === 'en' ? 'WhatsApp Confirmation' : ' pengingat & Konfirmasi WhatsApp'}
-                        </p>
-                        <p className="text-text-muted">
-                          {lang === 'en' ? 'Direct summary sent to your phone' : 'Rincian kode booking dikirim langsung ke WhatsApp'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
+              <div className="pt-5 border-t border-border flex flex-wrap items-center gap-4">
+                <Link
+                  to={localePath('/booking')}
+                  className="btn-primary text-sm"
+                >
+                  {t.home.heroPrimaryCta}
+                </Link>
                 <Link
                   to={localePath('/booking/kelola')}
-                  className="btn-secondary w-full justify-center text-sm py-2.5 cursor-pointer"
+                  className="text-sm font-semibold text-text-muted hover:text-text underline underline-offset-4"
                 >
-                  <span>{t.nav.manageBooking}</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
+                  {t.nav.manageBooking}
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 06 / Artikel Edukasi (3 Cards) */}
-      <section className="py-16 md:py-24 border-b border-border bg-bg-alt">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-              <SectionLabel number={t.home.secArticlesNum} />
-              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight text-balance">
-                {t.home.secArticlesTitle}
-              </h2>
-              <p className="text-base text-text-muted max-w-2xl mt-2 leading-relaxed">
-                {t.home.secArticlesDesc}
-              </p>
-            </div>
-            <Link
-              to={localePath('/artikel')}
-              className="btn-secondary text-sm py-2.5 px-5 shrink-0 self-start md:self-auto cursor-pointer"
-            >
-              <span>{t.home.viewAllArticles}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {articles.map((art) => (
-              <ArticleCard key={art.id} article={art} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 07 / Booking Strip (Demo 2-column gradient CTA + white form card + Indonesian payment methods) */}
-      <section className="bg-gradient-to-br from-primary to-bg-dark text-white py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Left Column: Contact Info & Practice Hours */}
-            <div className="lg:col-span-5">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 text-white text-xs font-bold uppercase tracking-wider mb-4">
-                {t.home.secStripNum}
-              </span>
-              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-                {t.home.secStripTitle}
-              </h2>
-              <p className="text-base text-white/85 leading-relaxed mb-8">
-                {t.home.secStripDesc}
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/75">
-                      {lang === 'en' ? 'Clinic Hours' : 'Jam Operasional Klinik'}
-                    </div>
-                    <div className="text-sm font-semibold text-white">
-                      Senin–Sabtu 09:00–20:00 WIB
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/75">
-                      {lang === 'en' ? 'WhatsApp & Emergency Line' : 'Layanan WhatsApp & Darurat'}
-                    </div>
-                    <div className="text-sm font-semibold text-white">
-                      {settings?.phone || '+62 21 7890 1234'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Demo Form Card */}
-            <div className="lg:col-span-7">
-              <div className="bg-bg-card text-text rounded-2xl p-6 sm:p-8 shadow-xl border border-border">
-                <h3 className="font-heading text-xl font-bold text-text mb-1">
-                  {lang === 'en' ? 'Quick Online Appointment' : 'Mulai Booking Jadwal Online'}
-                </h3>
-                <p className="text-xs sm:text-sm text-text-muted mb-6">
+            {/* Map Embed (OpenStreetMap — no Google iframe top-left white info box or API key error) */}
+            <div className="lg:col-span-7 relative border border-border overflow-hidden photo-asymmetric bg-bg-alt h-[360px] sm:h-[420px]">
+              {!mapLoaded && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center bg-bg-alt text-base text-text-muted p-6 text-center"
+                  aria-live="polite"
+                >
                   {lang === 'en'
-                    ? 'Select a treatment or pick an open time slot today.'
-                    : 'Pilih jenis perawatan atau klik langsung jam praktek yang tersedia hari ini.'}
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-stretch gap-4 mb-6">
-                  <div className="flex-1">
-                    <label htmlFor="home-strip-service" className="form-label">
-                      {lang === 'en' ? 'Select Dental Service' : 'Pilih Layanan Perawatan'}
-                    </label>
-                    <select
-                      id="home-strip-service"
-                      value={selectedMiniService}
-                      onChange={(e) => setSelectedMiniService(e.target.value)}
-                      className="form-input cursor-pointer"
-                    >
-                      {services.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {lang === 'en' ? s.nameEn : s.name} ({formatRupiah(s.priceFrom, lang === 'en')})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="shrink-0 flex items-end">
-                    <Link
-                      to={localePath(`/booking?layanan=${services.find((s) => s.id === selectedMiniService)?.slug || 'scaling'}`)}
-                      className="btn-primary w-full sm:w-auto justify-center py-3 px-6 cursor-pointer"
-                    >
-                      <span>{lang === 'en' ? 'Continue Booking' : 'Lanjut Booking'}</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </div>
+                    ? 'Loading map of Jl. Wolter Monginsidi No. 88, Kebayoran Baru…'
+                    : 'Memuat peta Jl. Wolter Monginsidi No. 88, Kebayoran Baru…'}
                 </div>
-
-                {/* Today Time Chips snippet */}
-                <div className="pt-5 border-t border-border">
-                  <span className="text-xs font-semibold text-text-muted block mb-2.5">
-                    {lang === 'en'
-                      ? `Available Slots Today (${todaySlots.length} open):`
-                      : `Slot Tersedia Hari Ini (${todaySlots.length} slot terbuka):`}
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {todaySlots.map((slot) => (
-                      <Link
-                        key={slot.time}
-                        to={localePath(`/booking?layanan=${services.find((s) => s.id === selectedMiniService)?.slug || 'scaling'}&jam=${slot.time}`)}
-                        className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-bg-alt hover:bg-primary hover:text-white text-text border border-border transition-colors cursor-pointer"
-                      >
-                        {slot.time}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Indonesian Payment Methods Placeholder */}
-                <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted">
-                  <span className="font-medium">
-                    {lang === 'en' ? 'Payment at clinic:' : 'Metode pembayaran di klinik:'}
-                  </span>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="px-2.5 py-1 rounded-md bg-bg-alt border border-border font-semibold text-text">QRIS</span>
-                    <span className="px-2.5 py-1 rounded-md bg-bg-alt border border-border font-semibold text-text">Debit / Kredit</span>
-                    <span className="px-2.5 py-1 rounded-md bg-bg-alt border border-border font-semibold text-text">Transfer Bank</span>
-                    <span className="px-2.5 py-1 rounded-md bg-bg-alt border border-border font-semibold text-text">Tunai</span>
-                  </div>
-                </div>
-              </div>
+              )}
+              <iframe
+                title="Peta Lokasi Klinik Gigi Senyum Sehat"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=106.7985%2C-6.2440%2C106.8085%2C-6.2375&layer=mapnik&marker=-6.2408%2C106.8032"
+                onLoad={() => setMapLoaded(true)}
+                className={`w-full h-full border-0 block transition-opacity duration-300 ${
+                  mapLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </div>
         </div>

@@ -23,7 +23,7 @@ export const ContactPage: React.FC = () => {
         path="/kontak"
       />
 
-      <div className="py-10 md:py-16 bg-gradient-to-b from-bg to-bg-alt">
+      <div className="py-10 md:py-16 bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 max-w-3xl">
             <span className="badge badge-primary mb-3">
@@ -76,10 +76,10 @@ export const ContactPage: React.FC = () => {
                     href={waLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-primary w-full justify-between py-3.5 px-5 text-sm cursor-pointer"
+                    className="btn-whatsapp w-full justify-between py-3.5 px-5 text-sm cursor-pointer"
                   >
                     <span>{t.contact.chatWhatsApp}</span>
-                    <span>+{settings.whatsappNumber} →</span>
+                    <span>+{settings.whatsappNumber}</span>
                   </a>
 
                   <a
@@ -139,12 +139,16 @@ export const ContactPage: React.FC = () => {
                 </a>
               </div>
 
-              {/* Map Placeholder Block */}
-              <PhotoPlaceholder
-                label="[PETA LOKASI KLINIK]"
-                sublabel={t.contact.mapPlaceholderNotice}
-                aspect="16:9"
-              />
+              {/* Embedded Map Block */}
+              <div className="trust-card p-0 bg-bg-alt overflow-hidden h-[340px] sm:h-[380px]">
+                <iframe
+                  title="Peta Lokasi Klinik Gigi Senyum Sehat"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=106.7985%2C-6.2440%2C106.8085%2C-6.2375&layer=mapnik&marker=-6.2408%2C106.8032"
+                  className="w-full h-full border-0 block"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </div>
           </div>
         </div>
