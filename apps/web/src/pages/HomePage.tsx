@@ -229,7 +229,7 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Right: Contained doctor photo within grid container with auto cross-fade */}
+            {/* Right: Layered stack slider with blurred background cards and slide controls */}
             <div
               className="w-full"
               onMouseEnter={() => setIsHeroPaused(true)}
@@ -245,19 +245,32 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="grid">
+              <div className="relative grid pt-3 pb-5 pr-6 sm:pr-10">
                 {displayDoctors.map((doc, idx) => {
-                  const isActive = idx === safeHeroIndex;
-                  const docSpecialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
+                  const total = displayDoctors.length;
+                  const rel = ((idx - safeHeroIndex) % total + total) % total;
+                  const isActive = rel === 0;
+                  const isNext = rel === 1;
                   const fallbackImg = DEFAULT_HERO_DOCTORS[idx % DEFAULT_HERO_DOCTORS.length].photoUrl;
 
+                  let layerClass =
+                    'z-10 translate-x-6 sm:translate-x-9 translate-y-4 scale-[0.88] opacity-40 blur-[4px] cursor-pointer';
+                  if (isActive) {
+                    layerClass =
+                      'z-30 translate-x-0 translate-y-0 scale-100 opacity-100 blur-0';
+                  } else if (isNext) {
+                    layerClass =
+                      'z-20 translate-x-3 sm:translate-x-5 translate-y-2 scale-[0.94] opacity-70 blur-[2px] cursor-pointer';
+                  }
+
                   return (
-                    <figure
+                    <div
                       key={doc.slug || doc.id}
                       aria-hidden={!isActive}
-                      className={`hero-fade-slide col-start-1 row-start-1 flex flex-col transition-opacity duration-700 ease-in-out ${
-                        isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'
-                      }`}
+                      onClick={() => {
+                        if (!isActive) goToHero(idx);
+                      }}
+                      className={`hero-stack-layer col-start-1 row-start-1 origin-left transition-all duration-700 ease-out ${layerClass}`}
                     >
                       <div className="aspect-[4/3] w-full bg-bg-alt overflow-hidden photo-asymmetric border border-border">
                         <img
@@ -267,33 +280,81 @@ export const HomePage: React.FC = () => {
                           onError={() =>
                             setBrokenPhotos((prev) => ({ ...prev, [doc.slug]: true }))
                           }
-                          className="w-full h-full object-cover object-top"
+                          className="w-full h-full object-cover object-top select-none"
                         />
                       </div>
-
-                      <figcaption className="pt-4 flex flex-wrap items-baseline justify-between gap-2">
-                        <div>
-                          <Link
-                            to={localePath(`/dokter/${doc.slug}`)}
-                            tabIndex={isActive ? 0 : -1}
-                            className="font-heading text-lg font-bold text-text hover:text-primary"
-                          >
-                            {doc.name}
-                          </Link>
-                          <span className="block text-base text-text-muted">
-                            {docSpecialty}
-                          </span>
-                        </div>
-                        {doc.sipNumber && (
-                          <span className="text-base text-text-muted tabular-nums">
-                            {doc.sipNumber}
-                          </span>
-                        )}
-                      </figcaption>
-                    </figure>
+                    </div>
                   );
                 })}
               </div>
+
+              {/* Active doctor caption + Previous / Next slide buttons */}
+              {(() => {
+                const activeDoc = displayDoctors[safeHeroIndex];
+                if (!activeDoc) return null;
+                const activeSpecialty =
+                  lang === 'en' ? activeDoc.specialtyEn : activeDoc.specialty;
+
+                return (
+                  <div className="pt-2 pr-6 sm:pr-10 flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <Link
+                        to={localePath(`/dokter/${activeDoc.slug}`)}
+                        className="font-heading text-lg sm:text-xl font-bold text-text hover:text-primary block truncate"
+                      >
+                        {activeDoc.name}
+                      </Link>
+                      <span className="block text-base text-text-muted truncate">
+                        {activeSpecialty}
+                        {activeDoc.sipNumber ? ` · ${activeDoc.sipNumber}` : ''}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span
+                        className="text-base font-medium text-text-muted tabular-nums mr-1"
+                        aria-live="polite"
+                      >
+                        {safeHeroIndex + 1} / {displayDoctors.length}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => goToHero(safeHeroIndex - 1)}
+                        aria-label={lang === 'en' ? 'Previous specialist' : 'Dokter sebelumnya'}
+                        className="w-10 h-10 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => goToHero(safeHeroIndex + 1)}
+                        aria-label={lang === 'en' ? 'Next specialist' : 'Dokter berikutnya'}
+                        className="w-10 h-10 rounded-[10px] border border-border bg-bg text-text hover:bg-primary hover:text-bg hover:border-primary transition-colors inline-flex items-center justify-center cursor-pointer"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

@@ -337,11 +337,12 @@ textarea:focus-visible,
     transition-duration: 0.01ms !important;
   }
 
-  /* Keep smooth opacity cross-fade on hero doctor slider even when OS reduced-motion is enabled */
-  .hero-fade-slide {
-    transition-property: opacity !important;
-    transition-duration: 700ms !important;
-    transition-timing-function: ease-in-out !important;
+  /* Keep smooth layered stack transition on hero doctor slider even when OS reduced-motion is enabled */
+  .hero-fade-slide,
+  .hero-stack-layer {
+    transition-property: opacity, transform, filter !important;
+    transition-duration: 650ms !important;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 }
 
