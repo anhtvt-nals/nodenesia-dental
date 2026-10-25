@@ -231,7 +231,7 @@ export const HomePage: React.FC = () => {
 
             {/* Right: Compact, fixed-dimension paper-stack slider so left column never shifts */}
             <div
-              className="w-full max-w-[440px] mx-auto lg:ml-auto lg:mr-0 min-w-0 select-none"
+              className="w-full max-w-[520px] mx-auto lg:ml-auto lg:mr-0 min-w-0 select-none"
               onMouseEnter={() => setIsHeroPaused(true)}
               onMouseLeave={() => setIsHeroPaused(false)}
               onFocusCapture={() => setIsHeroPaused(true)}
@@ -245,7 +245,7 @@ export const HomePage: React.FC = () => {
               }}
             >
               {/* TODO: Replace Unsplash demo portraits with real in-clinic specialist photos */}
-              <div className="relative h-[290px] sm:h-[320px] w-full overflow-hidden px-5 py-5">
+              <div className="relative h-[330px] sm:h-[380px] w-full overflow-hidden px-5 py-5">
                 <div className="relative w-full h-full">
                   {displayDoctors.map((doc, idx) => {
                     const total = displayDoctors.length;
