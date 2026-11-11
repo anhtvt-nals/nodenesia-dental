@@ -86,8 +86,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
     }
   };
 
-  // Generate calendar days grid
-  // Days of week: Mo, Tu, We, Th, Fr, Sa, Su (ISO week starting Monday = 1)
+  // Generate calendar days grid (Mon - Sun)
   const firstDayOfMonth = new Date(viewYear, viewMonth, 1);
   const startingDay = (firstDayOfMonth.getDay() + 6) % 7; // 0 = Mon, 6 = Sun
   const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -116,7 +115,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
     });
   }
 
-  // Selected date formatted for title e.g. "October 4th" or "4 Oktober"
+  // Selected date formatted for title
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const selectedDayNum = selectedDateObj.getDate();
   const getOrdinal = (n: number) => {
@@ -131,8 +130,8 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
   const currentDoctor = doctors.find((d) => d.id === selectedDoctorId);
 
   const cardContent = (
-    <div className={`relative w-full bg-white text-[#1B2623] rounded-[24px] sm:rounded-[28px] border border-[#CBD6D0]/70 overflow-hidden ${
-      embedded ? 'p-6 sm:p-9 shadow-sm' : 'my-auto max-w-[940px] shadow-2xl p-6 sm:p-9'
+    <div className={`relative w-full bg-surface text-secondary rounded-3xl border border-border overflow-hidden ${
+      embedded ? 'p-6 sm:p-8 shadow-soft' : 'my-auto max-w-[940px] shadow-floating p-6 sm:p-9'
     }`}>
       {/* Close Button (modal mode only) */}
       {!embedded && onClose && (
@@ -140,7 +139,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
           type="button"
           onClick={onClose}
           aria-label={lang === 'en' ? 'Close dialog' : 'Tutup dialog'}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-[#51605B] hover:text-[#12392F] hover:bg-black/5 transition-colors cursor-pointer"
+          className="absolute top-6 right-6 w-9 h-9 rounded-full flex items-center justify-center text-text-muted hover:text-secondary hover:bg-bg-alt transition-colors cursor-pointer"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -148,15 +147,18 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
         </button>
       )}
 
-      {/* Modal/Header Title matching booking.png */}
-      <div className="text-center mb-8 pr-6 pl-6">
-        <h2 className="font-heading text-2xl sm:text-[1.85rem] font-bold text-[#12392F] tracking-tight">
-          {lang === 'en' ? 'Select a convenient date and doctor' : 'Pilih jadwal tanggal dan dokter yang sesuai'}
+      {/* Header Prompt */}
+      <div className="text-center mb-8 pr-4 pl-4">
+        <span className="text-xs uppercase tracking-widest font-bold text-accent block mb-1.5">
+          {lang === 'en' ? 'STEP 02 & 03 / SCHEDULE & SPECIALIST' : 'LANGKAH 02 & 03 / JADWAL & DOKTER'}
+        </span>
+        <h2 className="font-heading text-2xl sm:text-3xl font-bold text-secondary tracking-tight">
+          {lang === 'en' ? 'Select a convenient date and doctor' : 'Pilih tanggal kunjungan dan dokter spesialis'}
         </h2>
         {serviceName && (
-          <p className="text-xs sm:text-sm text-[#51605B] mt-1.5">
-            {lang === 'en' ? 'Service: ' : 'Layanan: '}
-            <strong className="text-[#12392F]">{serviceName}</strong>
+          <p className="text-xs sm:text-sm text-text-muted mt-2">
+            {lang === 'en' ? 'Selected Treatment: ' : 'Layanan Dipilih: '}
+            <strong className="text-primary font-bold">{serviceName}</strong>
           </p>
         )}
       </div>
@@ -164,33 +166,33 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
       {/* 2-Column Split: Calendar (Left) & Doctor/Slots (Right) */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_1.15fr] gap-7 lg:gap-9 items-start">
         {/* Left Column: Calendar Picker with Legend */}
-        <div className="bg-[#F8FAF9] p-5 sm:p-6 rounded-[22px] border border-[#CBD6D0]/60">
-          {/* Status Legend matching booking.png */}
-          <div className="flex items-center gap-4 mb-5 text-xs text-[#51605B]">
+        <div className="bg-bg-alt/70 p-5 sm:p-6 rounded-2xl border border-border">
+          {/* Status Legend */}
+          <div className="flex items-center gap-4 mb-4 text-xs text-text-muted">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#E5E7EB]" />
-              <span>{lang === 'en' ? 'Occupied' : 'Tutup / Penuh'}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-border" />
+              <span>{lang === 'en' ? 'Closed' : 'Tutup'}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#DDEAE3] border border-[#CBD6D0]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-surface border border-border" />
               <span>{lang === 'en' ? 'Available' : 'Tersedia'}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#12392F]" />
-              <span>{lang === 'en' ? 'Allocated' : 'Dipilih'}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+              <span className="text-primary font-bold">{lang === 'en' ? 'Selected' : 'Dipilih'}</span>
             </div>
           </div>
 
           {/* Calendar Month & Controls */}
           <div className="flex items-center justify-between mb-4">
-            <span className="font-heading font-bold text-base sm:text-lg text-[#12392F]">
+            <span className="font-heading font-bold text-base sm:text-lg text-secondary">
               {monthName} {viewYear}
             </span>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={handlePrevMonth}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5 text-[#51605B] transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-border/60 text-text-muted transition-colors cursor-pointer"
                 aria-label="Previous month"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -200,7 +202,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
               <button
                 type="button"
                 onClick={handleNextMonth}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5 text-[#51605B] transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-border/60 text-text-muted transition-colors cursor-pointer"
                 aria-label="Next month"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -210,8 +212,8 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
             </div>
           </div>
 
-          {/* Days of week header (Mo Tu We Th Fr Sa Su) */}
-          <div className="grid grid-cols-7 text-center text-xs font-semibold text-[#51605B] mb-2.5">
+          {/* Days of week header */}
+          <div className="grid grid-cols-7 text-center text-xs font-bold text-text-muted mb-2">
             <span>{lang === 'en' ? 'Mo' : 'Sn'}</span>
             <span>{lang === 'en' ? 'Tu' : 'Sl'}</span>
             <span>{lang === 'en' ? 'We' : 'Rb'}</span>
@@ -231,11 +233,11 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
               const isSelected = selectedDate === cell.dateStr;
               const isDisabled = cell.isPast || cell.isSunday;
 
-              let btnStyles = 'bg-white text-[#1B2623] hover:bg-[#DDEAE3] border border-[#CBD6D0]/70 cursor-pointer shadow-2xs';
+              let btnStyles = 'bg-surface text-secondary hover:bg-primary/10 border border-border cursor-pointer shadow-xs';
               if (isDisabled) {
-                btnStyles = 'bg-transparent text-[#9CA3AF] cursor-not-allowed opacity-40';
+                btnStyles = 'bg-transparent text-text-muted/40 cursor-not-allowed opacity-40';
               } else if (isSelected) {
-                btnStyles = 'bg-[#12392F] text-white font-bold border-[#12392F] shadow-sm';
+                btnStyles = 'bg-primary text-white font-bold border-primary shadow-xs ring-2 ring-primary/20 scale-[1.04]';
               }
 
               return (
@@ -244,7 +246,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
                   type="button"
                   disabled={isDisabled}
                   onClick={() => onSelectDate(cell.dateStr)}
-                  className={`aspect-square rounded-full text-xs sm:text-sm transition-all flex items-center justify-center ${btnStyles}`}
+                  className={`aspect-square rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center ${btnStyles}`}
                 >
                   {cell.dayNum}
                 </button>
@@ -255,19 +257,23 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
 
         {/* Right Column: Date Header + Doctor Cards with inline time chips */}
         <div>
-          <h3 className="font-heading text-lg sm:text-xl font-bold text-[#12392F] mb-4">
-            {formattedSelectedHeader}
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-heading text-lg sm:text-xl font-bold text-secondary">
+              {formattedSelectedHeader}
+            </h3>
+            <span className="text-xs font-semibold text-text-muted">
+              {doctors.length} {lang === 'en' ? 'Specialists' : 'Dokter Praktek'}
+            </span>
+          </div>
 
           {/* Doctors list */}
-          <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
+          <div className="space-y-3.5 max-h-[440px] overflow-y-auto pr-1">
             {doctors.map((doc) => {
               const isDocSelected = selectedDoctorId === doc.id;
               const specialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
               const fallbackImg =
                 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=200&h=200&q=80';
 
-              // Available slot times for this doctor
               const docSlots = slots.filter(
                 (s) => s.doctorId === doc.id || !s.doctorId
               );
@@ -276,14 +282,14 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
                 <div
                   key={doc.id}
                   onClick={() => onSelectDoctor(doc.id)}
-                  className={`p-4 sm:p-5 rounded-[20px] border transition-all cursor-pointer ${
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
                     isDocSelected
-                      ? 'bg-[#EFF5F2] border-[#12392F]/50 ring-1 ring-[#12392F]/20 shadow-xs'
-                      : 'bg-[#F8FAF9] border-[#CBD6D0]/60 hover:bg-[#F0F5F2]'
+                      ? 'bg-primary/5 border-primary ring-1 ring-primary/20 shadow-xs'
+                      : 'bg-surface border-border hover:border-primary/40 hover:bg-bg-alt/40'
                   }`}
                 >
                   <div className="flex items-center gap-3.5 mb-3">
-                    <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-full overflow-hidden shrink-0 border border-[#CBD6D0] bg-white">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-border bg-bg-alt">
                       <img
                         src={doc.photoUrl || fallbackImg}
                         alt={doc.name}
@@ -291,24 +297,19 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="font-heading font-bold text-base sm:text-lg text-[#12392F] truncate">
+                      <h4 className="font-heading font-bold text-base sm:text-lg text-secondary truncate">
                         {doc.name}
                       </h4>
-                      <p className="text-xs text-[#51605B] truncate mt-0.5">
-                        {doc.experienceYears
-                          ? `${lang === 'en' ? 'Experience' : 'Pengalaman'}: ${doc.experienceYears} ${lang === 'en' ? 'years' : 'tahun'}`
-                          : ''}
-                      </p>
-                      <p className="text-xs text-[#51605B] truncate">
-                        {specialty}
+                      <p className="text-xs text-accent font-semibold truncate">
+                        {specialty} {doc.experienceYears ? `· ${doc.experienceYears} th` : ''}
                       </p>
                     </div>
                   </div>
 
-                  {/* Time Slot Chips matching booking.png */}
-                  <div className="pt-2.5 border-t border-[#CBD6D0]/40">
+                  {/* Time Slot Chips */}
+                  <div className="pt-2.5 border-t border-border/60">
                     {loadingSlots ? (
-                      <div className="py-2 text-xs text-[#51605B] italic flex items-center gap-2">
+                      <div className="py-2 text-xs text-text-muted italic flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full border-2 border-primary border-t-transparent animate-spin inline-block" />
                         <span>{lang === 'en' ? 'Checking time slots…' : 'Memeriksa slot jam…'}</span>
                       </div>
@@ -327,10 +328,10 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
                                 onSelectDoctor(doc.id);
                                 onSelectTime(slot.time);
                               }}
-                              className={`px-3 py-1.5 rounded-[9px] text-xs font-semibold tabular-nums transition-all cursor-pointer ${
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold tabular-nums transition-all cursor-pointer ${
                                 isSlotActive
-                                  ? 'bg-[#12392F] text-white shadow-xs ring-1 ring-[#12392F]'
-                                  : 'bg-white text-[#12392F] border border-[#CBD6D0] hover:bg-[#12392F] hover:text-white'
+                                  ? 'bg-primary text-white shadow-xs ring-1 ring-primary'
+                                  : 'bg-bg-alt text-secondary border border-border hover:bg-primary hover:text-white'
                               }`}
                             >
                               {slot.time}
@@ -339,7 +340,7 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
                         })}
                       </div>
                     ) : (
-                      <p className="text-xs text-[#9CA3AF]">
+                      <p className="text-xs text-text-muted">
                         {lang === 'en'
                           ? 'No slots available for this date'
                           : 'Tidak ada slot waktu di tanggal ini'}
@@ -353,14 +354,14 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
         </div>
       </div>
 
-      {/* Modal/Card Footer Summary & Continue CTA matching booking.png */}
-      <div className="mt-8 pt-5 border-t border-[#CBD6D0]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Footer Summary & Continue CTA */}
+      <div className="mt-8 pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
-              className="px-4 py-2 text-xs sm:text-sm font-semibold rounded-full border border-[#CBD6D0] text-[#51605B] hover:text-[#12392F] hover:bg-black/5 transition-colors cursor-pointer inline-flex items-center gap-1.5"
+              className="btn-secondary rounded-xl text-xs sm:text-sm px-4 py-2 cursor-pointer inline-flex items-center gap-1.5"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
@@ -369,24 +370,24 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
             </button>
           )}
 
-          <div className="text-sm text-[#1B2623] truncate">
+          <div className="text-sm text-secondary truncate">
             {selectedDate && (
-              <span className="font-semibold text-[#12392F]">
+              <span className="font-semibold text-secondary">
                 {formattedSelectedHeader}
               </span>
             )}
             {selectedTime && (
-              <span className="font-bold text-[#12392F] ml-1.5 px-2.5 py-0.5 rounded-md bg-[#EAF3EF] border border-[#CBD6D0]/40">
-                ({selectedTime} WIB)
+              <span className="font-bold text-primary ml-1.5 px-2.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                {selectedTime} WIB
               </span>
             )}
             {currentDoctor && (
-              <span className="text-[#51605B] ml-2 truncate">
+              <span className="text-text-muted ml-2 truncate">
                 — {currentDoctor.name}
               </span>
             )}
             {!selectedTime && (
-              <span className="text-xs text-[#9CA3AF] ml-2 italic">
+              <span className="text-xs text-text-muted ml-2 italic">
                 {lang === 'en' ? '(Select a time slot)' : '(Pilih salah satu slot jam)'}
               </span>
             )}
@@ -397,13 +398,11 @@ export const WhitebloomBookingModal: React.FC<WhitebloomBookingProps> = ({
           type="button"
           disabled={!selectedTime}
           onClick={onContinue}
-          className={`px-9 py-3 rounded-full text-base font-semibold transition-all cursor-pointer ${
-            selectedTime
-              ? 'bg-[#12392F] text-white hover:bg-[#1E5245] shadow-sm'
-              : 'bg-[#CBD6D0]/60 text-[#9CA3AF] cursor-not-allowed'
+          className={`btn-primary rounded-xl px-8 py-3 text-sm font-semibold transition-all cursor-pointer ${
+            !selectedTime ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''
           }`}
         >
-          {lang === 'en' ? 'Continue' : 'Lanjutkan'}
+          {lang === 'en' ? 'Continue' : 'Lanjutkan ke Data Pasien'}
         </button>
       </div>
     </div>

@@ -1,10 +1,15 @@
-import { FormEvent, useState } from 'react';
+import { ContentFormDrawer } from '../content/ContentFormDrawer';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Empty, Form, Input, Space, Switch, Table, Typography } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
 import { createFaq, updateFaq, type AdminFaq } from '../../api/admin-api';
-
+import { tr, useAdminTranslation } from '../../i18n';
 type Props = { accessToken: string; faqs: AdminFaq[]; onChanged: (faqs: AdminFaq[]) => void; onError: (message: string) => void };
-
-export function FaqManager({ accessToken, faqs, onChanged, onError }: Props) {
-  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const form = new FormData(event.currentTarget); try { const faq = await createFaq(accessToken, { question: String(form.get('question')), answer: String(form.get('answer')) }); onChanged([...faqs, faq]); event.currentTarget.reset(); } catch (error) { onError((error as Error).message); } }
+type FaqInput = { question: string; answer: string };
+export function FaqManager({ accessToken, faqs, onChanged, onError }: Props) { const [form] = Form.useForm<FaqInput>(); const [open, setOpen] = useState(false); const [saving, setSaving] = useState(false);
+  useAdminTranslation();
+  async function submit(values: FaqInput) { setSaving(true); try { const faq = await createFaq(accessToken, values); onChanged([...faqs, faq]); form.resetFields(); setOpen(false); } catch (error) { onError((error as Error).message); } finally { setSaving(false); } }
   async function toggle(faq: AdminFaq) { try { const updated = await updateFaq(accessToken, faq.id, { isPublished: !faq.isPublished }); onChanged(faqs.map((item) => item.id === faq.id ? updated : item)); } catch (error) { onError((error as Error).message); } }
-  return <section aria-labelledby="faqs-heading"><h2 id="faqs-heading">FAQ</h2><table><thead><tr><th>Câu hỏi</th><th>Public</th></tr></thead><tbody>{faqs.map((faq) => <tr key={faq.id}><td>{faq.question}</td><td><button type="button" onClick={() => void toggle(faq)}>{faq.isPublished ? 'Đang hiển thị' : 'Bản nháp'}</button></td></tr>)}</tbody></table><form onSubmit={submit}><h3>Thêm câu hỏi</h3><label>Câu hỏi<input name="question" required /></label><label>Trả lời<textarea name="answer" required /></label><button>Thêm FAQ</button></form></section>;
-}
+  const columns: ColumnsType<AdminFaq> = [{ title: tr('Pertanyaan', 'Question'), dataIndex: 'question' }, { title: tr('Dipublikasikan', 'Published'), width: 150, render: (_, faq) => <Switch checked={faq.isPublished} onChange={() => void toggle(faq)} /> }, { title: tr('Tindakan', 'Actions'), width: 90, render: (_, faq) => <Button type="text" icon={faq.isPublished ? <EyeInvisibleOutlined /> : <EyeOutlined />} aria-label={faq.isPublished ? tr('Sembunyikan FAQ', 'Hide FAQ') : tr('Publikasikan FAQ', 'Publish FAQ')} title={faq.isPublished ? tr('Sembunyikan FAQ', 'Hide FAQ') : tr('Publikasikan FAQ', 'Publish FAQ')} onClick={() => void toggle(faq)} /> }];
+  return <section aria-labelledby="faqs-heading"><Space className="section-heading"><Typography.Title level={2} id="faqs-heading">FAQ</Typography.Title><Button type="primary" onClick={() => setOpen(true)}>{tr('Tambah FAQ', 'Add FAQ')}</Button></Space><Table rowKey="id" columns={columns} dataSource={faqs} locale={{ emptyText: <Empty description={tr('Belum ada FAQ', 'No FAQs yet')} /> }} pagination={{ pageSize: 20, showSizeChanger: false }} /><ContentFormDrawer title={tr('Tambah FAQ', 'Add FAQ')} open={open} onClose={() => setOpen(false)} onSave={() => form.submit()} saving={saving}><Form form={form} layout="vertical" disabled={saving} scrollToFirstError onFinish={(values) => void submit(values)}><Form.Item name="question" label={tr('Pertanyaan', 'Question')} rules={[{ required: true, message: tr('Pertanyaan wajib diisi', 'Question is required') }]}><Input /></Form.Item><Form.Item name="answer" label={tr('Jawaban', 'Answer')} rules={[{ required: true, message: tr('Jawaban wajib diisi', 'Answer is required') }]}><Input.TextArea rows={6} /></Form.Item></Form></ContentFormDrawer></section>; }

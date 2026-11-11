@@ -1,24 +1,15 @@
-import { FormEvent, useState } from 'react';
+import { ContentFormDrawer } from '../content/ContentFormDrawer';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Empty, Form, Input, Select, Space, Switch, Table, Typography } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
 import { createGalleryItem, updateGalleryItem, type GalleryItem } from '../../api/admin-api';
-
+import { tr, useAdminTranslation } from '../../i18n';
 type Props = { accessToken: string; items: GalleryItem[]; onChanged: (items: GalleryItem[]) => void; onError: (message: string) => void };
-const empty: { type: 'before_after' | 'photo'; beforeUrl: string; afterUrl: string; caption: string; consentConfirmed: boolean; sortOrder: number } = { type: 'photo', beforeUrl: '', afterUrl: '', caption: '', consentConfirmed: false, sortOrder: 0 };
-
-export function GalleryManager({ accessToken, items, onChanged, onError }: Props) {
-  const [form, setForm] = useState(empty);
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      const item = await createGalleryItem(accessToken, { ...form, beforeUrl: form.beforeUrl || null, afterUrl: form.afterUrl || null, caption: form.caption || null, serviceId: null, isPublished: false });
-      onChanged([...items, item]);
-      setForm(empty);
-    } catch (error) { onError((error as Error).message); }
-  }
-  async function toggle(item: GalleryItem) {
-    try {
-      const updated = await updateGalleryItem(accessToken, item.id, { isPublished: !item.isPublished });
-      onChanged(items.map((current) => current.id === item.id ? updated : current));
-    } catch (error) { onError((error as Error).message); }
-  }
-  return <section aria-labelledby="gallery-heading"><h2 id="gallery-heading">Ảnh điều trị</h2><table><thead><tr><th>Ảnh</th><th>Consent</th><th>Public</th></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td>{item.caption ?? item.type}</td><td>{item.consentConfirmed ? 'Đã xác nhận' : 'Chưa có'}</td><td><button type="button" disabled={!item.consentConfirmed} onClick={() => void toggle(item)}>{item.isPublished ? 'Đang hiển thị' : 'Bản nháp'}</button></td></tr>)}</tbody></table><form onSubmit={submit}><h3>Thêm ảnh bằng URL</h3><label>Loại<select value={form.type} onChange={(event) => setForm({ ...form, type: event.target.value as 'photo' | 'before_after' })}><option value="photo">Ảnh sau điều trị</option><option value="before_after">Trước / sau</option></select></label>{form.type === 'before_after' && <label>URL ảnh trước<input type="url" value={form.beforeUrl} onChange={(event) => setForm({ ...form, beforeUrl: event.target.value })} required /></label>}<label>URL ảnh sau<input type="url" value={form.afterUrl} onChange={(event) => setForm({ ...form, afterUrl: event.target.value })} required /></label><label>Chú thích<input value={form.caption} onChange={(event) => setForm({ ...form, caption: event.target.value })} /></label><label><input type="checkbox" checked={form.consentConfirmed} onChange={(event) => setForm({ ...form, consentConfirmed: event.target.checked })} required /> Đã có đồng ý bằng văn bản của bệnh nhân</label><button>Tạo bản nháp</button></form></section>;
-}
+type GalleryInput = { type: 'before_after' | 'photo'; beforeUrl?: string; afterUrl: string; caption?: string; consentConfirmed: boolean; sortOrder: number };
+export function GalleryManager({ accessToken, items, onChanged, onError }: Props) { const [form] = Form.useForm<GalleryInput>(); const [open, setOpen] = useState(false); const [saving, setSaving] = useState(false);
+  useAdminTranslation();
+  async function submit(values: GalleryInput) { setSaving(true); try { const item = await createGalleryItem(accessToken, { ...values, beforeUrl: values.beforeUrl || null, afterUrl: values.afterUrl || null, caption: values.caption || null, serviceId: null, isPublished: false }); onChanged([...items, item]); form.resetFields(); setOpen(false); } catch (error) { onError((error as Error).message); } finally { setSaving(false); } }
+  async function toggle(item: GalleryItem) { try { const updated = await updateGalleryItem(accessToken, item.id, { isPublished: !item.isPublished }); onChanged(items.map((current) => current.id === item.id ? updated : current)); } catch (error) { onError((error as Error).message); } }
+  const columns: ColumnsType<GalleryItem> = [{ title: tr('Keterangan', 'Caption'), render: (_, item) => item.caption ?? (item.type === 'photo' ? tr('Foto perawatan', 'Treatment photo') : tr('Sebelum / sesudah', 'Before / after')) }, { title: tr('Persetujuan', 'Consent'), dataIndex: 'consentConfirmed', render: (value) => value ? tr('Dikonfirmasi', 'Confirmed') : tr('Belum dikonfirmasi', 'Not confirmed') }, { title: tr('Dipublikasikan', 'Published'), width: 150, render: (_, item) => <Switch checked={item.isPublished} disabled={!item.consentConfirmed} onChange={() => void toggle(item)} /> }, { title: tr('Tindakan', 'Actions'), width: 90, render: (_, item) => <Button type="text" disabled={!item.consentConfirmed} icon={item.isPublished ? <EyeInvisibleOutlined /> : <EyeOutlined />} aria-label={item.isPublished ? tr('Sembunyikan foto', 'Hide photo') : tr('Publikasikan foto', 'Publish photo')} title={item.isPublished ? tr('Sembunyikan foto', 'Hide photo') : tr('Publikasikan foto', 'Publish photo')} onClick={() => void toggle(item)} /> }];
+  return <section aria-labelledby="gallery-heading"><Space className="section-heading"><Typography.Title level={2} id="gallery-heading">{tr('Galeri perawatan', 'Treatment gallery')}</Typography.Title><Button type="primary" onClick={() => { form.setFieldsValue({ type: 'photo', consentConfirmed: false, sortOrder: 0 }); setOpen(true); }}>{tr('Tambah foto', 'Add photo')}</Button></Space><Table rowKey="id" columns={columns} dataSource={items} locale={{ emptyText: <Empty description={tr('Belum ada foto', 'No photos yet')} /> }} pagination={{ pageSize: 20, showSizeChanger: false }} /><ContentFormDrawer title={tr('Tambah foto', 'Add photo')} open={open} onClose={() => setOpen(false)} onSave={() => form.submit()} saving={saving}><Form form={form} layout="vertical" disabled={saving} scrollToFirstError onFinish={(values) => void submit(values)}><Form.Item name="type" label={tr('Jenis', 'Type')}><Select options={[{ value: 'photo', label: tr('Foto perawatan', 'Treatment photo') }, { value: 'before_after', label: tr('Sebelum / sesudah', 'Before / after') }]} /></Form.Item><Form.Item noStyle shouldUpdate={(prev, next) => prev.type !== next.type}>{({ getFieldValue }) => getFieldValue('type') === 'before_after' ? <Form.Item name="beforeUrl" label={tr('URL foto sebelum', 'Before photo URL')} rules={[{ required: true }]}><Input /></Form.Item> : null}</Form.Item><Form.Item name="afterUrl" label={tr('URL foto sesudah', 'After photo URL')} rules={[{ required: true }]}><Input /></Form.Item><Form.Item name="caption" label={tr('Keterangan', 'Caption')}><Input /></Form.Item><Form.Item name="consentConfirmed" valuePropName="checked" rules={[{ validator: (_, value) => value ? Promise.resolve() : Promise.reject(new Error(tr('Persetujuan wajib dikonfirmasi', 'Consent must be confirmed'))) }]}><Checkbox>{tr('Pasien telah memberikan persetujuan tertulis', 'The patient has provided written consent')}</Checkbox></Form.Item></Form></ContentFormDrawer></section>; }

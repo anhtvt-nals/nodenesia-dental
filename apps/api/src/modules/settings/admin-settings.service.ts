@@ -7,6 +7,7 @@ export type AdminClinicSettings = {
   waNumber: string;
   address: string;
   timezone: string;
+  adminLocale: string;
   slotStepMinutes: number;
   bookingLeadMinutes: number;
   bookingHorizonDays: number;

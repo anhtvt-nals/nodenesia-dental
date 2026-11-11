@@ -27,6 +27,14 @@ describe('AdminBookingsService', () => {
     expect(repository.list).toHaveBeenCalledWith({ doctorId: 'doctor-id', status: 'confirmed' });
   });
 
+  it('returns the persisted start and end times for calendar events', async () => {
+    const startsAt = new Date('2026-11-03T02:00:00Z');
+    const endsAt = new Date('2026-11-03T02:45:00Z');
+    const repository = { list: vi.fn().mockResolvedValue([{ code: 'DNT-NEW', status: 'confirmed', startsAt, endsAt, patient: { name: 'Patient', phoneE164: '+6281234567890' }, doctor: { name: 'Doctor' }, service: { name: 'Scaling' } }]) };
+    const service = new AdminBookingsService(repository as never, {} as never);
+    expect(await service.list()).toEqual([{ code: 'DNT-NEW', status: 'confirmed', startsAt: startsAt.toISOString(), endsAt: endsAt.toISOString(), patient: { name: 'Patient', phone: '+6281234567890' }, doctor: 'Doctor', service: 'Scaling' }]);
+  });
+
   it('queues a review request only after a booking is completed', async () => {
     const repository = { changeStatus: vi.fn().mockResolvedValue({ count: 1 }), queueReviewRequest: vi.fn().mockResolvedValue(undefined) };
     const service = new AdminBookingsService(repository as never, { record: vi.fn() } as never);

@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../audit-logs/audit-log.service.js';
 import { DoctorsRepository } from './doctors.repository.js';
 
@@ -25,6 +25,14 @@ export class AdminDoctorsService {
     const doctor = await this.repository.update(id, input);
     await this.audit.record({ ...actor, action: 'update', entity: 'doctor', entityId: id, diff: { before, after: input } });
     return doctor;
+  }
+
+  async remove(id: string, actor: Actor) {
+    const doctor = await this.repository.findById(id);
+    if (!doctor) throw new NotFoundException('Doctor not found');
+    if (await this.repository.countBookings(id)) throw new ConflictException('Dokter tidak dapat dihapus karena masih memiliki jadwal janji temu.');
+    await this.repository.delete(id);
+    await this.audit.record({ ...actor, action: 'delete', entity: 'doctor', entityId: id, diff: doctor });
   }
 
   async replaceWorkingHours(id: string, input: WorkingHourInput[], actor: Actor) {

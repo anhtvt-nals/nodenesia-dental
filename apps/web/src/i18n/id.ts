@@ -28,6 +28,7 @@ export const id = {
     heroDoctorTitle: 'Dokter gigi spesialis tetap',
     heroDoctorSubtitle: 'Ditangani dokter gigi spesialis yang sama dari konsultasi awal hingga selesai.',
     heroExperienceLabel: 'Pengalaman klinis',
+    heroTagline: 'Presisi · Kenyamanan · Inovasi · Kepedulian',
     heroTitlePart1: 'Gigi sehat,',
     heroTitleAccent: 'tanpa',
     heroTitlePart2: 'buru-buru.',

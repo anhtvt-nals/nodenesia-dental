@@ -44,13 +44,13 @@ export const DateStrip: React.FC<DateStripProps> = ({
               }`}
               aria-label={`${dayName}, ${dayNumber} ${monthName}${item.isClosed ? ' (' + t.common.closed + ')' : ''}`}
             >
-              <span className={`text-[11px] font-semibold uppercase tracking-wide block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
+              <span className={`text-xs font-semibold uppercase tracking-wide block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
                 {isToday ? t.common.today : dayName.slice(0, 3)}
               </span>
               <span className="font-heading text-2xl font-bold block my-0.5">
                 {dayNumber}
               </span>
-              <span className={`text-[11px] font-medium block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
+              <span className={`text-xs font-medium block ${isSelected ? 'text-white/90' : 'text-text-muted'}`}>
                 {item.isClosed ? t.common.closed : monthName}
               </span>
             </button>

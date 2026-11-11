@@ -7,9 +7,11 @@ export class AdminBookingsRepository {
 
   list(filter: { from?: Date; to?: Date; doctorId?: string; status?: 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'no_show' } = {}) {
     return this.prisma.booking.findMany({
-      where: { ...(filter.doctorId ? { doctorId: filter.doctorId } : {}), ...(filter.status ? { status: filter.status } : {}), ...(filter.from || filter.to ? { startsAt: { ...(filter.from ? { gte: filter.from } : {}), ...(filter.to ? { lt: filter.to } : {}) } } : {}) },
+      where: { ...(filter.doctorId ? { doctorId: filter.doctorId } : {}), ...(filter.status ? { status: filter.status } : {}), ...(filter.to ? { startsAt: { lt: filter.to } } : {}), ...(filter.from ? { endsAt: { gt: filter.from } } : {}) },
       orderBy: { startsAt: 'asc' },
-      take: 100,
+      // Calendar queries are bounded by the displayed date range. Do not drop
+      // appointments because older bookings consumed the default list limit.
+      ...(filter.from && filter.to ? {} : { take: 100 }),
       include: { patient: true, doctor: true, service: true },
     });
   }

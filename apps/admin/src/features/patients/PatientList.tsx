@@ -1,20 +1,15 @@
-import { FormEvent, useState } from 'react';
+import { EditOutlined } from '@ant-design/icons';
+import { Button, Empty, Form, Input, Modal, Space, Table, Typography } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
 import { listPatients, updatePatientNotes, type Patient } from '../../api/admin-api';
-
+import { formatPhone, tr, useAdminTranslation } from '../../i18n';
 type Props = { accessToken: string; patients: Patient[]; onChanged: (patients: Patient[]) => void; onError: (message: string) => void };
-
 export function PatientList({ accessToken, patients, onChanged, onError }: Props) {
-  const [editingId, setEditingId] = useState<string>();
-  const [notes, setNotes] = useState('');
-  const [query, setQuery] = useState('');
-  function edit(patient: Patient) { setEditingId(patient.id); setNotes(patient.notes ?? ''); }
-  async function save(patient: Patient) {
-    try {
-      const updated = await updatePatientNotes(accessToken, patient.id, notes.trim() || null);
-      onChanged(patients.map((item) => item.id === patient.id ? updated : item));
-      setEditingId(undefined);
-    } catch (error) { onError((error as Error).message); }
-  }
-  async function search(event: FormEvent<HTMLFormElement>) { event.preventDefault(); try { onChanged(await listPatients(accessToken, query.trim())); } catch (error) { onError((error as Error).message); } }
-  return <section aria-labelledby="patients-heading"><h2 id="patients-heading">Bệnh nhân</h2><form onSubmit={search}><label>Tìm tên hoặc điện thoại<input value={query} onChange={(event) => setQuery(event.target.value)} /></label><button>Tìm</button></form><table><thead><tr><th>Tên</th><th>Điện thoại</th><th>Lịch hẹn</th><th>Ghi chú nội bộ</th></tr></thead><tbody>{patients.map((patient) => <tr key={patient.id}><td>{patient.name}</td><td>{patient.phoneE164}</td><td>{patient._count.bookings}</td><td>{editingId === patient.id ? <><textarea aria-label={`Ghi chú ${patient.name}`} value={notes} onChange={(event) => setNotes(event.target.value)} /><button type="button" onClick={() => void save(patient)}>Lưu</button></> : <button type="button" onClick={() => edit(patient)}>{patient.notes || 'Thêm ghi chú'}</button>}</td></tr>)}</tbody></table></section>;
+  useAdminTranslation();
+  const [editing, setEditing] = useState<Patient>(); const [notes, setNotes] = useState(''); const [query, setQuery] = useState(''); const [saving, setSaving] = useState(false);
+  async function search() { try { onChanged(await listPatients(accessToken, query.trim())); } catch (error) { onError((error as Error).message); } }
+  async function save() { if (!editing) return; setSaving(true); try { const updated = await updatePatientNotes(accessToken, editing.id, notes.trim() || null); onChanged(patients.map((item) => item.id === editing.id ? updated : item)); setEditing(undefined); } catch (error) { onError((error as Error).message); } finally { setSaving(false); } }
+  const columns: ColumnsType<Patient> = [{ title: tr('Nama', 'Name'), dataIndex: 'name', render: (name) => <Typography.Text strong>{name}</Typography.Text> }, { title: tr('Telepon', 'Phone'), dataIndex: 'phoneE164', render: formatPhone }, { title: tr('Janji temu', 'Appointments'), dataIndex: ['_count', 'bookings'], width: 130 }, { title: tr('Catatan internal', 'Internal notes'), dataIndex: 'notes', render: (value) => value || '—' }, { title: tr('Tindakan', 'Actions'), width: 90, render: (_, patient) => <Button type="text" icon={<EditOutlined />} aria-label={tr('Ubah catatan internal', 'Edit internal notes')} title={tr('Ubah catatan internal', 'Edit internal notes')} onClick={() => { setEditing(patient); setNotes(patient.notes ?? ''); }} /> }];
+  return <section aria-labelledby="patients-heading"><Typography.Title level={2} id="patients-heading">{tr('Pasien', 'Patients')}</Typography.Title><Space.Compact className="patient-search"><Input aria-label={tr('Cari pasien', 'Search patients')} value={query} onChange={(event) => setQuery(event.target.value)} onPressEnter={() => void search()} placeholder={tr('Cari nama atau telepon', 'Search name or phone')} /><Button type="primary" onClick={() => void search()}>{tr('Cari', 'Search')}</Button></Space.Compact><Table rowKey="id" columns={columns} dataSource={patients} scroll={{ x: 760 }} locale={{ emptyText: <Empty description={tr('Belum ada data pasien', 'No patient data yet')} /> }} pagination={{ pageSize: 20, showSizeChanger: false, showTotal: (total, range) => tr(`Menampilkan ${range[0]}-${range[1]} dari ${total}`, `Showing ${range[0]}-${range[1]} of ${total}`) }} /><Modal title={`${tr('Catatan', 'Notes')}: ${editing?.name ?? ''}`} open={Boolean(editing)} onOk={() => void save()} onCancel={() => setEditing(undefined)} okText={tr('Simpan perubahan', 'Save changes')} cancelText={tr('Batal', 'Cancel')} confirmLoading={saving}><Form layout="vertical"><Form.Item label={tr('Catatan internal', 'Internal notes')}><Input.TextArea value={notes} onChange={(event) => setNotes(event.target.value)} rows={5} /></Form.Item></Form></Modal></section>;
 }

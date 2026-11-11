@@ -1,7 +1,7 @@
+import { PageHeader } from '../components/common/PageHeader';
 import React from 'react';
 import { useI18n } from '../i18n';
 import { AppHelmet } from '../components/common/AppHelmet';
-import { PhotoPlaceholder } from '../components/common/PhotoPlaceholder';
 
 const FACILITY_PHOTOS = [
   'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80',
@@ -23,54 +23,73 @@ export const FacilitiesPage: React.FC = () => {
         path="/fasilitas"
       />
 
-      <div className="py-10 md:py-16 bg-bg">
+      <PageHeader title={t.facilities.pageTitle} description={t.facilities.pageDesc} />
+
+      <div className="page-content bg-bg py-6 sm:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 max-w-3xl">
-            <span className="badge badge-primary mb-3">
-              {lang === 'en' ? 'Medical Standards & Comfort' : 'Standar Medis & Kenyamanan'}
-            </span>
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-text tracking-tight mb-4 text-balance">
-              {t.facilities.pageTitle}
-            </h1>
-            <p className="text-base text-text-muted leading-relaxed">
-              {t.facilities.pageDesc}
-            </p>
+
+          {/* Standards Overview Banner */}
+          <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-secondary text-surface shadow-floating relative overflow-hidden">
+            <div className="relative z-10 max-w-3xl space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-accent block">
+                {lang === 'en' ? 'Clinical Infrastructure & Hygiene' : 'Infrastruktur Klinis & Higienitas'}
+              </span>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-surface">
+                {lang === 'en'
+                  ? 'Built for Sterile Precision & Patient Comfort'
+                  : 'Dirancang untuk Presisi Medis Steril & Kenyamanan Menyeluruh'}
+              </h2>
+              <p className="text-xs sm:text-sm text-surface/80 leading-relaxed">
+                {lang === 'en'
+                  ? 'Our clinic features German-engineered Class B autoclaves, low-radiation 3D CBCT imaging, and medical-grade HEPA 14 air filtration in every dental operatory.'
+                  : 'Setiap ruang perawatan dilengkapi sistem sterilisasi Autoclave Kelas B berstandar rumah sakit, pencitraan 3D CBCT dosis radiasi minimal, dan filtrasi udara medis HEPA 14.'}
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Facility Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t.facilities.items.map((facility, index) => (
-              <div key={index} className="trust-card bg-bg-card overflow-hidden p-0 flex flex-col justify-between">
+              <div
+                key={index}
+                className="group bg-surface rounded-2xl border border-border shadow-card hover:shadow-hover hover:border-primary/40 transition-all duration-300 overflow-hidden flex flex-col justify-between"
+              >
                 <div>
-                  <div className="w-full aspect-[16/9] overflow-hidden border-b border-border bg-bg-alt">
+                  <div className="w-full aspect-[16/10] overflow-hidden bg-bg-alt relative">
                     <img
                       src={FACILITY_PHOTOS[index % FACILITY_PHOTOS.length]}
                       alt={facility.title}
                       loading="lazy"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-secondary/85 backdrop-blur-xs text-surface text-[11px] font-mono font-bold tracking-wider">
+                      0{index + 1}
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <span className="badge badge-primary mb-3">
-                      0{index + 1} · TEKNOLOGI
+
+                  <div className="p-6 sm:p-7 space-y-2.5">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-accent block">
+                      TEKNOLOGI MEDIS
                     </span>
-                    <h3 className="font-heading text-xl font-bold text-text mb-2">
+                    <h3 className="font-heading text-xl font-bold text-secondary group-hover:text-primary transition-colors">
                       {facility.title}
                     </h3>
-                    <p className="text-sm text-text-muted leading-relaxed">
+                    <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
                       {facility.desc}
                     </p>
                   </div>
                 </div>
 
-                <div className="px-6 py-4 text-xs font-semibold text-success-dark border-t border-border bg-bg-alt/50 flex items-center gap-2">
-                  <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                <div className="px-6 py-4 text-xs font-semibold text-emerald-800 border-t border-border bg-bg-alt/50 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Teruji & Terkalibrasi Berkala</span>
+                  <span>{lang === 'en' ? 'Certified & Routinely Calibrated' : 'Teruji & Terkalibrasi Berkala'}</span>
                 </div>
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </>

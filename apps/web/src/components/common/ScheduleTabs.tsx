@@ -10,9 +10,9 @@ interface ScheduleTabsProps {
 }
 
 /**
- * Modern Day-Switcher Timeline Schedule (Direction 3).
- * Allows patients to pick a day of the week (Mon–Sat) and view all on-duty specialists
- * with crisp shift time badges, doctor avatar/specialty, and quick booking links.
+ * Segmented control schedule timetable.
+ * Displays on-duty specialists with clear shift slots and handles empty days
+ * gracefully by pointing to the nearest available clinic practice day.
  */
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
   doctors,
@@ -54,10 +54,11 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
   if (doctors.length === 0) {
     return (
       <div
-        className={`py-8 text-center text-base ${
-          isPine ? 'text-bg/80' : 'text-text-muted'
+        className={`py-12 text-center text-base ${
+          isPine ? 'text-white/80' : 'text-text-muted'
         }`}
       >
+        <span className="inline-block w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-3 align-middle" />
         {t.common.loading}
       </div>
     );
@@ -74,10 +75,31 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
     })
     .filter(({ shifts }) => shifts.length > 0);
 
+  // Find nearest day with slots if activeDay has none
+  const findNearestDayWithSlots = (): number => {
+    for (let offset = 1; offset <= 6; offset++) {
+      const checkDay = ((activeDay - 1 + offset) % 6) + 1;
+      const hasSlots = doctors.some((d) => d.workingHours.some((w) => w.weekday === checkDay));
+      if (hasSlots) return checkDay;
+    }
+    return 1; // Default to Monday
+  };
+
+  const nearestDay = findNearestDayWithSlots();
+  const nearestDayName = t.schedule.days[nearestDay as keyof typeof t.schedule.days];
+
   return (
-    <div>
-      {/* 1. Day Selector Bar (Monday - Saturday) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-3 sm:pb-4 no-scrollbar">
+    <div className="w-full">
+      {/* 1. Segmented Control Day Selector */}
+      <div
+        role="tablist"
+        aria-label={lang === 'en' ? 'Select weekday schedule' : 'Pilih jadwal hari praktek'}
+        className={`p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar border ${
+          isPine
+            ? 'bg-black/30 border-white/10 backdrop-blur-md'
+            : 'bg-surface border-border shadow-xs'
+        }`}
+      >
         {weekdays.map((dayNum) => {
           const isSelected = dayNum === activeDay;
           const isToday = dayNum === currentTodayDay;
@@ -87,28 +109,29 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
             <button
               key={dayNum}
               type="button"
+              role="tab"
+              aria-selected={isSelected}
               onClick={() => setActiveDay(dayNum)}
-              className={`relative px-4 py-3 rounded-[12px] text-sm sm:text-base font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 border ${
+              className={`flex-1 min-w-[96px] py-3 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center justify-center gap-2 ${
                 isSelected
                   ? isPine
-                    ? 'bg-bg text-primary border-bg shadow-sm scale-[1.02]'
-                    : 'bg-primary text-bg border-primary shadow-sm scale-[1.02]'
+                    ? 'bg-white text-secondary shadow-md font-bold scale-[1.01]'
+                    : 'bg-primary text-white shadow-md font-bold scale-[1.01]'
                   : isPine
-                  ? 'bg-bg/10 text-bg/85 border-bg/15 hover:bg-bg/15 hover:text-bg'
-                  : 'bg-bg text-text-muted border-border hover:bg-bg-alt hover:text-text'
+                  ? 'text-white/80 hover:text-white hover:bg-white/10'
+                  : 'text-text-muted hover:text-text hover:bg-bg-alt'
               }`}
-              aria-selected={isSelected}
             >
               <span>{dayName}</span>
               {isToday && (
                 <span
-                  className={`text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-[4px] font-bold ${
+                  className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded font-bold ${
                     isSelected
                       ? isPine
-                        ? 'bg-primary/15 text-primary'
-                        : 'bg-bg/20 text-bg'
+                        ? 'bg-accent/20 text-accent-text'
+                        : 'bg-white/20 text-white'
                       : isPine
-                      ? 'bg-bg/25 text-bg'
+                      ? 'bg-white/20 text-white'
                       : 'bg-primary/10 text-primary'
                   }`}
                 >
@@ -121,7 +144,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
       </div>
 
       {/* 2. On-Duty Specialist Timeline Cards */}
-      <div className="mt-5 space-y-3.5">
+      <div className="mt-6 space-y-4">
         {onDutyDoctors.length > 0 ? (
           onDutyDoctors.map(({ doc, shifts }) => {
             const specialty = lang === 'en' ? doc.specialtyEn : doc.specialty;
@@ -131,15 +154,15 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
             return (
               <div
                 key={doc.id}
-                className={`p-4 sm:p-5 rounded-[14px] border transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                className={`p-5 sm:p-6 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 ${
                   isPine
-                    ? 'bg-bg/10 border-bg/20 hover:border-bg/35'
-                    : 'bg-bg-card border-border hover:border-primary/40'
+                    ? 'bg-white/5 border-white/10 hover:border-white/25 hover:bg-white/[0.08]'
+                    : 'bg-surface border-border shadow-soft hover:border-primary/30 hover:shadow-hover'
                 }`}
               >
                 {/* Doctor Identity */}
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 border border-border/40 bg-bg-alt">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shrink-0 border border-white/20 bg-bg-alt shadow-xs">
                     <img
                       src={doc.photoUrl || fallbackImg}
                       alt={doc.name}
@@ -150,36 +173,36 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
                   <div className="min-w-0">
                     <Link
                       to={localePath(`/dokter/${doc.slug}`)}
-                      className={`font-heading font-bold text-base sm:text-lg block truncate ${
-                        isPine ? 'text-bg hover:opacity-85' : 'text-text hover:text-primary'
+                      className={`font-heading font-bold text-lg sm:text-xl block truncate ${
+                        isPine ? 'text-white hover:text-accent' : 'text-secondary hover:text-primary'
                       }`}
                     >
                       {doc.name}
                     </Link>
                     <p
-                      className={`text-sm truncate mt-0.5 ${
-                        isPine ? 'text-bg/80' : 'text-text-muted'
+                      className={`text-sm truncate mt-1 ${
+                        isPine ? 'text-white/75' : 'text-text-muted'
                       }`}
                     >
-                      {specialty}
+                      {specialty} {doc.experienceYears ? `· ${doc.experienceYears} th pengalaman` : ''}
                     </p>
                   </div>
                 </div>
 
                 {/* Shift Hours & Action CTA */}
-                <div className="flex flex-wrap items-center justify-between md:justify-end gap-3 sm:gap-4 pt-3 md:pt-0 border-t md:border-t-0 border-border/20">
+                <div className="flex flex-wrap items-center justify-between md:justify-end gap-3 sm:gap-4 pt-3 md:pt-0 border-t md:border-t-0 border-white/10">
                   <div className="flex flex-wrap items-center gap-2">
                     {shifts.map((s, idx) => (
                       <span
                         key={idx}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-sm font-semibold tabular-nums border ${
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold tabular-nums border ${
                           isPine
-                            ? 'bg-bg/15 text-bg border-bg/25'
-                            : 'bg-bg-alt text-primary border-primary/20'
+                            ? 'bg-white/10 text-white border-white/15'
+                            : 'bg-bg-alt text-secondary border-border'
                         }`}
                       >
                         <svg
-                          className="w-4 h-4 opacity-80"
+                          className="w-4 h-4 text-accent"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
@@ -198,47 +221,84 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
 
                   <Link
                     to={localePath(`/booking?dokter=${doc.id}`)}
-                    className={`inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-sm font-semibold transition-opacity shrink-0 ${
+                    className={`inline-flex items-center justify-center min-h-[46px] px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shrink-0 cursor-pointer ${
                       isPine
-                        ? 'bg-bg text-primary hover:opacity-90'
-                        : 'btn-primary py-2 px-4 text-sm'
+                        ? 'bg-accent text-white hover:bg-accent-hover shadow-md active:scale-[0.98]'
+                        : 'btn-primary'
                     }`}
                   >
-                    {t.schedule.bookSlot || t.common.bookNow}
+                    <span>{t.schedule.bookSlot || t.common.bookNow}</span>
+                    <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
                   </Link>
                 </div>
               </div>
             );
           })
         ) : (
+          /* Graceful State when no slots on this specific day (never an empty dead-end) */
           <div
-            className={`py-10 text-center rounded-[14px] border ${
-              isPine ? 'bg-bg/5 border-bg/15 text-bg/75' : 'bg-bg-alt border-border text-text-muted'
+            className={`p-8 sm:p-10 rounded-2xl border text-center ${
+              isPine ? 'bg-white/5 border-white/10 text-white' : 'bg-surface border-border text-text'
             }`}
           >
-            <p className="text-base font-medium">
+            <div className="w-12 h-12 rounded-full bg-accent/20 text-accent flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path strokeLinecap="round" d="M12 6v6l4 2" />
+              </svg>
+            </div>
+            <h4 className="font-heading font-bold text-xl sm:text-2xl mb-2">
               {lang === 'en'
-                ? 'No specialist practice scheduled on this day.'
-                : 'Tidak ada jadwal praktek dokter spesialis di hari ini.'}
+                ? 'No Practice Slots on this Day'
+                : 'Tidak Ada Praktek Rutin di Hari Ini'}
+            </h4>
+            <p className={`text-sm sm:text-base max-w-lg mx-auto mb-6 leading-relaxed ${isPine ? 'text-white/80' : 'text-text-muted'}`}>
+              {lang === 'en'
+                ? `The clinic is resting or on special procedures. The closest available practice day is ${nearestDayName} starting from 09:00 WIB.`
+                : `Klinik sedang persiapan tindakan khusus atau libur. Jadwal praktek terdekat dengan spesialis tersedia pada hari ${nearestDayName} mulai pukul 09:00 WIB.`}
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setActiveDay(nearestDay)}
+                className="btn-primary rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer"
+              >
+                {lang === 'en' ? `View ${nearestDayName} Schedule` : `Lihat Jadwal ${nearestDayName}`}
+              </button>
+              <Link
+                to={localePath('/booking')}
+                className={`rounded-xl px-5 py-2.5 text-sm font-semibold border transition-all ${
+                  isPine
+                    ? 'border-white/30 text-white hover:bg-white/10'
+                    : 'border-border text-text hover:bg-bg-alt'
+                }`}
+              >
+                {lang === 'en' ? 'Book Custom Date' : 'Buat Janji Fleksibel'}
+              </Link>
+            </div>
           </div>
         )}
       </div>
 
       {/* 3. Footer Note & Sunday Warning */}
-      <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
-        <p className={`flex items-center gap-2 ${isPine ? 'text-bg/80' : 'text-text-muted'}`}>
+      <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm pt-4 border-t border-white/10">
+        <p className={`flex items-center gap-2 ${isPine ? 'text-white/70' : 'text-text-muted'}`}>
           <span className="w-2 h-2 rounded-full bg-accent shrink-0" />
-          <span>{t.schedule.closedSunday}</span>
+          <span>{t.schedule.closedSunday} (Hari Minggu Buka Khusus Janji Darurat via WhatsApp)</span>
         </p>
 
         <Link
           to={localePath('/jadwal')}
-          className={`font-semibold hover:underline underline-offset-4 ${
-            isPine ? 'text-bg/90' : 'text-primary'
+          className={`font-semibold transition-colors flex items-center gap-1.5 ${
+            isPine ? 'text-accent hover:text-white' : 'text-primary hover:underline'
           }`}
         >
-          {lang === 'en' ? 'View all practice details →' : 'Lihat jadwal lengkap 6 hari →'}
+          <span>{lang === 'en' ? 'View all doctors schedule' : 'Lihat direktori jadwal lengkap'}</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
         </Link>
       </div>
     </div>

@@ -1,28 +1,15 @@
-import { FormEvent, useState } from 'react';
+import { ContentFormDrawer } from '../content/ContentFormDrawer';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Empty, Form, Input, InputNumber, Space, Switch, Table, Typography } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
 import { createTestimonial, updateTestimonial, type Testimonial } from '../../api/admin-api';
-
+import { tr, useAdminTranslation } from '../../i18n';
 type Props = { accessToken: string; testimonials: Testimonial[]; onChanged: (testimonials: Testimonial[]) => void; onError: (message: string) => void };
-
-const empty = { name: '', text: '', rating: 5, source: 'Google', sortOrder: 0 };
-
-export function TestimonialManager({ accessToken, testimonials, onChanged, onError }: Props) {
-  const [form, setForm] = useState(empty);
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      const testimonial = await createTestimonial(accessToken, { ...form, isPublished: false });
-      onChanged([...testimonials, testimonial]);
-      setForm(empty);
-    } catch (error) { onError((error as Error).message); }
-  }
-
-  async function toggle(testimonial: Testimonial) {
-    try {
-      const updated = await updateTestimonial(accessToken, testimonial.id, { isPublished: !testimonial.isPublished });
-      onChanged(testimonials.map((item) => item.id === testimonial.id ? updated : item));
-    } catch (error) { onError((error as Error).message); }
-  }
-
-  return <section aria-labelledby="testimonials-heading"><h2 id="testimonials-heading">Đánh giá khách hàng</h2><table><thead><tr><th>Khách hàng</th><th>Điểm</th><th>Public</th></tr></thead><tbody>{testimonials.map((testimonial) => <tr key={testimonial.id}><td>{testimonial.name}</td><td>{testimonial.rating}/5</td><td><button type="button" onClick={() => void toggle(testimonial)}>{testimonial.isPublished ? 'Đang hiển thị' : 'Bản nháp'}</button></td></tr>)}</tbody></table><form onSubmit={submit}><h3>Thêm đánh giá</h3><label>Tên<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required /></label><label>Nội dung<textarea value={form.text} onChange={(event) => setForm({ ...form, text: event.target.value })} required /></label><label>Điểm<input type="number" min="1" max="5" value={form.rating} onChange={(event) => setForm({ ...form, rating: Number(event.target.value) })} required /></label><label>Nguồn<input value={form.source} onChange={(event) => setForm({ ...form, source: event.target.value })} required /></label><button>Tạo bản nháp</button></form></section>;
-}
+type TestimonialInput = { name: string; text: string; rating: number; source: string; sortOrder: number };
+export function TestimonialManager({ accessToken, testimonials, onChanged, onError }: Props) { const [form] = Form.useForm<TestimonialInput>(); const [open, setOpen] = useState(false); const [saving, setSaving] = useState(false);
+  useAdminTranslation();
+  async function submit(values: TestimonialInput) { setSaving(true); try { const testimonial = await createTestimonial(accessToken, { ...values, isPublished: false }); onChanged([...testimonials, testimonial]); form.resetFields(); setOpen(false); } catch (error) { onError((error as Error).message); } finally { setSaving(false); } }
+  async function toggle(testimonial: Testimonial) { try { const updated = await updateTestimonial(accessToken, testimonial.id, { isPublished: !testimonial.isPublished }); onChanged(testimonials.map((item) => item.id === testimonial.id ? updated : item)); } catch (error) { onError((error as Error).message); } }
+  const columns: ColumnsType<Testimonial> = [{ title: tr('Pasien', 'Patient'), dataIndex: 'name' }, { title: tr('Nilai', 'Rating'), dataIndex: 'rating', render: (value) => `${value}/5` }, { title: tr('Sumber', 'Source'), dataIndex: 'source' }, { title: tr('Dipublikasikan', 'Published'), width: 150, render: (_, item) => <Switch checked={item.isPublished} onChange={() => void toggle(item)} /> }, { title: tr('Tindakan', 'Actions'), width: 90, render: (_, item) => <Button type="text" icon={item.isPublished ? <EyeInvisibleOutlined /> : <EyeOutlined />} aria-label={item.isPublished ? tr('Sembunyikan ulasan', 'Hide testimonial') : tr('Publikasikan ulasan', 'Publish testimonial')} title={item.isPublished ? tr('Sembunyikan ulasan', 'Hide testimonial') : tr('Publikasikan ulasan', 'Publish testimonial')} onClick={() => void toggle(item)} /> }];
+  return <section aria-labelledby="testimonials-heading"><Space className="section-heading"><Typography.Title level={2} id="testimonials-heading">{tr('Ulasan', 'Testimonials')}</Typography.Title><Button type="primary" onClick={() => { form.setFieldsValue({ rating: 5, source: 'Google', sortOrder: 0 }); setOpen(true); }}>{tr('Tambah ulasan', 'Add testimonial')}</Button></Space><Table rowKey="id" columns={columns} dataSource={testimonials} locale={{ emptyText: <Empty description={tr('Belum ada ulasan', 'No testimonials yet')} /> }} pagination={{ pageSize: 20, showSizeChanger: false }} /><ContentFormDrawer title={tr('Tambah ulasan', 'Add testimonial')} open={open} onClose={() => setOpen(false)} onSave={() => form.submit()} saving={saving}><Form form={form} layout="vertical" disabled={saving} scrollToFirstError onFinish={(values) => void submit(values)}><Form.Item name="name" label={tr('Nama', 'Name')} rules={[{ required: true }]}><Input /></Form.Item><Form.Item name="text" label={tr('Ulasan', 'Testimonial')} rules={[{ required: true }]}><Input.TextArea rows={5} /></Form.Item><Form.Item name="rating" label={tr('Nilai', 'Rating')}><InputNumber min={1} max={5} /></Form.Item><Form.Item name="source" label={tr('Sumber', 'Source')}><Input /></Form.Item></Form></ContentFormDrawer></section>; }

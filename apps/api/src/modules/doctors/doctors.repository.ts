@@ -30,10 +30,12 @@ export class DoctorsRepository implements DoctorsReader {
     }));
   }
 
-  listAdmin() { return this.prisma.doctor.findMany({ include: { services: true, workingHours: { orderBy: [{ weekday: 'asc' }, { startTime: 'asc' }] } }, orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] }); }
+  listAdmin() { return this.prisma.doctor.findMany({ include: { services: true, workingHours: { orderBy: [{ weekday: 'asc' }, { startTime: 'asc' }] }, _count: { select: { bookings: true } } }, orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] }); }
   findById(id: string) { return this.prisma.doctor.findUnique({ where: { id }, include: { services: true, workingHours: true } }); }
   create(input: DoctorInput) { const { serviceIds, ...data } = input; return this.prisma.doctor.create({ data: { ...data, services: { create: serviceIds.map((serviceId) => ({ serviceId })) } }, include: { services: true, workingHours: true } }); }
   update(id: string, input: Partial<DoctorInput>) { const { serviceIds, ...data } = input; return this.prisma.doctor.update({ where: { id }, data: { ...data, ...(serviceIds ? { services: { deleteMany: {}, create: serviceIds.map((serviceId) => ({ serviceId })) } } : {}) }, include: { services: true, workingHours: true } }); }
+  countBookings(doctorId: string) { return this.prisma.booking.count({ where: { doctorId } }); }
+  delete(id: string) { return this.prisma.doctor.delete({ where: { id } }); }
   replaceWorkingHours(doctorId: string, hours: WorkingHourInput[]) { return this.prisma.$transaction(async (tx) => { await tx.workingHour.deleteMany({ where: { doctorId } }); await tx.workingHour.createMany({ data: hours.map((hour) => ({ doctorId, weekday: hour.weekday, startTime: new Date(`1970-01-01T${hour.start}:00.000Z`), endTime: new Date(`1970-01-01T${hour.end}:00.000Z`) })) }); }); }
   createTimeOff(input: TimeOffInput) { return this.prisma.timeOff.create({ data: { ...input, startsAt: new Date(input.startsAt), endsAt: new Date(input.endsAt) }, include: { doctor: { select: { name: true } } } }); }
   listTimeOffs() { return this.prisma.timeOff.findMany({ include: { doctor: { select: { name: true } } }, orderBy: { startsAt: 'asc' } }); }

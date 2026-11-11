@@ -7,32 +7,38 @@ interface BrandLogoProps {
 }
 
 /**
- * Compact brand logo: heart mark + two-line wordmark in a single SVG.
- * Fixed intrinsic size keeps the navbar width identical in ID and EN.
+ * Compact brand logo: boutique tooth emblem with warm gold sparkle + refined typography wordmark.
  */
 export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', title }) => (
   <svg
     className={className}
-    viewBox="0 0 165 40"
+    viewBox="0 0 175 40"
     role="img"
     aria-label={title}
     xmlns="http://www.w3.org/2000/svg"
   >
     <title>{title}</title>
-    <rect width="38" height="38" y="1" rx="10" fill="var(--color-primary)" />
+    {/* Deep Emerald Emblem */}
+    <rect width="38" height="38" y="1" rx="12" fill="var(--color-primary)" />
+    {/* Refined Stylized Tooth Silhouette */}
     <path
-      d="M19 28.5c-.4 0-.8-.15-1.1-.4C13.6 24.6 10.5 21.7 10.5 18.2c0-2.6 1.9-4.5 4.3-4.5 1.6 0 3.1.9 4.2 2.4 1.1-1.5 2.6-2.4 4.2-2.4 2.4 0 4.3 1.9 4.3 4.5 0 3.5-3.1 6.4-7.4 9.9-.3.25-.7.4-1.1.4z"
+      d="M19 10c-5-2.8-10.5 0-9.2 6.5 1 4.2 2 12.5 5.2 14 1.8.8 2.8-4.5 4-4.5s2.2 5.3 4 4.5c3.2-1.5 4.2-9.8 5.2-14 1.3-6.5-4.2-9.3-9.2-6.5z"
       fill="none"
-      stroke="var(--color-bg)"
-      strokeWidth="2"
+      stroke="#FBF9F5"
+      strokeWidth="1.8"
+      strokeLinecap="round"
       strokeLinejoin="round"
     />
+    {/* Warm Gold Sparkle */}
+    <circle cx="27" cy="10" r="1.5" fill="var(--color-accent)" />
+    
     <text
       x="48"
       y="18"
       fontFamily="var(--font-heading)"
-      fontSize="15.5"
+      fontSize="16"
       fontWeight="700"
+      letterSpacing="-0.02em"
       fill="var(--color-text)"
     >
       Klinik Gigi
@@ -41,9 +47,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', title }) =
       x="48"
       y="32"
       fontFamily="var(--font-body)"
-      fontSize="11.5"
-      fontWeight="500"
-      fill="var(--color-text-muted)"
+      fontSize="12"
+      fontWeight="600"
+      letterSpacing="0.02em"
+      fill="var(--color-accent)"
     >
       Senyum Sehat
     </text>

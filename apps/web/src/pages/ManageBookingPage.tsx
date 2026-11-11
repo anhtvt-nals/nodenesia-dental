@@ -1,3 +1,4 @@
+import { PageHeader } from '../components/common/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useI18n } from '../i18n';
@@ -66,6 +67,7 @@ export const ManageBookingPage: React.FC = () => {
         setActionMessage({ type: 'error', text: t.manageBooking.bookingNotFound });
       }
     } catch {
+      setBooking(null);
       setActionMessage({ type: 'error', text: t.manageBooking.bookingNotFound });
     } finally {
       setIsLoading(false);
@@ -150,26 +152,17 @@ export const ManageBookingPage: React.FC = () => {
         path={`/booking/kelola/${urlCode || ''}`}
       />
 
-      <div className="py-12 md:py-16 bg-bg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <span className="badge badge-primary mb-3">
-              {lang === 'en' ? 'Self-Service Patient Portal' : 'Layanan Pasien Mandiri'}
-            </span>
-            <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-2">
-              {t.manageBooking.pageTitle}
-            </h1>
-            <p className="text-base text-text-muted">
-              {t.manageBooking.pageDesc}
-            </p>
-          </div>
+      <PageHeader title={t.manageBooking.pageTitle} description={t.manageBooking.pageDesc} />
 
-          {/* Search Form */}
-          <form onSubmit={handleSearch} className="mb-8 p-6 sm:p-8 trust-card bg-bg-card">
-            <label htmlFor="booking-code-search" className="font-heading text-xl font-bold text-text block mb-1.5">
+      <div className="page-content bg-bg py-6 sm:py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Search Form Card */}
+          <form onSubmit={handleSearch} className="mb-8 p-6 sm:p-8 rounded-2xl bg-surface border border-border shadow-card">
+            <label htmlFor="booking-code-search" className="font-heading text-xl sm:text-2xl font-bold text-secondary block mb-1.5">
               {t.manageBooking.inputCodeTitle}
             </label>
-            <p className="text-sm text-text-muted mb-5">
+            <p className="text-sm text-text-muted mb-5 leading-relaxed">
               {t.manageBooking.inputCodeDesc}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -179,11 +172,11 @@ export const ManageBookingPage: React.FC = () => {
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                 placeholder={t.manageBooking.codePlaceholder}
-                className="form-input flex-1 uppercase tracking-wider font-semibold"
+                className="form-input flex-1 uppercase tracking-widest font-mono font-bold text-base"
               />
               <button
                 type="submit"
-                className="btn-primary px-6 py-3 justify-center cursor-pointer"
+                className="btn-primary px-7 py-3 justify-center cursor-pointer shrink-0"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                   <circle cx="11" cy="11" r="8" />
@@ -198,29 +191,31 @@ export const ManageBookingPage: React.FC = () => {
           {actionMessage && (
             <div
               role="alert"
-              className={`p-4 mb-8 text-sm font-medium rounded-xl border ${
+              className={`p-4 mb-8 text-sm font-medium rounded-xl border flex items-center gap-3 ${
                 actionMessage.type === 'success'
-                  ? 'bg-success/10 text-success-dark border-success/30'
-                  : 'bg-error/10 text-error-dark border-error/30'
+                  ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                  : 'bg-rose-50 text-rose-900 border-rose-200'
               }`}
             >
-              {actionMessage.text}
+              <span className="w-2 h-2 rounded-full shrink-0 bg-current" />
+              <span>{actionMessage.text}</span>
             </div>
           )}
 
           {isLoading ? (
-            <div className="p-16 text-center text-sm font-medium text-text-muted">
-              {t.common.loading}
+            <div className="p-16 text-center text-sm font-medium text-text-muted flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full border-2 border-primary/20 border-t-primary animate-spin mb-3" />
+              <span>{t.common.loading}</span>
             </div>
           ) : booking ? (
-            <div className="trust-card bg-bg-card p-6 md:p-8 space-y-6">
-              {/* Header Status */}
+            <div className="bg-surface rounded-2xl border border-border shadow-card p-6 sm:p-8 space-y-6">
+              {/* Header Status Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-text-muted block mb-1">
-                    Kode Reservasi
+                  <span className="text-xs font-bold uppercase tracking-wider text-text-muted block mb-1">
+                    {lang === 'en' ? 'Reservation Code' : 'Kode Reservasi'}
                   </span>
-                  <div className="font-heading text-3xl font-extrabold text-primary">
+                  <div className="font-heading text-3xl font-extrabold tracking-wider text-primary">
                     {booking.code}
                   </div>
                 </div>
@@ -230,40 +225,51 @@ export const ManageBookingPage: React.FC = () => {
                     {t.manageBooking.statusLabel}
                   </span>
                   <span
-                    className={`inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase ${
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${
                       booking.status === 'confirmed'
-                        ? 'badge-success'
+                        ? 'bg-emerald-500/15 text-emerald-800 border border-emerald-400/30'
                         : booking.status === 'cancelled'
-                        ? 'bg-error/15 text-error-dark'
-                        : 'bg-bg-alt text-text'
+                        ? 'bg-rose-500/15 text-rose-800 border border-rose-400/30'
+                        : 'bg-bg-alt text-secondary border border-border'
                     }`}
                   >
-                    {t.manageBooking.statusMap[booking.status] || booking.status}
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    <span>{t.manageBooking.statusMap[booking.status] || booking.status}</span>
                   </span>
                 </div>
               </div>
 
-              {/* Booking Details */}
+              {/* Booking Details Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div className="p-4 rounded-xl bg-bg-alt border border-border">
-                  <span className="text-xs text-text-muted block mb-1">Nama Pasien:</span>
-                  <span className="font-semibold text-text">{booking.patient.name}</span>
+                <div className="p-4 rounded-xl bg-bg-alt/60 border border-border/70">
+                  <span className="text-xs text-text-muted font-medium block mb-1">
+                    {lang === 'en' ? 'Patient Name' : 'Nama Pasien'}
+                  </span>
+                  <span className="font-semibold text-text text-base">{booking.patient.name}</span>
                 </div>
-                <div className="p-4 rounded-xl bg-bg-alt border border-border">
-                  <span className="text-xs text-text-muted block mb-1">Nomor WhatsApp:</span>
-                  <span className="font-semibold text-text">{formatPhoneDisplay(booking.patient.phone)}</span>
+                <div className="p-4 rounded-xl bg-bg-alt/60 border border-border/70">
+                  <span className="text-xs text-text-muted font-medium block mb-1">
+                    {lang === 'en' ? 'WhatsApp Number' : 'Nomor WhatsApp'}
+                  </span>
+                  <span className="font-semibold text-text text-base">{formatPhoneDisplay(booking.patient.phone)}</span>
                 </div>
-                <div className="p-4 rounded-xl bg-bg-alt border border-border">
-                  <span className="text-xs text-text-muted block mb-1">Layanan Gigi:</span>
-                  <span className="font-semibold text-text">{serviceName}</span>
+                <div className="p-4 rounded-xl bg-bg-alt/60 border border-border/70">
+                  <span className="text-xs text-text-muted font-medium block mb-1">
+                    {lang === 'en' ? 'Treatment / Service' : 'Layanan Gigi'}
+                  </span>
+                  <span className="font-semibold text-text text-base">{serviceName}</span>
                 </div>
-                <div className="p-4 rounded-xl bg-bg-alt border border-border">
-                  <span className="text-xs text-text-muted block mb-1">Dokter Spesialis:</span>
-                  <span className="font-semibold text-text">{doctorName}</span>
+                <div className="p-4 rounded-xl bg-bg-alt/60 border border-border/70">
+                  <span className="text-xs text-text-muted font-medium block mb-1">
+                    {lang === 'en' ? 'Specialist' : 'Dokter Spesialis'}
+                  </span>
+                  <span className="font-semibold text-text text-base">{doctorName}</span>
                 </div>
-                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 sm:col-span-2">
-                  <span className="text-xs text-text-muted block mb-1">Waktu Janji Temu:</span>
-                  <span className="font-heading font-bold text-lg text-primary">
+                <div className="p-5 rounded-xl bg-primary/5 border border-primary/20 sm:col-span-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-primary block mb-1">
+                    {lang === 'en' ? 'Scheduled Appointment Time' : 'Waktu Janji Temu Terjadwal'}
+                  </span>
+                  <span className="font-heading font-bold text-xl sm:text-2xl text-primary">
                     {booking.startsAt.split('T')[0]} · {booking.startsAt.split('T')[1]?.slice(0, 5)} WIB
                   </span>
                 </div>
@@ -271,18 +277,20 @@ export const ManageBookingPage: React.FC = () => {
 
               {/* Action Buttons (Only if active) */}
               {booking.status === 'confirmed' && (
-                <div className="pt-6 border-t border-border flex flex-wrap gap-3.5">
+                <div className="pt-6 border-t border-border flex flex-wrap items-center gap-3.5">
                   <button
                     type="button"
                     onClick={() => setIsRescheduling(!isRescheduling)}
-                    className="btn-primary text-sm py-2.5 px-5 cursor-pointer"
+                    className="btn-primary text-sm py-3 px-6 cursor-pointer"
                   >
-                    {isRescheduling ? 'Tutup Pilihan Jadwal' : t.manageBooking.rescheduleBtn}
+                    {isRescheduling
+                      ? (lang === 'en' ? 'Close Schedule Picker' : 'Tutup Pilihan Jadwal')
+                      : t.manageBooking.rescheduleBtn}
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowCancelModal(true)}
-                    className="px-5 py-2.5 rounded-xl border border-error/40 text-error-dark text-sm font-semibold hover:bg-error/10 transition-colors cursor-pointer"
+                    className="px-5 py-3 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-sm font-semibold transition-colors cursor-pointer"
                   >
                     {t.manageBooking.cancelBookingBtn}
                   </button>
@@ -291,12 +299,14 @@ export const ManageBookingPage: React.FC = () => {
 
               {/* Reschedule Interface */}
               {isRescheduling && (
-                <div className="mt-6 p-6 rounded-xl bg-bg-alt border border-border">
-                  <h3 className="font-heading text-xl font-bold text-text mb-1.5">
+                <div className="mt-6 p-6 sm:p-7 rounded-2xl bg-bg-alt border border-border">
+                  <h3 className="font-heading text-xl font-bold text-secondary mb-1.5">
                     {t.manageBooking.rescheduleTitle}
                   </h3>
                   <p className="text-xs sm:text-sm text-text-muted mb-5">
-                    Pilih tanggal baru (14 hari ke depan) dan jam yang masih tersedia
+                    {lang === 'en'
+                      ? 'Select a new date (within next 14 days) and available time slot:'
+                      : 'Pilih tanggal baru (14 hari ke depan) dan jam yang masih tersedia:'}
                   </p>
 
                   <div className="mb-6">
@@ -323,16 +333,18 @@ export const ManageBookingPage: React.FC = () => {
                       type="button"
                       disabled={!rescheduleTime || isProcessingAction}
                       onClick={handleSaveReschedule}
-                      className="btn-primary text-sm py-2.5 px-6 disabled:opacity-50 cursor-pointer"
+                      className="btn-primary text-sm py-3 px-6 disabled:opacity-50 cursor-pointer"
                     >
-                      {isProcessingAction ? 'Menyimpan...' : t.manageBooking.saveRescheduleBtn}
+                      {isProcessingAction
+                        ? (lang === 'en' ? 'Saving...' : 'Menyimpan...')
+                        : t.manageBooking.saveRescheduleBtn}
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsRescheduling(false)}
-                      className="px-4 py-2.5 rounded-xl border border-border bg-bg-card text-sm font-semibold text-text hover:bg-bg transition-colors cursor-pointer"
+                      className="px-5 py-3 rounded-xl border border-border bg-surface text-sm font-semibold text-secondary hover:bg-bg transition-colors cursor-pointer"
                     >
-                      Batal
+                      {lang === 'en' ? 'Cancel' : 'Batal'}
                     </button>
                   </div>
                 </div>
@@ -345,10 +357,15 @@ export const ManageBookingPage: React.FC = () => {
             <div
               role="dialog"
               aria-modal="true"
-              className="fixed inset-0 z-50 flex items-center justify-center bg-bg-dark/60 backdrop-blur-xs p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-secondary/60 backdrop-blur-sm p-4"
             >
-              <div className="w-full max-w-md bg-bg-card rounded-2xl border border-border p-6 shadow-xl">
-                <h3 className="font-heading text-xl font-bold text-text mb-2">
+              <div className="w-full max-w-md bg-surface rounded-2xl border border-border p-6 sm:p-7 shadow-floating animate-scale-in">
+                <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="font-heading text-xl font-bold text-secondary mb-2">
                   {t.manageBooking.confirmCancelTitle}
                 </h3>
                 <p className="text-sm text-text-muted mb-6 leading-relaxed">
@@ -358,7 +375,7 @@ export const ManageBookingPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowCancelModal(false)}
-                    className="px-4 py-2.5 rounded-xl border border-border bg-bg-alt font-semibold text-text hover:bg-border/50 transition-colors cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl border border-border bg-bg-alt font-semibold text-secondary hover:bg-border/50 transition-colors cursor-pointer"
                   >
                     {t.manageBooking.keepBookingAction}
                   </button>
@@ -366,9 +383,11 @@ export const ManageBookingPage: React.FC = () => {
                     type="button"
                     disabled={isProcessingAction}
                     onClick={handleCancel}
-                    className="btn-emergency py-2.5 px-5 disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                   >
-                    {isProcessingAction ? 'Memproses...' : t.manageBooking.confirmCancelAction}
+                    {isProcessingAction
+                      ? (lang === 'en' ? 'Processing...' : 'Memproses...')
+                      : t.manageBooking.confirmCancelAction}
                   </button>
                 </div>
               </div>

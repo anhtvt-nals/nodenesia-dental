@@ -16,10 +16,8 @@ All routes exist in Indonesian (default, no prefix) and mirror under `/en/...` w
 | `/dokter` | `/en/dokter` | Specialist doctor profiles directory with SIP and degrees |
 | `/dokter/:slug` | `/en/dokter/:slug` | Doctor detail page with specialty, weekly hours, clinical bio, booking CTA |
 | `/jadwal` | `/en/jadwal` | Weekly doctor clinical schedule with day tabs (Senin–Sabtu), "Slot Hari Ini" badge |
-| `/harga` | `/en/harga` | Interactive 3D price explorer + accessible HTML price table |
 | `/hasil-kami` | `/en/hasil-kami` | Clinical before/after gallery with patient informed consent disclosure |
 | `/fasilitas` | `/en/fasilitas` | Medical technology and sterilization standards (Class B Autoclave, HD intraoral, lounge) |
-| `/pasien` | `/en/pasien` | 5-step visit journey, pre-visit checklist, warranty policy, patient FAQ accordion |
 | `/artikel` | `/en/artikel` | Patient educational articles with topic filter and read times |
 | `/artikel/:slug` | `/en/artikel/:slug` | Article reader with clinical reviewer attribution and share tool |
 | `/testimoni` | `/en/testimoni` | Curated patient reviews from Google Reviews and verified clinic visits |

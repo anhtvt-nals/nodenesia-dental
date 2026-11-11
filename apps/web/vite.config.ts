@@ -5,10 +5,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    proxy: { '/api': 'http://localhost:3000' },
+    proxy: { '/api': 'http://127.0.0.1:3000' },
   },
   preview: {
-    proxy: { '/api': 'http://localhost:3000' },
+    proxy: { '/api': 'http://127.0.0.1:3000' },
   },
   build: {
     // Three.js ships as a large, separately code-split vendor chunk.

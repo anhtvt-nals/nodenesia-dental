@@ -39,24 +39,22 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({ currentStep, onS
                 type="button"
                 disabled={!isNavigable}
                 onClick={handleClick}
-                className={`text-left w-full p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
+                className={`text-left w-full p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                   isCurrent
-                    ? 'bg-primary text-white border-primary shadow-sm'
+                    ? 'bg-primary text-white border-primary shadow-soft ring-2 ring-primary/20 scale-[1.01]'
                     : isCompleted
-                    ? 'bg-bg-card text-text border-primary/40 hover:border-primary cursor-pointer'
-                    : 'bg-bg-alt text-text-muted border-border cursor-not-allowed opacity-75'
+                    ? 'bg-surface text-secondary border-primary/30 hover:border-primary cursor-pointer shadow-xs'
+                    : 'bg-bg-alt/70 text-text-muted border-border cursor-not-allowed opacity-60'
                 }`}
                 aria-current={isCurrent ? 'step' : undefined}
               >
-                <div className="flex items-center justify-between text-xs font-semibold mb-1">
-                  <span className={isCurrent ? 'text-white/90' : 'text-primary'}>
+                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span className={isCurrent ? 'text-white/85' : 'text-accent'}>
                     LANGKAH 0{step.num}
                   </span>
                   {isCompleted && (
-                    <span className="w-5 h-5 rounded-full bg-success/15 text-success-dark flex items-center justify-center" aria-hidden="true">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
+                    <span className="w-5 h-5 rounded-full bg-accent/20 text-accent-text flex items-center justify-center font-bold" aria-hidden="true">
+                      ✓
                     </span>
                   )}
                 </div>

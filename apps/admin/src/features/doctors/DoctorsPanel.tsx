@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import type { ClinicDoctor, ClinicService, TimeOff } from '../../api/admin-api';
+import { Button, Space, Typography } from 'antd';
+import type { ClinicDoctor, ClinicService } from '../../api/admin-api';
 import { DoctorCreateForm } from './DoctorCreateForm';
 import { DoctorList } from './DoctorList';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
-import { TimeOffForm } from './TimeOffForm';
+import { tr, useAdminTranslation } from '../../i18n';
+import { AdminHeaderActions } from '../../components/AdminHeaderActions';
 
-type Props = { accessToken: string; doctors: ClinicDoctor[]; services: ClinicService[]; timeOffs: TimeOff[]; onReload: () => void; onChanged: (doctors: ClinicDoctor[]) => void; onTimeOffsChanged: (timeOffs: TimeOff[]) => void; onError: (message: string) => void };
+type Props = { accessToken: string; doctors: ClinicDoctor[]; services: ClinicService[]; onReload: () => void; onChanged: (doctors: ClinicDoctor[]) => void; onError: (message: string) => void };
 
-export function DoctorsPanel({ accessToken, doctors, services, timeOffs, onReload, onChanged, onTimeOffsChanged, onError }: Props) {
-  const [selectedId, setSelectedId] = useState<string>();
-  const selected = doctors.find((doctor) => doctor.id === selectedId);
+export function DoctorsPanel({ accessToken, doctors, services, onReload, onChanged, onError }: Props) {
+  useAdminTranslation();
+  const [hoursDoctorId, setHoursDoctorId] = useState<string>();
+  const [editingDoctor, setEditingDoctor] = useState<ClinicDoctor>();
+  const [isCreating, setIsCreating] = useState(false);
+  const hoursDoctor = doctors.find((doctor) => doctor.id === hoursDoctorId);
   function replace(next: ClinicDoctor) { onChanged(doctors.map((doctor) => doctor.id === next.id ? next : doctor)); }
-  return <section aria-labelledby="doctors-heading"><h2 id="doctors-heading">Bác sĩ và lịch làm việc</h2><DoctorList accessToken={accessToken} doctors={doctors} selectedId={selectedId} onSelect={setSelectedId} onChanged={replace} onError={onError} /><WorkingHoursEditor accessToken={accessToken} doctor={selected} onChanged={replace} onError={onError} /><TimeOffForm accessToken={accessToken} doctors={doctors} timeOffs={timeOffs} onChanged={onTimeOffsChanged} onSaved={onError} onError={onError} /><DoctorCreateForm accessToken={accessToken} services={services} onCreated={onReload} onError={onError} /></section>;
+  return <section aria-labelledby="doctors-heading"><AdminHeaderActions><Button type="primary" onClick={() => setIsCreating(true)}>{tr('Tambah dokter', 'Add doctor')}</Button></AdminHeaderActions><Space className="section-heading"><Typography.Title level={2} id="doctors-heading">{tr('Dokter', 'Doctors')}</Typography.Title></Space><DoctorList accessToken={accessToken} doctors={doctors} onEdit={setEditingDoctor} onManageHours={setHoursDoctorId} onChanged={replace} onDeleted={onReload} onError={onError} /><WorkingHoursEditor accessToken={accessToken} doctor={hoursDoctor} onClose={() => setHoursDoctorId(undefined)} onChanged={replace} onError={onError} /><DoctorCreateForm accessToken={accessToken} services={services} doctor={editingDoctor} open={isCreating || Boolean(editingDoctor)} onClose={() => { setIsCreating(false); setEditingDoctor(undefined); }} onSaved={onReload} onError={onError} /></section>;
 }

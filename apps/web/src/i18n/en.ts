@@ -25,6 +25,7 @@ export const en = {
     heroDoctorTitle: 'Dedicated dental specialists',
     heroDoctorSubtitle: 'Treated by the same licensed specialist from initial checkup to completion.',
     heroExperienceLabel: 'Clinical experience',
+    heroTagline: 'Precision · Comfort · Innovation · Care',
     heroTitlePart1: 'Healthy teeth,',
     heroTitleAccent: 'without',
     heroTitlePart2: 'the rush.',

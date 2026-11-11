@@ -11,10 +11,8 @@ import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { DoctorsPage } from './pages/DoctorsPage';
 import { DoctorDetailPage } from './pages/DoctorDetailPage';
 import { SchedulePage } from './pages/SchedulePage';
-import { PricesPage } from './pages/PricesPage';
 import { GalleryPage } from './pages/GalleryPage';
 import { FacilitiesPage } from './pages/FacilitiesPage';
-import { PatientGuidePage } from './pages/PatientGuidePage';
 import { ArticlesPage } from './pages/ArticlesPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { TestimonialsPage } from './pages/TestimonialsPage';
@@ -115,10 +113,8 @@ function AppRoutes() {
           <Route path="/dokter" element={<DoctorsPage />} />
           <Route path="/dokter/:slug" element={<DoctorDetailPage />} />
           <Route path="/jadwal" element={<SchedulePage />} />
-          <Route path="/harga" element={<PricesPage />} />
           <Route path="/hasil-kami" element={<GalleryPage />} />
           <Route path="/fasilitas" element={<FacilitiesPage />} />
-          <Route path="/pasien" element={<PatientGuidePage />} />
           <Route path="/artikel" element={<ArticlesPage />} />
           <Route path="/artikel/:slug" element={<ArticleDetailPage />} />
           <Route path="/testimoni" element={<TestimonialsPage />} />
@@ -142,14 +138,10 @@ function AppRoutes() {
           <Route path="/en/doctors/:slug" element={<DoctorDetailPage />} />
           <Route path="/en/jadwal" element={<SchedulePage />} />
           <Route path="/en/schedule" element={<SchedulePage />} />
-          <Route path="/en/harga" element={<PricesPage />} />
-          <Route path="/en/prices" element={<PricesPage />} />
           <Route path="/en/hasil-kami" element={<GalleryPage />} />
           <Route path="/en/results" element={<GalleryPage />} />
           <Route path="/en/fasilitas" element={<FacilitiesPage />} />
           <Route path="/en/facilities" element={<FacilitiesPage />} />
-          <Route path="/en/pasien" element={<PatientGuidePage />} />
-          <Route path="/en/patient" element={<PatientGuidePage />} />
           <Route path="/en/artikel" element={<ArticlesPage />} />
           <Route path="/en/articles" element={<ArticlesPage />} />
           <Route path="/en/artikel/:slug" element={<ArticleDetailPage />} />

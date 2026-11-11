@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Doctor } from '../../types';
-import { PhotoPlaceholder } from './PhotoPlaceholder';
 import { useI18n } from '../../i18n';
 
 interface DoctorCardProps {
@@ -11,83 +10,128 @@ interface DoctorCardProps {
 
 export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false }) => {
   const { lang, t, localePath } = useI18n();
-  const [photoFailed, setPhotoFailed] = useState(false);
-  const title = lang === 'en' ? doctor.titleEn : doctor.title;
-  const specialty = lang === 'en' ? doctor.specialtyEn : doctor.specialty;
-  const bio = lang === 'en' ? doctor.bioEn : doctor.bio;
-  const experience =
-    (lang === 'en' ? doctor.experienceEn : doctor.experience) ||
-    (doctor.experienceYears ? `${doctor.experienceYears}+ ${lang === 'en' ? 'years' : 'tahun'}` : '');
+  const [failedPhoto, setFailedPhoto] = useState(false);
+
+  const title = lang === 'en' ? doctor.titleEn || doctor.title : doctor.title;
+  const specialty = lang === 'en' ? doctor.specialtyEn || doctor.specialty : doctor.specialty;
+  const experience = (lang === 'en' ? doctor.experienceEn : doctor.experience)
+    || (doctor.experienceYears ? `${doctor.experienceYears}+ ${lang === 'en' ? 'years exp.' : 'tahun pengalaman'}` : '');
+
+  const days = [...new Set(doctor.workingHours.map((hour) => hour.weekday))];
+  const profilePath = localePath(`/dokter/${doctor.slug}`);
 
   return (
-    <article className="border-b border-border pb-6 flex flex-col justify-between h-full">
+    <article className="group bg-surface rounded-2xl border border-border overflow-hidden shadow-card hover:shadow-hover hover:border-primary/40 transition-all duration-300 flex flex-col justify-between h-full">
+      {/* Top Section: Portrait & Badges */}
       <div>
-        {/* TODO: Replace demo stock portrait with verified in-clinic doctor photography */}
-        {doctor.photoUrl && !photoFailed ? (
-          <div className="w-full h-[260px] overflow-hidden bg-bg-alt photo-asymmetric mb-5 border border-border">
+        <Link
+          to={profilePath}
+          className="block relative aspect-[4/4.2] overflow-hidden bg-bg-alt"
+          aria-label={lang === 'en' ? `View profile of ${doctor.name}` : `Lihat profil ${doctor.name}`}
+        >
+          {doctor.photoUrl && !failedPhoto ? (
             <img
               src={doctor.photoUrl}
               alt={doctor.name}
               loading="lazy"
-              onError={() => setPhotoFailed(true)}
-              className="w-full h-full object-cover object-top"
+              width="600"
+              height="630"
+              onError={() => setFailedPhoto(true)}
+              className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
             />
-          </div>
-        ) : (
-          <div className="mb-5">
-            <PhotoPlaceholder
-              label={doctor.name}
-              sublabel={specialty}
-              aspect={compact ? '4:3' : '4:3'}
-              className="h-[240px] photo-asymmetric"
-            />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-secondary/5 text-secondary p-6 text-center">
+              <span className="font-heading text-3xl font-bold tracking-wider mb-1">
+                {doctor.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()}
+              </span>
+              <span className="text-xs text-text-muted font-medium">
+                {lang === 'en' ? 'Dental Specialist' : 'Dokter Spesialis'}
+              </span>
+            </div>
+          )}
 
-        <div>
-          <h3 className="font-heading text-xl font-bold text-text">
-            <Link to={localePath(`/dokter/${doctor.slug}`)} className="hover:text-primary transition-colors">
+          {/* Experience floating badge */}
+          {experience && (
+            <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-surface/95 backdrop-blur-xs border border-border text-secondary text-[11px] font-bold shadow-xs">
+              <span className="text-accent mr-1">✦</span>
+              <span>{experience}</span>
+            </div>
+          )}
+
+          {/* SIP badge on compact or desktop */}
+          {doctor.sipNumber && !compact && (
+            <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-md bg-secondary/80 backdrop-blur-xs text-surface text-[10px] font-mono tracking-wider">
+              SIP Aktif
+            </div>
+          )}
+        </Link>
+
+        {/* Content Body */}
+        <div className="p-5 sm:p-6 space-y-3">
+          {/* Specialty tag */}
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-accent">
+              {specialty}
+            </span>
+          </div>
+
+          {/* Doctor Name */}
+          <h3 className="font-heading text-lg sm:text-xl font-bold text-secondary group-hover:text-primary transition-colors leading-snug">
+            <Link to={profilePath}>
               {doctor.name}
             </Link>
           </h3>
-          <p className="text-primary font-medium text-base mt-0.5">
-            {specialty}
-          </p>
-          <p className="text-text-muted text-base mt-1">
-            {title}
-          </p>
 
-          {!compact && (
-            <p className="text-base text-text-muted leading-relaxed mt-3">
-              {bio}
+          {/* Degree / Official Title */}
+          {title && (
+            <p className="text-xs text-text-muted leading-relaxed line-clamp-2">
+              {title}
             </p>
           )}
 
-          <div className="mt-4 pt-3 border-t border-border/60 text-base text-text-muted space-y-1.5">
-            {experience && (
-              <div>
-                <span className="font-semibold text-text">{experience}</span>
-                {doctor.sipNumber ? ` · ${doctor.sipNumber}` : ''}
+          {/* Practice Schedule days chips */}
+          <div className="pt-2">
+            <span className="text-[11px] font-semibold text-text-muted block mb-1.5 uppercase tracking-wide">
+              {t.doctors.weeklyHours}
+            </span>
+            {days.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {days.map((day) => (
+                  <span
+                    key={day}
+                    className="inline-flex items-center px-2 py-0.5 rounded-md bg-bg-alt text-secondary text-[11px] font-medium border border-border/70"
+                  >
+                    {t.schedule.days[day as keyof typeof t.schedule.days]}
+                  </span>
+                ))}
               </div>
-            )}
-            {doctor.workingHours && doctor.workingHours.length > 0 && (
-              <div className="truncate">
-                <span className="font-semibold text-text">{t.doctors.weeklyHours}:</span>{' '}
-                {doctor.workingHours
-                  .map((w) => `${t.schedule.days[w.weekday as keyof typeof t.schedule.days]} (${w.start}–${w.end})`)
-                  .join(', ')}
-              </div>
+            ) : (
+              <p className="text-xs text-text-muted">
+                {lang === 'en' ? 'Contact clinic for schedule' : 'Hubungi klinik untuk jadwal praktik'}
+              </p>
             )}
           </div>
         </div>
       </div>
 
-      <div className="pt-5 text-base font-semibold">
+      {/* Bottom Actions Footer */}
+      <div className="p-5 sm:p-6 pt-0 mt-auto flex items-center gap-2.5">
         <Link
-          to={localePath(`/booking?dokter=${doctor.id}`)}
-          className="text-primary hover:underline underline-offset-4"
+          to={localePath(`/booking?dokter=${encodeURIComponent(doctor.id)}`)}
+          className="flex-1 btn-primary py-2.5 px-3 text-xs sm:text-sm font-semibold justify-center min-h-[44px]"
         >
-          {t.doctors.bookWithDoctor}
+          <span>{lang === 'en' ? 'Book' : 'Buat Janji'}</span>
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z" />
+          </svg>
+        </Link>
+        <Link
+          to={profilePath}
+          className="inline-flex items-center justify-center px-3.5 min-h-[44px] rounded-xl border border-border bg-surface text-secondary hover:bg-bg-alt hover:text-primary text-xs sm:text-sm font-semibold transition-colors"
+          aria-label={lang === 'en' ? `Profile of ${doctor.name}` : `Profil ${doctor.name}`}
+        >
+          <span>{lang === 'en' ? 'Profile' : 'Profil'}</span>
+          <span className="ml-1 text-xs" aria-hidden="true">→</span>
         </Link>
       </div>
     </article>

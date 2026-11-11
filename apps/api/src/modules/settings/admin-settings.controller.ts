@@ -10,6 +10,7 @@ const updateSettingsSchema = z.object({
   waNumber: z.string().trim().min(1).max(30).optional(),
   address: z.string().trim().min(1).max(500).optional(),
   timezone: z.string().trim().min(1).max(80).optional(),
+  adminLocale: z.enum(['id', 'en']).optional(),
   slotStepMinutes: z.number().int().min(5).max(60).optional(),
   bookingLeadMinutes: z.number().int().min(0).max(10080).optional(),
   bookingHorizonDays: z.number().int().min(1).max(365).optional(),

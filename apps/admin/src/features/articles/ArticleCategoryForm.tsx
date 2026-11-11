@@ -1,17 +1,11 @@
-import { FormEvent } from 'react';
+import { ContentFormDrawer } from '../content/ContentFormDrawer';
+import { Button, Form, Input, InputNumber } from 'antd';
+import { useState } from 'react';
 import { createArticleCategory, type ArticleCategory } from '../../api/admin-api';
-
+import { tr, useAdminTranslation } from '../../i18n';
 type Props = { accessToken: string; onCreated: (category: ArticleCategory) => void; onError: (message: string) => void };
-
-export function ArticleCategoryForm({ accessToken, onCreated, onError }: Props) {
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    try {
-      const category = await createArticleCategory(accessToken, { name: String(form.get('name')), slug: String(form.get('slug')), sortOrder: Number(form.get('sortOrder')) });
-      event.currentTarget.reset();
-      onCreated(category);
-    } catch (error) { onError((error as Error).message); }
-  }
-  return <form onSubmit={submit}><h3>Thêm danh mục</h3><label>Tên<input name="name" required /></label><label>Slug<input name="slug" pattern="[a-z0-9-]+" required /></label><label>Thứ tự<input name="sortOrder" type="number" min="0" defaultValue="0" required /></label><button>Thêm danh mục</button></form>;
-}
+type CategoryInput = { name: string; slug: string; sortOrder: number };
+export function ArticleCategoryForm({ accessToken, onCreated, onError }: Props) { const [form] = Form.useForm<CategoryInput>(); const [open, setOpen] = useState(false); const [saving, setSaving] = useState(false);
+  useAdminTranslation();
+  async function submit(values: CategoryInput) { setSaving(true); try { onCreated(await createArticleCategory(accessToken, values)); form.resetFields(); setOpen(false); } catch (error) { onError((error as Error).message); } finally { setSaving(false); } }
+  return <><Button onClick={() => { form.setFieldsValue({ sortOrder: 0 }); setOpen(true); }}>{tr('Tambah kategori', 'Add category')}</Button><ContentFormDrawer title={tr('Tambah kategori', 'Add category')} open={open} onClose={() => setOpen(false)} onSave={() => form.submit()} saving={saving}><Form form={form} layout="vertical" disabled={saving} scrollToFirstError onFinish={(values) => void submit(values)}><Form.Item name="name" label={tr('Nama', 'Name')} rules={[{ required: true }]}><Input /></Form.Item><Form.Item name="slug" label="Slug" rules={[{ required: true }]}><Input /></Form.Item><Form.Item name="sortOrder" label={tr('Urutan', 'Order')}><InputNumber min={0} style={{ width: '100%' }} /></Form.Item></Form></ContentFormDrawer></>; }

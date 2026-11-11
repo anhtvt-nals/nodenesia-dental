@@ -1,11 +1,20 @@
-import { updateDoctor, type ClinicDoctor } from '../../api/admin-api';
-
-type Props = { accessToken: string; doctors: ClinicDoctor[]; selectedId?: string; onSelect: (id: string) => void; onChanged: (doctor: ClinicDoctor) => void; onError: (message: string) => void };
-
-export function DoctorList({ accessToken, doctors, selectedId, onSelect, onChanged, onError }: Props) {
-  async function toggle(doctor: ClinicDoctor) {
-    try { onChanged(await updateDoctor(accessToken, doctor.id, { isActive: !doctor.isActive })); } catch (error) { onError((error as Error).message); }
-  }
-
-  return <table><thead><tr><th>Bác sĩ</th><th>Chuyên môn</th><th>Trạng thái</th></tr></thead><tbody>{doctors.map((doctor) => <tr key={doctor.id}><td><button type="button" className={doctor.id === selectedId ? 'selected' : ''} onClick={() => onSelect(doctor.id)}>{doctor.name}</button></td><td>{doctor.specialty ?? '—'}</td><td><button type="button" onClick={() => void toggle(doctor)}>{doctor.isActive ? 'Đang nhận lịch' : 'Tạm ẩn'}</button></td></tr>)}</tbody></table>;
+import { Avatar, Button, Popconfirm, Space, Switch, Table, Tag, Tooltip, Typography } from 'antd';
+import { CalendarOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
+import { deleteDoctor, updateDoctor, type ClinicDoctor } from '../../api/admin-api';
+import { tr, useAdminTranslation } from '../../i18n';
+type Props = { accessToken: string; doctors: ClinicDoctor[]; onEdit: (doctor: ClinicDoctor) => void; onManageHours: (id: string) => void; onChanged: (doctor: ClinicDoctor) => void; onDeleted: () => void; onError: (message: string) => void };
+export function DoctorList({ accessToken, doctors, onEdit, onManageHours, onChanged, onDeleted, onError }: Props) {
+  useAdminTranslation();
+  async function toggle(doctor: ClinicDoctor) { try { const saved = await updateDoctor(accessToken, doctor.id, { isActive: !doctor.isActive }); onChanged({ ...saved, _count: doctor._count }); } catch (error) { onError((error as Error).message); } }
+  async function remove(doctor: ClinicDoctor) { try { await deleteDoctor(accessToken, doctor.id); onDeleted(); } catch (error) { onError((error as Error).message); } }
+  const columns: ColumnsType<ClinicDoctor> = [
+    { title: tr('Dokter', 'Doctor'), dataIndex: 'name', render: (name, doctor) => <Space size={12}><Avatar size={48} shape="square" src={doctor.photoUrl || undefined} alt={name} style={{ flexShrink: 0, borderRadius: 12, objectFit: 'cover' }}>{String(name).trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()}</Avatar><Space direction="vertical" size={0}><Typography.Text strong>{name}</Typography.Text><Typography.Text type="secondary">{doctor.title ?? doctor.slug}</Typography.Text></Space></Space> },
+    { title: tr('Keahlian', 'Specialty'), dataIndex: 'specialty', render: (value) => value ?? '—' },
+    { title: tr('Layanan', 'Services'), render: (_, doctor) => <Typography.Text type="secondary">{tr(`${doctor.services.length} layanan`, `${doctor.services.length} services`)}</Typography.Text> },
+    { title: tr('Jadwal', 'Schedule'), width: 110, render: (_, doctor) => doctor._count?.bookings ? <Tag color="blue">{tr(`${doctor._count.bookings} booking`, `${doctor._count.bookings} bookings`)}</Tag> : <Tag>{tr('Tidak ada', 'None')}</Tag> },
+    { title: tr('Status', 'Status'), width: 145, render: (_, doctor) => <Space><Switch checked={doctor.isActive} onChange={() => void toggle(doctor)} /><Typography.Text>{doctor.isActive ? tr('Aktif', 'Active') : tr('Nonaktif', 'Inactive')}</Typography.Text></Space> },
+    { title: tr('Tindakan', 'Actions'), width: 150, render: (_, doctor) => { const bookingCount = doctor._count?.bookings ?? 0; const deleteButton = <Button type="text" danger disabled={bookingCount > 0} icon={<DeleteOutlined />} aria-label={tr('Hapus dokter', 'Delete doctor')} title={bookingCount ? tr('Dokter dengan booking tidak dapat dihapus', 'Doctors with bookings cannot be deleted') : tr('Hapus dokter', 'Delete doctor')} />; return <Space size={2}><Tooltip title={tr('Ubah dokter', 'Edit doctor')}><Button type="text" icon={<EditOutlined />} aria-label={tr('Ubah dokter', 'Edit doctor')} onClick={() => onEdit(doctor)} /></Tooltip><Tooltip title={tr('Jam kerja', 'Working hours')}><Button type="text" icon={<CalendarOutlined />} aria-label={tr('Ubah jam kerja dokter', 'Edit doctor working hours')} onClick={() => onManageHours(doctor.id)} /></Tooltip>{bookingCount ? <Tooltip title={tr('Tidak dapat dihapus karena masih memiliki booking', 'Cannot be deleted because bookings still exist')}>{deleteButton}</Tooltip> : <Popconfirm title={tr('Hapus dokter ini?', 'Delete this doctor?')} description={tr('Data dokter dan jam kerjanya akan dihapus.', 'The doctor and their working hours will be deleted.')} okText={tr('Hapus', 'Delete')} cancelText={tr('Batal', 'Cancel')} okButtonProps={{ danger: true }} onConfirm={() => void remove(doctor)}>{deleteButton}</Popconfirm>}</Space>; } },
+  ];
+  return <Table rowKey="id" columns={columns} dataSource={doctors} pagination={false} scroll={{ x: 900 }} />;
 }

@@ -1,3 +1,5 @@
+import type { FastifyRequest } from 'fastify';
+import { DoctorAvatarService } from './doctor-avatar.service.js';
 import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { z, ZodError } from 'zod';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard.js';
@@ -13,11 +15,27 @@ const actor = (request: { user: { sub: string }; ip?: string }) => ({ userId: re
 @UseGuards(AccessTokenGuard)
 @Roles('owner', 'staff')
 export class AdminDoctorsController {
-  constructor(@Inject(AdminDoctorsService) private readonly doctors: AdminDoctorsService) {}
+  constructor(@Inject(AdminDoctorsService) private readonly doctors: AdminDoctorsService, @Inject(DoctorAvatarService) private readonly avatars: DoctorAvatarService) {}
+
+  @Post('doctors/avatar-upload')
+  async avatarUpload(@Req() request: FastifyRequest) {
+    try {
+      const file = await request.file();
+      if (!file) throw new BadRequestException('Choose an avatar image.');
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) throw new BadRequestException('Use a JPG, PNG or WebP image.');
+      const body = await file.toBuffer();
+      if (file.file.truncated) throw new BadRequestException('Image must be at most 5 MB.');
+      return await this.avatars.upload(file.mimetype, body);
+    } catch (error) {
+      if ((error as { code?: string }).code?.startsWith('FST_')) throw new BadRequestException('Upload one image up to 5 MB.');
+      throw error;
+    }
+  }
 
   @Get('doctors') list() { return this.doctors.list(); }
   @Post('doctors') create(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.create(doctorSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Patch('doctors/:id') update(@Param('id') id: string, @Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.update(id, doctorSchema.partial().refine((input) => Object.keys(input).length > 0).parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
+  @Delete('doctors/:id') remove(@Param('id') id: string, @Req() request: { user: { sub: string }; ip?: string }) { return this.doctors.remove(id, actor(request)); }
   @Put('doctors/:id/working-hours') replaceHours(@Param('id') id: string, @Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.replaceWorkingHours(id, hoursSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Post('time-offs') addTimeOff(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.addTimeOff(timeOffSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Get('time-offs') listTimeOffs() { return this.doctors.listTimeOffs(); }

@@ -1,3 +1,4 @@
+import { PageHeader } from '../components/common/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
@@ -34,8 +35,9 @@ export const ArticleDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm font-medium text-text-muted">
-        {t.common.loading}
+      <div className="min-h-[50vh] flex flex-col items-center justify-center py-20 px-4 text-center">
+        <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin mb-4" />
+        <p className="text-sm font-medium text-text-muted">{t.common.loading}</p>
       </div>
     );
   }
@@ -43,9 +45,9 @@ export const ArticleDetailPage: React.FC = () => {
   if (!article) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-        <div className="trust-card p-8">
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4">
-            Artikel Tidak Ditemukan
+        <div className="bg-surface rounded-2xl border border-border p-8 shadow-card">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-secondary mb-4">
+            {lang === 'en' ? 'Article Not Found' : 'Artikel Tidak Ditemukan'}
           </h1>
           <Link
             to={localePath('/artikel')}
@@ -70,8 +72,11 @@ export const ArticleDetailPage: React.FC = () => {
         path={`/artikel/${article.slug}`}
       />
 
-      <div className="py-10 md:py-16 bg-bg">
+      <PageHeader title={title} description={lang === 'en' ? article.summaryEn : article.summary} />
+
+      <div className="page-content bg-bg py-6 sm:py-8">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
           <div className="mb-6">
             <Link
               to={localePath('/artikel')}
@@ -84,24 +89,22 @@ export const ArticleDetailPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="trust-card p-6 sm:p-10 bg-bg-card">
+          <div className="bg-surface rounded-2xl border border-border p-6 sm:p-10 shadow-card">
             <header className="mb-8 pb-6 border-b border-border">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-medium text-text-muted mb-4">
-                <span className="badge badge-primary">{categoryName}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                  {categoryName}
+                </span>
                 <span aria-hidden="true">·</span>
                 <span>{article.readTime}</span>
                 <span aria-hidden="true">·</span>
                 <span>{article.publishedAt}</span>
               </div>
 
-              <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight leading-tight mb-6 text-balance">
-                {title}
-              </h1>
-
               <div className="flex flex-wrap items-center justify-between gap-4 text-xs pt-4 border-t border-border">
                 <div>
-                  <span className="text-text-muted block">Ditinjau oleh medis:</span>
-                  <span className="font-bold text-text">{article.authorName} ({article.authorTitle})</span>
+                  <span className="text-text-muted block text-[11px]">Ditinjau oleh medis:</span>
+                  <span className="font-bold text-secondary text-sm">{article.authorName} ({article.authorTitle})</span>
                 </div>
                 <button
                   type="button"
@@ -113,30 +116,34 @@ export const ArticleDetailPage: React.FC = () => {
               </div>
             </header>
 
-            {/* Article Body */}
-            <div className="prose max-w-none text-text-muted text-base leading-relaxed space-y-5">
+            {/* Article Content with optimal reading measure */}
+            <div className="prose max-w-[68ch] mx-auto text-text text-base sm:text-lg leading-relaxed space-y-6">
               {content.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </div>
 
-            {/* Consultation CTA */}
-            <div className="mt-12 p-6 rounded-xl bg-bg-alt border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div>
-                <h3 className="font-heading text-lg font-bold text-text mb-1">
-                  Ingin berkonsultasi mengenai keluhan gigi Anda?
+            {/* In-Article Consultation CTA */}
+            <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-bg-alt/70 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-1">
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-secondary">
+                  {lang === 'en'
+                    ? 'Have specific questions about your dental health?'
+                    : 'Ingin berkonsultasi mengenai keluhan gigi Anda?'}
                 </h3>
                 <p className="text-xs sm:text-sm text-text-muted">
-                  Jadwalkan pemeriksaan klinis bersama dokter kami
+                  {lang === 'en'
+                    ? 'Schedule a digital exam and consultation with our dental team.'
+                    : 'Jadwalkan pemeriksaan klinis bersama dokter kami'}
                 </p>
               </div>
               <Link
                 to={localePath('/booking')}
-                className="btn-primary text-sm py-2.5 px-6 whitespace-nowrap justify-center cursor-pointer"
+                className="btn-primary text-sm py-3 px-6 whitespace-nowrap justify-center cursor-pointer shadow-soft shrink-0"
               >
-                <span>Buat Janji Temu</span>
+                <span>{lang === 'en' ? 'Book Appointment' : 'Buat Janji Temu'}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </Link>
             </div>

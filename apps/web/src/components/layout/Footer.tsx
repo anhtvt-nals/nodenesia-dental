@@ -17,170 +17,186 @@ export const Footer: React.FC = () => {
   );
 
   return (
-    <footer className="bg-primary text-bg pt-14 pb-24 sm:pt-16 sm:pb-24" role="contentinfo">
+    <footer className="bg-[#122820] text-[#FBF9F5] pt-20 pb-28 sm:pt-24 sm:pb-20 border-t border-white/10" role="contentinfo">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-bg/15">
-          {/* Col 1: Brand & Hotline */}
+        {/* Giant Closing Statement & Direct Booking Banner */}
+        <div className="pb-16 mb-16 border-b border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-8">
+            <span className="text-xs uppercase tracking-widest text-[#C48B46] font-semibold block mb-3">
+              {lang === 'en' ? 'Boutique Specialist Dental Practice' : 'Praktek Dokter Gigi Spesialis'}
+            </span>
+            <h2 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.12]">
+              {lang === 'en' ? (
+                <>
+                  Healthy smiles begin with <span className="italic text-[#C48B46]">gentle precision</span>.
+                </>
+              ) : (
+                <>
+                  Senyum sehat berawal dari perawatan yang <span className="italic text-[#C48B46]">tenang & presisi</span>.
+                </>
+              )}
+            </h2>
+          </div>
+          <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5">
+            <Link
+              to={localePath('/booking')}
+              className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-xl bg-[#C48B46] text-white font-bold text-base hover:bg-[#B07835] transition-all shadow-lg text-center"
+            >
+              <span>{t.home.heroPrimaryCta}</span>
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
+            <a
+              href={emergencyWaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center min-h-[52px] px-6 rounded-xl border border-white/20 text-white font-semibold text-sm hover:bg-white/10 transition-colors text-center"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#C48B46] mr-2" />
+              <span>{lang === 'en' ? 'Emergency WhatsApp 24/7' : 'Hotline Darurat Sakit Gigi'}</span>
+            </a>
+          </div>
+        </div>
+
+        {/* 4-Column Directory Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10 text-sm">
+          {/* Col 1: Brand & Operational status */}
           <div className="min-w-0">
-            <Link to={localePath('/')} className="inline-block mb-3">
-              <span className="font-heading text-xl font-bold text-bg block">
+            <Link to={localePath('/')} className="inline-block mb-4">
+              <span className="font-heading text-2xl font-bold text-white block">
                 {t.brandName}
               </span>
-              <span className="block text-xs text-bg/75 mt-0.5">
-                {t.tagline}
+              <span className="block text-xs text-[#8E9F97] mt-1">
+                Kebayoran Baru, Jakarta Selatan
               </span>
             </Link>
 
-            <p className="text-bg/80 text-sm mb-5 leading-relaxed">
+            <p className="text-[#A7B6AF] mb-6 leading-relaxed">
               {t.footer.aboutText}
             </p>
 
-            <div className="mb-5">
+            <div className="mb-6">
               <OpenNowBadge variant="dark" showDetail={false} />
             </div>
 
-            <div className="pt-4 border-t border-bg/15">
-              <span className="block text-xs text-bg/75 mb-1">
-                {lang === 'en' ? 'Emergency toothache line (WhatsApp)' : 'Saluran darurat sakit gigi (WhatsApp)'}
+            <div className="pt-4 border-t border-white/10">
+              <span className="block text-xs text-[#8E9F97] mb-1 font-medium">
+                {lang === 'en' ? 'Reception & Emergency WhatsApp' : 'Resepsionis & Darurat Gigi'}
               </span>
               <a
                 href={emergencyWaLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base font-semibold text-bg underline underline-offset-4 hover:opacity-85"
+                className="text-lg font-bold text-[#C48B46] hover:underline underline-offset-4 tracking-wide"
               >
                 {settings.phone || '+62 21 7208 4500'}
               </a>
             </div>
           </div>
 
-          {/* Col 2: Navigation */}
+          {/* Col 2: Services */}
           <div>
-            <h3 className="font-heading font-medium text-base text-bg mb-4">
-              {t.footer.quickLinks}
+            <h3 className="font-heading font-bold text-base text-white mb-4">
+              {lang === 'en' ? 'Specialized Treatments' : 'Layanan Spesialis'}
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3 text-[#A7B6AF]">
               <li>
-                <Link to={localePath('/')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.home}
+                <Link to={localePath('/layanan')} className="hover:text-white transition-colors">
+                  Ortodonti & Kawat Gigi (Sp.Ort)
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/layanan')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.services}
+                <Link to={localePath('/layanan')} className="hover:text-white transition-colors">
+                  Konservasi Gigi & Veneer (Sp.KG)
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/dokter')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.doctors}
+                <Link to={localePath('/layanan')} className="hover:text-white transition-colors">
+                  Implan Gigi Titanium CBCT (Sp.BM)
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/jadwal')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.schedule}
+                <Link to={localePath('/layanan')} className="hover:text-white transition-colors">
+                  Perawatan Saluran Akar Mikroskopis
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/harga')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.prices}
-                </Link>
-              </li>
-              <li>
-                <Link to={localePath('/hasil-kami')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.results}
+                <Link to={localePath('/layanan')} className="hover:text-white transition-colors">
+                  Bleaching In-Office & Pembersihan Karang
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Patient Links */}
+          {/* Col 3: Navigation & Patient Guide */}
           <div>
-            <h3 className="font-heading font-medium text-base text-bg mb-4">
-              {lang === 'en' ? 'Patient information' : 'Informasi pasien'}
+            <h3 className="font-heading font-bold text-base text-white mb-4">
+              {lang === 'en' ? 'Patient Portal' : 'Navigasi & Pasien'}
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3 text-[#A7B6AF]">
               <li>
-                <Link to={localePath('/booking')} className="text-bg/80 hover:text-bg transition-colors">
+                <Link to={localePath('/booking')} className="hover:text-white transition-colors">
                   {t.nav.bookNow}
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/booking/kelola')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.manageBooking}
+                <Link to={localePath('/jadwal')} className="hover:text-white transition-colors">
+                  {t.nav.schedule}
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/pasien')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.patient}
+                <Link to={localePath('/dokter')} className="hover:text-white transition-colors">
+                  {t.nav.doctors}
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/fasilitas')} className="text-bg/80 hover:text-bg transition-colors">
+                <Link to={localePath('/hasil-kami')} className="hover:text-white transition-colors">
+                  {t.nav.results}
+                </Link>
+              </li>
+              <li>
+                <Link to={localePath('/fasilitas')} className="hover:text-white transition-colors">
                   {t.nav.facilities}
                 </Link>
               </li>
               <li>
-                <Link to={localePath('/testimoni')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.testimonials.pageTitle}
-                </Link>
-              </li>
-              <li>
-                <Link to={localePath('/artikel')} className="text-bg/80 hover:text-bg transition-colors">
-                  {t.nav.articles}
+                <Link to={localePath('/booking/kelola')} className="hover:text-white transition-colors">
+                  {t.nav.manageBooking}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Hours & Address */}
+          {/* Col 4: Address, Transit & License */}
           <div>
-            <h3 className="font-heading font-medium text-base text-bg mb-4">
-              {t.footer.hoursTitle}
+            <h3 className="font-heading font-bold text-base text-white mb-4">
+              {lang === 'en' ? 'Clinic & Directions' : 'Lokasi & Izin Praktek'}
             </h3>
-            <div className="space-y-3 text-sm text-bg/80">
-              <div>
-                <span className="block text-bg font-medium">
-                  {settings.regularHours.weekdays || 'Senin – Sabtu'}
-                </span>
-                <span>{settings.regularHours.weekdaysTime || '09:00 – 20:00 WIB'}</span>
-              </div>
-              <div>
-                <span className="block text-bg font-medium">
-                  {settings.regularHours.sunday || 'Minggu'}
-                </span>
-                <span>{settings.regularHours.sundayTime || 'Darurat dengan perjanjian via WhatsApp'}</span>
-              </div>
-              <div className="pt-3 border-t border-bg/15 text-xs text-bg/80 space-y-1.5">
-                <p>{settings.address || 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan'}</p>
-                <p>
-                  <Link to={localePath('/kontak')} className="text-bg underline underline-offset-4 hover:opacity-85 font-medium">
-                    {t.nav.contact}
-                  </Link>
-                </p>
-              </div>
+            <address className="not-italic text-[#A7B6AF] space-y-2 mb-4 leading-relaxed">
+              <p className="text-white font-medium">Klinik Gigi Senyum Sehat</p>
+              <p>{settings.address || 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan 12180'}</p>
+              <p className="text-xs text-[#8E9F97] pt-1">
+                🅿️ Parkir gratis 6 mobil di depan lobi · 5 menit dari Stasiun MRT Blok M
+              </p>
+            </address>
+
+            <div className="pt-3 border-t border-white/10 text-xs text-[#8E9F97]">
+              <p>Izin Operasional Klinik Pratama:</p>
+              <p className="font-mono text-white/80 mt-0.5">503/4421/DPMPTSP/2023</p>
             </div>
           </div>
         </div>
 
-        {/* Single Trust Line in Footer Only (per Step 2 override) */}
-        <div className="py-6 border-b border-bg/15 text-xs sm:text-sm text-bg/85">
-          {lang === 'en'
-            ? 'Registered with Indonesian Ministry of Health (Kemenkes RI) · Verified Specialist Licenses (STR & SIP) · Hospital-Grade Class B Autoclave Sterilization'
-            : 'Terdaftar Resmi Kemenkes RI · Dokter Gigi Spesialis Berizin (STR & SIP) · Sterilisasi Autoclave Kelas B'}
-        </div>
-
-        {/* Copyright & Legal */}
-        <div className="pt-6 pb-12 min-[800px]:pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs text-bg/75">
-          <p>{t.footer.legalNotice}</p>
-          <div className="flex flex-wrap gap-6">
-            <Link to={localePath('/privacy')} className="hover:text-bg transition-colors">
-              {t.footer.privacyLink}
+        {/* Bottom copyright and legal */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8E9F97]">
+          <p>© {new Date().getFullYear()} {settings.name || 'Klinik Gigi Senyum Sehat'}. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link to={localePath('/legal')} className="hover:text-white transition-colors">
+              {lang === 'en' ? 'Privacy & Medical Records' : 'Kebijakan Privasi & Rekam Medis'}
             </Link>
-            <Link to={localePath('/terms')} className="hover:text-bg transition-colors">
-              {t.footer.termsLink}
-            </Link>
-            <Link to={localePath('/booking/kelola')} className="hover:text-bg transition-colors">
-              {t.nav.manageBooking}
+            <Link to={localePath('/kontak')} className="hover:text-white transition-colors">
+              {lang === 'en' ? 'Contact' : 'Kontak'}
             </Link>
           </div>
         </div>

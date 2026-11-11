@@ -12,6 +12,7 @@ export class AdminBookingsService {
       code: booking.code,
       status: booking.status,
       startsAt: booking.startsAt.toISOString(),
+      endsAt: booking.endsAt.toISOString(),
       patient: { name: booking.patient.name, phone: booking.patient.phoneE164 },
       doctor: booking.doctor.name,
       service: booking.service.name,

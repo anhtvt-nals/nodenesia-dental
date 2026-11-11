@@ -1,3 +1,4 @@
+import { PageHeader } from '../components/common/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
@@ -6,6 +7,7 @@ import { Doctor, Service } from '../types';
 import { AppHelmet } from '../components/common/AppHelmet';
 import { PhotoPlaceholder } from '../components/common/PhotoPlaceholder';
 import { PriceRow } from '../components/common/PriceRow';
+import { DEFAULT_HERO_DOCTORS, DEFAULT_SERVICES } from '../lib/fallback-data';
 
 export const DoctorDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -21,12 +23,14 @@ export const DoctorDetailPage: React.FC = () => {
       if (!slug) return;
       setLoading(true);
       const [docData, allServices] = await Promise.all([
-        getDoctor(slug),
-        getServices(),
+        getDoctor(slug).catch(() => null),
+        getServices().catch(() => [] as Service[]),
       ]);
-      setDoctor(docData);
-      if (docData) {
-        setServices(allServices.filter((s) => docData.serviceIds.includes(s.id)));
+      const resolvedDoc = docData || DEFAULT_HERO_DOCTORS.find((d) => d.slug === slug || d.id === slug) || null;
+      const resolvedServices = allServices.length > 0 ? allServices : DEFAULT_SERVICES;
+      setDoctor(resolvedDoc);
+      if (resolvedDoc) {
+        setServices(resolvedServices.filter((s) => resolvedDoc.serviceIds.includes(s.id) || resolvedDoc.serviceIds.includes(s.slug)));
       }
       setLoading(false);
     }
@@ -35,8 +39,9 @@ export const DoctorDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm font-medium text-text-muted">
-        {t.common.loading}
+      <div className="min-h-[50vh] flex flex-col items-center justify-center py-20 px-4 text-center">
+        <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin mb-4" />
+        <p className="text-sm font-medium text-text-muted">{t.common.loading}</p>
       </div>
     );
   }
@@ -44,10 +49,15 @@ export const DoctorDetailPage: React.FC = () => {
   if (!doctor) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-        <div className="trust-card p-8">
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4">
-            Profil Dokter Tidak Ditemukan
+        <div className="bg-surface rounded-2xl border border-border p-8 shadow-card">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-secondary mb-4">
+            {lang === 'en' ? 'Doctor Profile Not Found' : 'Profil Dokter Tidak Ditemukan'}
           </h1>
+          <p className="text-sm text-text-muted mb-6">
+            {lang === 'en'
+              ? 'The doctor profile you are looking for is unavailable.'
+              : 'Profil dokter yang Anda tuju tidak tersedia atau tautan tidak valid.'}
+          </p>
           <Link
             to={localePath('/dokter')}
             className="btn-primary text-sm cursor-pointer"
@@ -63,6 +73,9 @@ export const DoctorDetailPage: React.FC = () => {
   const specialty = lang === 'en' ? doctor.specialtyEn : doctor.specialty;
   const bio = lang === 'en' ? doctor.bioEn : doctor.bio;
 
+  // Determine current day of week (0=Sun, 1=Mon, ..., 6=Sat)
+  const todayDay = new Date().getDay();
+
   return (
     <>
       <AppHelmet
@@ -71,8 +84,12 @@ export const DoctorDetailPage: React.FC = () => {
         path={`/dokter/${doctor.slug}`}
       />
 
-      <div className="py-10 md:py-16 bg-bg">
+      <PageHeader title={doctor.name} description={[specialty, title].filter(Boolean).join(' · ')} />
+
+      <div className="page-content bg-bg py-6 sm:py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Breadcrumb */}
           <div className="mb-6">
             <Link
               to={localePath('/dokter')}
@@ -85,11 +102,12 @@ export const DoctorDetailPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="trust-card p-6 sm:p-8 bg-bg-card grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
-            {/* Doctor Photo */}
-            <div className="md:col-span-5">
+          {/* Main Profile Card */}
+          <div className="bg-surface rounded-2xl border border-border shadow-card p-6 sm:p-8 lg:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
+            {/* Doctor Photo Column */}
+            <div className="md:col-span-5 space-y-4">
               {doctor.photoUrl && !photoFailed ? (
-                <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative">
+                <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative shadow-sm">
                   <img
                     src={doctor.photoUrl}
                     alt={doctor.name}
@@ -97,8 +115,9 @@ export const DoctorDetailPage: React.FC = () => {
                     className="w-full h-full object-cover object-top"
                   />
                   {doctor.experience && (
-                    <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-full bg-bg-card/95 backdrop-blur-sm border border-border text-text text-xs font-bold shadow-sm">
-                      {lang === 'en' ? doctor.experienceEn : doctor.experience}
+                    <div className="absolute bottom-3 left-3 px-3.5 py-1.5 rounded-full bg-surface/95 backdrop-blur-xs border border-border text-secondary text-xs font-bold shadow-xs">
+                      <span className="text-accent mr-1">✦</span>
+                      <span>{lang === 'en' ? doctor.experienceEn : doctor.experience}</span>
                     </div>
                   )}
                 </div>
@@ -109,41 +128,61 @@ export const DoctorDetailPage: React.FC = () => {
                   aspect="3:4"
                 />
               )}
+
+              {/* Verified SIP license block */}
               {doctor.sipNumber && (
-                <div className="mt-4 p-4 rounded-xl bg-bg-alt border border-border text-xs text-text-muted">
-                  <span className="block font-bold text-text mb-0.5">{t.doctors.sipBadge}</span>
-                  <span>{doctor.sipNumber}</span>
+                <div className="p-4 rounded-xl bg-bg-alt/70 border border-border/70 text-xs text-text-muted">
+                  <div className="flex items-center gap-1.5 mb-1 font-bold text-secondary">
+                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>{t.doctors.sipBadge} Terverifikasi</span>
+                  </div>
+                  <span className="font-mono text-text">{doctor.sipNumber}</span>
                 </div>
               )}
             </div>
 
-            {/* Doctor Info */}
-            <div className="md:col-span-7">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="badge badge-primary">{specialty}</span>
-                <span className="badge badge-success">Indonesia · English</span>
-              </div>
-              <h1 className="font-heading text-3xl sm:text-4xl font-bold text-text tracking-tight mb-1.5">
-                {doctor.name}
-              </h1>
-              <p className="text-sm font-medium text-text-muted mb-6">
-                {title}
-              </p>
+            {/* Doctor Info Column */}
+            <div className="md:col-span-7 space-y-6">
+              <div>
+                <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                    {specialty}
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-bg-alt text-secondary border border-border">
+                    Konsultasi Bahasa: ID · EN
+                  </span>
+                </div>
 
-              <div className="prose max-w-none text-text-muted text-base leading-relaxed mb-8">
-                <p>{bio}</p>
+                <h1 className="font-heading text-2xl sm:text-3xl font-bold text-secondary">
+                  {doctor.name}
+                </h1>
+                <p className="text-sm text-text-muted font-medium mt-1">
+                  {title}
+                </p>
               </div>
 
-              {/* Education */}
-              {doctor.education && (
-                <div className="mb-8">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-2.5">
+              {/* Bio & Philosophy */}
+              <div className="p-5 rounded-xl bg-bg-alt/50 border border-border/70">
+                <span className="text-xs font-bold uppercase tracking-wider text-accent block mb-2">
+                  {lang === 'en' ? 'Clinical Philosophy' : 'Filosofi Perawatan'}
+                </span>
+                <p className="text-sm sm:text-base text-text leading-relaxed">
+                  "{bio}"
+                </p>
+              </div>
+
+              {/* Education & Credentials */}
+              {doctor.education && doctor.education.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">
                     {t.doctors.education}
                   </h3>
-                  <ul className="space-y-2 text-sm text-text-muted">
+                  <ul className="space-y-2.5 text-sm text-text">
                     {doctor.education.map((edu, idx) => (
                       <li key={idx} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                         <span>{edu}</span>
                       </li>
                     ))}
@@ -151,43 +190,61 @@ export const DoctorDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Weekly Practice Hours */}
-              <div className="mb-8 p-5 rounded-xl bg-bg-alt border border-border">
+              {/* Weekly Practice Schedule */}
+              <div className="p-5 rounded-xl bg-bg-alt/70 border border-border">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-3">
                   {t.doctors.weeklyHours}
                 </h3>
-                <div className="space-y-2 text-xs sm:text-sm text-text-muted">
-                  {doctor.workingHours.map((wh) => (
-                    <div key={wh.weekday} className="flex items-center justify-between py-1 border-b border-border/60 last:border-0">
-                      <span className="font-semibold text-text">
-                        {t.schedule.days[wh.weekday as keyof typeof t.schedule.days]}
-                      </span>
-                      <span className="font-medium text-primary">{wh.start} – {wh.end} WIB</span>
-                    </div>
-                  ))}
+                <div className="space-y-2 text-xs sm:text-sm">
+                  {doctor.workingHours.map((wh) => {
+                    const isToday = wh.weekday === todayDay;
+                    return (
+                      <div
+                        key={wh.weekday}
+                        className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg transition-colors ${
+                          isToday ? 'bg-primary/10 font-semibold text-primary' : 'text-text-muted'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          {isToday && <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
+                          <span className={isToday ? 'text-primary' : 'text-text'}>
+                            {t.schedule.days[wh.weekday as keyof typeof t.schedule.days]}
+                          </span>
+                          {isToday && <span className="text-[10px] uppercase tracking-wide bg-primary/20 text-primary px-1.5 py-0.5 rounded">Hari Ini</span>}
+                        </span>
+                        <span className="font-semibold tabular-nums text-secondary">
+                          {wh.start} – {wh.end} WIB
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Action */}
-              <Link
-                to={localePath(`/booking?dokter=${doctor.id}`)}
-                className="btn-primary w-full sm:w-auto justify-center py-3 px-8 cursor-pointer"
-              >
-                <span>{t.doctors.bookWithDoctor}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
+              {/* Book Appointment CTA */}
+              <div className="pt-2">
+                <Link
+                  to={localePath(`/booking?dokter=${doctor.id}`)}
+                  className="btn-primary w-full sm:w-auto justify-center py-3.5 px-8 text-sm cursor-pointer shadow-soft"
+                >
+                  <span>{t.doctors.bookWithDoctor}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Services handled by this doctor */}
-          <div className="trust-card p-6 sm:p-8 bg-bg-card">
-            <h2 className="font-heading text-2xl font-bold text-text mb-1.5">
+          <div className="bg-surface rounded-2xl border border-border shadow-card p-6 sm:p-8">
+            <h2 className="font-heading text-xl sm:text-2xl font-bold text-secondary mb-1.5">
               {t.doctors.servicesHandled}
             </h2>
             <p className="text-sm text-text-muted mb-6">
-              Tindakan medis yang dilakukan secara rutin oleh {doctor.name}
+              {lang === 'en'
+                ? `Procedures routinely handled with precision by ${doctor.name}`
+                : `Tindakan medis yang dilakukan secara rutin oleh ${doctor.name}`}
             </p>
             <div className="border-t border-border divide-y divide-border">
               {services.map((svc, idx) => (
@@ -195,6 +252,7 @@ export const DoctorDetailPage: React.FC = () => {
               ))}
             </div>
           </div>
+
         </div>
       </div>
     </>
