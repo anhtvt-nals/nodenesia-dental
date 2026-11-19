@@ -56,7 +56,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    command: yarn workspace @clinic/api exec prisma migrate deploy
+    command: node node_modules/prisma/build/index.js migrate deploy --schema apps/api/prisma/schema.prisma
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-clinic}:${POSTGRES_PASSWORD:-clinic}@postgres:5432/${POSTGRES_DB:-clinic}?schema=public
