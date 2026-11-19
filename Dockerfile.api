@@ -17,4 +17,7 @@ COPY packages/shared packages/shared
 RUN yarn workspace @clinic/api exec prisma generate
 
 EXPOSE 3000
-CMD ["sh", "-c", "exec yarn workspace @clinic/api exec tsx src/main.ts"]
+# Do not invoke the Yarn/Corepack executable shim at runtime.  The container
+# runs as the unprivileged `node` user, which must only need read access to the
+# application files.
+CMD ["node", "node_modules/tsx/dist/cli.mjs", "apps/api/src/main.ts"]
