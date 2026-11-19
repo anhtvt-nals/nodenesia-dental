@@ -1520,17 +1520,35 @@ button,
     min-height: 100dvh;
   }
 
+  /* Content keeps identical left/right gutters independently of the fixed
+     mobile header and of Ant Design's nested Layout calculations. */
+  .admin-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: var(--admin-gutter) !important;
+  }
+
+  .admin-page-region,
+  .admin-page-region > section,
+  .dashboard-overview {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+  }
+
   .admin-topbar {
     padding-right: max(12px, env(safe-area-inset-right));
     padding-left: max(64px, calc(52px + env(safe-area-inset-left)));
   }
 
   .nav-toggle {
-    width: 40px;
-    min-width: 40px !important;
-    height: 40px;
-    padding-inline: 8px !important;
+    width: 44px;
+    min-width: 44px !important;
+    height: 44px;
+    padding: 0 !important;
     border-radius: 12px !important;
+    font-size: 18px;
   }
 
   .admin-topbar__inner,

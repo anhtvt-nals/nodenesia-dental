@@ -6,6 +6,7 @@ import {
   DashboardOutlined,
   FileTextOutlined,
   LogoutOutlined,
+  MenuOutlined,
   MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -531,7 +532,13 @@ export function AdminDashboard({ accessToken, role, userName, onSignOut }: { acc
   };
 
   return <Layout className={`admin-shell${sidebarCollapsed ? ' admin-shell--collapsed' : ''}`}>
-    <Button className="nav-toggle" type="default" onClick={() => setIsNavOpen(true)}>{t('menu')}</Button>
+    <Button
+      className="nav-toggle"
+      type="default"
+      icon={<MenuOutlined />}
+      onClick={() => setIsNavOpen(true)}
+      aria-label={t('menu')}
+    />
     <Layout.Sider className="admin-sidebar" width={240} breakpoint="lg" collapsedWidth={72} collapsed={sidebarCollapsed} onCollapse={setCollapsed}>
       <div className="admin-brand-row">
         <AdminBrandLogo label={t('appTitle')} />
