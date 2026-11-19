@@ -35,6 +35,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     user: "node"
     read_only: true
     tmpfs:
@@ -49,6 +51,26 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    command: yarn workspace @clinic/api exec prisma migrate deploy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-clinic}:${POSTGRES_PASSWORD:-clinic}@postgres:5432/${POSTGRES_DB:-clinic}?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
 
   web:
     build:

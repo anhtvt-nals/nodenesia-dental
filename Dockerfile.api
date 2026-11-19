@@ -17,4 +17,4 @@ COPY packages/shared packages/shared
 RUN yarn workspace @clinic/api exec prisma generate
 
 EXPOSE 3000
-CMD ["sh", "-c", "yarn workspace @clinic/api exec prisma migrate deploy && yarn workspace @clinic/api exec tsx src/main.ts"]
+CMD ["sh", "-c", "exec yarn workspace @clinic/api exec tsx src/main.ts"]
