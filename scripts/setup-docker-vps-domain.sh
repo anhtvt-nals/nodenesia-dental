@@ -16,6 +16,7 @@ if [[ "${EUID}" -ne 0 ]]; then
 fi
 
 APP_DIR="${APP_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+ENV_FILE="${APP_DIR}/.env"
 
 if [[ -z "${CLIENT_DOMAIN:-}" ]]; then read -rp "Public domain: " CLIENT_DOMAIN </dev/tty || true; fi
 if [[ -z "${ADMIN_DOMAIN:-}" ]]; then read -rp "Admin domain: " ADMIN_DOMAIN </dev/tty || true; fi
@@ -39,17 +40,73 @@ if ! command -v docker >/dev/null 2>&1 || ! docker compose version >/dev/null 2>
   exit 1
 fi
 
-if [[ ! -f "${APP_DIR}/.env" ]]; then
-  echo "Missing ${APP_DIR}/.env. Copy .env.example, set JWT_SECRET and ADMIN_SEED_PASSWORD, then retry."
-  exit 1
+if [[ -f "${ENV_FILE}" && "${OVERWRITE_ENV:-false}" != "true" ]]; then
+  read -rp "${ENV_FILE} already exists. Replace it with prompted deployment values? [y/N]: " REPLACE_ENV </dev/tty || true
+  if [[ "${REPLACE_ENV:-}" =~ ^[Yy]$ ]]; then
+    OVERWRITE_ENV=true
+  fi
 fi
 
-if grep -q '^JWT_SECRET=replace-with-a-long-random-production-secret$' "${APP_DIR}/.env"; then
-  echo "Set a unique JWT_SECRET in ${APP_DIR}/.env before deploying."
+if [[ ! -f "${ENV_FILE}" || "${OVERWRITE_ENV:-false}" == "true" ]]; then
+  if [[ -z "${ADMIN_SEED_EMAIL:-}" ]]; then
+    read -rp "Admin email [owner@${CLIENT_DOMAIN}]: " ADMIN_SEED_EMAIL </dev/tty || true
+    ADMIN_SEED_EMAIL="${ADMIN_SEED_EMAIL:-owner@${CLIENT_DOMAIN}}"
+  fi
+  if [[ -z "${ADMIN_SEED_PASSWORD:-}" ]]; then
+    read -rsp "Admin password (leave blank to generate): " ADMIN_SEED_PASSWORD </dev/tty || true
+    echo ""
+  fi
+  GENERATED_ADMIN_PASSWORD=false
+  if [[ -z "${ADMIN_SEED_PASSWORD:-}" ]]; then
+    ADMIN_SEED_PASSWORD="$(openssl rand -base64 18)"
+    GENERATED_ADMIN_PASSWORD=true
+  fi
+  if [[ -z "${PUBLIC_WEB_URL:-}" ]]; then
+    read -rp "Public web URL [https://${CLIENT_DOMAIN}]: " PUBLIC_WEB_URL </dev/tty || true
+    PUBLIC_WEB_URL="${PUBLIC_WEB_URL:-https://${CLIENT_DOMAIN}}"
+  fi
+  if [[ "${PUBLIC_WEB_URL}" != "https://${CLIENT_DOMAIN}" ]]; then
+    echo "PUBLIC_WEB_URL must be exactly https://${CLIENT_DOMAIN}."
+    exit 1
+  fi
+  JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 32)}"
+
+  if [[ -z "${R2_ACCOUNT_ID:-}" ]]; then read -rp "Cloudflare R2 Account ID (optional): " R2_ACCOUNT_ID </dev/tty || true; fi
+  if [[ -z "${R2_ACCESS_KEY_ID:-}" ]]; then read -rp "Cloudflare R2 Access Key ID (optional): " R2_ACCESS_KEY_ID </dev/tty || true; fi
+  if [[ -z "${R2_SECRET_ACCESS_KEY:-}" ]]; then read -rsp "Cloudflare R2 Secret Access Key (optional): " R2_SECRET_ACCESS_KEY </dev/tty || true; echo ""; fi
+  if [[ -z "${R2_BUCKET:-}" ]]; then read -rp "Cloudflare R2 Bucket (optional): " R2_BUCKET </dev/tty || true; fi
+  if [[ -z "${R2_PUBLIC_URL:-}" ]]; then read -rp "Cloudflare R2 Public URL (optional): " R2_PUBLIC_URL </dev/tty || true; fi
+  if [[ -z "${FONNTE_TOKEN:-}" ]]; then read -rsp "Fonnte WhatsApp token (optional): " FONNTE_TOKEN </dev/tty || true; echo ""; fi
+
+  cat > "${ENV_FILE}" <<EOF
+POSTGRES_DB=clinic
+POSTGRES_USER=clinic
+POSTGRES_PASSWORD=clinic
+CLINIC_TIMEZONE=Asia/Jakarta
+JWT_SECRET=${JWT_SECRET}
+ADMIN_SEED_EMAIL=${ADMIN_SEED_EMAIL}
+ADMIN_SEED_PASSWORD=${ADMIN_SEED_PASSWORD}
+PUBLIC_WEB_URL=${PUBLIC_WEB_URL}
+FONNTE_TOKEN=${FONNTE_TOKEN:-}
+R2_ACCOUNT_ID=${R2_ACCOUNT_ID:-}
+R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID:-}
+R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY:-}
+R2_BUCKET=${R2_BUCKET:-}
+R2_PUBLIC_URL=${R2_PUBLIC_URL:-}
+EOF
+  chmod 600 "${ENV_FILE}"
+  echo "Created ${ENV_FILE} with permission 600."
+  if [[ "${GENERATED_ADMIN_PASSWORD}" == "true" ]]; then
+    echo "Generated admin password (save it now): ${ADMIN_SEED_PASSWORD}"
+  fi
+fi
+
+if grep -q '^JWT_SECRET=replace-with-a-long-random-production-secret$' "${ENV_FILE}"; then
+  echo "Set a unique JWT_SECRET in ${ENV_FILE} before deploying."
   exit 1
 fi
-if ! grep -Fqx "PUBLIC_WEB_URL=https://${CLIENT_DOMAIN}" "${APP_DIR}/.env"; then
-  echo "Set PUBLIC_WEB_URL=https://${CLIENT_DOMAIN} in ${APP_DIR}/.env before deploying."
+if ! grep -Fqx "PUBLIC_WEB_URL=https://${CLIENT_DOMAIN}" "${ENV_FILE}"; then
+  echo "Set PUBLIC_WEB_URL=https://${CLIENT_DOMAIN} in ${ENV_FILE} before deploying."
   exit 1
 fi
 
