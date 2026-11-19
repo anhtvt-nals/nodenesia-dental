@@ -15,9 +15,10 @@ RUN yarn install --immutable
 COPY apps/api apps/api
 COPY packages/shared packages/shared
 RUN yarn workspace @clinic/api exec prisma generate
+RUN yarn workspace @clinic/api exec tsc --outDir dist
 
 EXPOSE 3000
-# Do not invoke the Yarn/Corepack executable shim at runtime.  The container
-# runs as the unprivileged `node` user, which must only need read access to the
-# application files.
-CMD ["node", "node_modules/tsx/dist/cli.mjs", "apps/api/src/main.ts"]
+# Compile the Nest application before runtime so decorator metadata is emitted.
+# The tsx loader remains only for the workspace shared package, whose public
+# entry is TypeScript; it is loaded by Node directly, never via a Yarn shim.
+CMD ["node", "--import", "tsx", "apps/api/dist/main.js"]
