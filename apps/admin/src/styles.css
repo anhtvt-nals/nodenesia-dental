@@ -1592,22 +1592,6 @@ button,
   font-size: 16px;
 }
 
-.admin-table-container,
-.ant-table-wrapper {
-  max-width: 100%;
-  overscroll-behavior-x: contain;
-}
-
-.ant-table-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-
-.ant-table-wrapper .ant-table-content {
-  min-width: max-content;
-}
-
 .admin-page-header__actions .ant-btn,
 .filter-toolbar .ant-btn,
 .content-block-heading > .ant-btn {
@@ -1850,6 +1834,11 @@ button,
   .admin-table-wrapper,
   .ant-table-wrapper {
     border-radius: 14px;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .ant-table-thead > tr > th,

@@ -112,7 +112,6 @@ export function AdminTable<T extends object>({
           dataSource={dataSource}
           loading={loading}
           size="middle"
-          scroll={{ x: 'max-content' }}
           sticky={{ offsetHeader: 62 }}
           pagination={pagination}
           rowClassName={rowClassName}
