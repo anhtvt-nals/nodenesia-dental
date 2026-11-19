@@ -1590,6 +1590,20 @@ button,
     min-height: 100dvh;
   }
 
+  /* A persisted desktop "collapsed sidebar" preference must never reserve
+     horizontal space on mobile: the sidebar is replaced by the Drawer here. */
+  .admin-shell--collapsed .admin-main {
+    margin-left: 0 !important;
+  }
+
+  .admin-shell--collapsed .admin-topbar {
+    left: 0 !important;
+  }
+
+  .admin-shell--collapsed .sticky-save {
+    left: 12px !important;
+  }
+
   /* Content keeps identical left/right gutters independently of the fixed
      mobile header and of Ant Design's nested Layout calculations. */
   .admin-content {
