@@ -14,7 +14,6 @@ import {
   Button,
   Card,
   Col,
-  Empty,
   Input,
   Popconfirm,
   Row,
@@ -22,13 +21,12 @@ import {
   Space,
   Statistic,
   Switch,
-  Table,
   Tag,
   Tooltip,
   Typography,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { AdminPageHeader } from '../../components/ui';
+import { AdminPageHeader, AdminTable } from '../../components/ui';
 import { useMemo, useState } from 'react';
 import {
   deleteArticle,
@@ -298,7 +296,7 @@ export function ArticleManager({
         }
       />
 
-      <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+      <Row className="article-stats" gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={8}>
           <Card size="small" style={{ borderRadius: 12 }}>
             <Statistic
@@ -331,6 +329,7 @@ export function ArticleManager({
       </Row>
 
       <Card
+        className="article-filter-card"
         size="small"
         style={{
           marginBottom: 16,
@@ -375,21 +374,13 @@ export function ArticleManager({
         </Row>
       </Card>
 
-      <Table
+      <AdminTable<Article>
         rowKey="id"
         columns={columns}
         dataSource={filteredArticles}
-        locale={{
-          emptyText: (
-            <Empty
-              description={
-                searchText || selectedCategory !== 'all' || statusFilter !== 'all'
-                  ? tr('Tidak ada artikel yang sesuai filter', 'No articles match the filter')
-                  : tr('Belum ada artikel', 'No articles yet')
-              }
-            />
-          ),
-        }}
+        emptyTitle={searchText || selectedCategory !== 'all' || statusFilter !== 'all'
+          ? tr('Tidak ada artikel yang sesuai filter', 'No articles match the filter')
+          : tr('Belum ada artikel', 'No articles yet')}
         pagination={pagination ? {
           ...pagination,
           showSizeChanger: false,
@@ -407,6 +398,62 @@ export function ArticleManager({
               `Menampilkan ${range[0]}-${range[1]} dari ${total} artikel`,
               `Showing ${range[0]}-${range[1]} of ${total} articles`,
             ),
+        }}
+        renderMobileCard={(article) => {
+          const isPublished = Boolean(article.publishedAt);
+          const readMinutes = Math.max(1, Math.ceil((article.body?.split(/\s+/).filter(Boolean).length || 0) / 180));
+          return (
+            <article className="admin-mobile-card article-mobile-card">
+              <div className="admin-mobile-card__top">
+                <div className="article-mobile-card__identity">
+                  {article.coverUrl ? (
+                    <img className="article-mobile-card__cover" src={article.coverUrl} alt="" />
+                  ) : (
+                    <span className="article-mobile-card__placeholder" aria-hidden="true"><PictureOutlined /></span>
+                  )}
+                  <div>
+                    <strong>{article.title}</strong>
+                    <span className="article-mobile-card__slug">/artikel/{article.slug}</span>
+                  </div>
+                </div>
+                <Switch
+                  checked={isPublished}
+                  aria-label={tr(`Ubah status ${article.title}`, `Change status for ${article.title}`)}
+                  onChange={() => void togglePublish(article)}
+                />
+              </div>
+              <div className="article-mobile-card__meta">
+                <Tag className="admin-tag admin-tag--info">{article.category?.name ?? tr('Umum', 'General')}</Tag>
+                <span>~{readMinutes} {tr('mnt baca', 'min read')}</span>
+                <Tag className={`admin-tag ${isPublished ? 'admin-tag--success' : 'admin-tag--neutral'}`}>
+                  {isPublished ? tr('Dipublikasikan', 'Published') : tr('Draf', 'Draft')}
+                </Tag>
+              </div>
+              {article.excerpt && <p className="article-mobile-card__excerpt">{article.excerpt}</p>}
+              <div className="admin-mobile-card__actions article-mobile-card__actions">
+                <ArticleEditor
+                  accessToken={accessToken}
+                  categories={categories}
+                  article={article}
+                  onSaved={handleArticleSaved}
+                  onError={onError}
+                  trigger={<Button icon={<EditOutlined />}>{tr('Sunting', 'Edit')}</Button>}
+                />
+                <Button icon={<LinkOutlined />} onClick={() => window.open(`/artikel/${article.slug}`, '_blank')}>
+                  {tr('Lihat', 'View')}
+                </Button>
+                <Popconfirm
+                  title={tr('Hapus artikel ini?', 'Delete this article?')}
+                  description={tr('Artikel akan dihapus permanen dari sistem.', 'This cannot be undone.')}
+                  okText={tr('Hapus', 'Delete')}
+                  cancelText={tr('Batal', 'Cancel')}
+                  onConfirm={() => void handleDelete(article.id)}
+                >
+                  <Button danger icon={<DeleteOutlined />} aria-label={tr(`Hapus artikel ${article.title}`, `Delete article ${article.title}`)} />
+                </Popconfirm>
+              </div>
+            </article>
+          );
         }}
       />
     </section>

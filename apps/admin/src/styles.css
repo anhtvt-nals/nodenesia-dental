@@ -1270,6 +1270,74 @@ textarea.content-block-code { padding: 16px; border-radius: 12px; background: va
 .service-mobile-card .admin-mobile-card__actions .ant-btn {
   flex: 1 1 auto;
 }
+.article-mobile-card {
+  gap: 12px;
+}
+.article-mobile-card__identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+.article-mobile-card__identity > div {
+  min-width: 0;
+}
+.article-mobile-card__cover,
+.article-mobile-card__placeholder {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--neutral-100);
+  color: var(--pine-2);
+  object-fit: cover;
+}
+.article-mobile-card__slug {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.article-mobile-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.article-mobile-card__meta .ant-tag { margin-inline-end: 0; }
+.article-mobile-card__excerpt {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.article-mobile-card__actions .ant-btn:not(:last-child) {
+  flex: 1 1 0;
+}
+
+@media (max-width: 767px) {
+  .article-stats .ant-card {
+    height: 100%;
+    border-radius: 14px !important;
+  }
+  .article-stats .ant-card-body { padding: 14px; }
+  .article-stats .ant-statistic-title { min-height: 34px; font-size: 12px; }
+  .article-stats .ant-statistic-content { font-size: 25px; }
+  .article-filter-card .ant-card-body { padding: 12px; }
+}
 .admin-mobile-card--overdue {
   border-color: var(--semantic-danger-border);
   background: var(--semantic-danger-surface);
