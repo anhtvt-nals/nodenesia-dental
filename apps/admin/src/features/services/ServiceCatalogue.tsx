@@ -167,19 +167,19 @@ export function ServiceCatalogue({ accessToken, services, onChanged, onError, pa
         pagination={pagination ? { ...pagination, showSizeChanger: false } : undefined}
         emptyTitle={tr('Belum ada layanan', 'No services yet')}
         renderMobileCard={(service) => (
-          <div className="admin-mobile-card">
+          <div className="admin-mobile-card service-mobile-card">
             <div className="admin-mobile-card__top">
-              <div>
+              <div className="service-mobile-card__identity">
                 <strong>{service.name}</strong>
-                <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>
+                <div className="service-mobile-card__meta">
                   {formatCurrency(service.priceFrom)} · {service.durationMinutes} {tr('mnt', 'min')}
                 </div>
               </div>
               <Switch checked={service.isActive} onChange={() => void toggle(service)} />
             </div>
+            <p className="service-mobile-card__desc">{service.shortDesc}</p>
             <div className="admin-mobile-card__actions">
               <Button
-                size="small"
                 icon={<EditOutlined />}
                 onClick={() => {
                   setEditing(service);

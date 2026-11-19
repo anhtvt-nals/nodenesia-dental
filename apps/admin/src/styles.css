@@ -1193,12 +1193,82 @@ textarea.content-block-code { padding: 16px; border-radius: 12px; background: va
   display: grid;
   gap: 12px;
 }
+.admin-mobile-card-item {
+  min-width: 0;
+}
 .admin-mobile-card {
+  display: grid;
+  gap: 14px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 14px 16px;
   box-shadow: 0 1px 2px rgb(18 40 32 / 4%);
+}
+.admin-mobile-card__top {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.admin-mobile-card__top > :first-child {
+  min-width: 0;
+}
+.admin-mobile-card__top strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.admin-mobile-card__top .ant-switch {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.admin-mobile-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-mobile-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.admin-mobile-card__actions .ant-btn {
+  min-height: 40px;
+}
+.service-mobile-card {
+  gap: 12px;
+  padding: 18px;
+}
+.service-mobile-card__identity {
+  display: grid;
+  gap: 5px;
+}
+.service-mobile-card__meta {
+  color: var(--pine-2);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.service-mobile-card__desc {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.service-mobile-card .admin-mobile-card__actions .ant-btn {
+  flex: 1 1 auto;
 }
 .admin-mobile-card--overdue {
   border-color: var(--semantic-danger-border);

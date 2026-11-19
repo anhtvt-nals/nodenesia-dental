@@ -86,7 +86,7 @@ export function AdminTable<T extends object>({
                   ? rowKey(item)
                   : String((item as Record<string, unknown>)[String(rowKey)] ?? idx);
               return (
-                <div key={key} className="admin-mobile-card">
+                <div key={key} className="admin-mobile-card-item">
                   {renderMobileCard(item)}
                 </div>
               );
