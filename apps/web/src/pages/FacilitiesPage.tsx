@@ -29,7 +29,7 @@ export const FacilitiesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Standards Overview Banner */}
-          <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-secondary text-surface shadow-floating relative overflow-hidden">
+          <div className="mb-10 p-5 sm:p-8 rounded-2xl bg-secondary text-surface shadow-floating relative overflow-hidden">
             <div className="relative z-10 max-w-3xl space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-accent block">
                 {lang === 'en' ? 'Clinical Infrastructure & Hygiene' : 'Infrastruktur Klinis & Higienitas'}
@@ -48,7 +48,7 @@ export const FacilitiesPage: React.FC = () => {
           </div>
 
           {/* Facility Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {t.facilities.items.map((facility, index) => (
               <div
                 key={index}
@@ -67,11 +67,11 @@ export const FacilitiesPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="p-6 sm:p-7 space-y-2.5">
+                  <div className="p-5 sm:p-7 space-y-2.5">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-accent block">
                       TEKNOLOGI MEDIS
                     </span>
-                    <h3 className="font-heading text-xl font-bold text-secondary group-hover:text-primary transition-colors">
+                    <h3 className="font-heading text-lg sm:text-xl font-bold text-secondary group-hover:text-primary transition-colors">
                       {facility.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
@@ -80,7 +80,7 @@ export const FacilitiesPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="px-6 py-4 text-xs font-semibold text-emerald-800 border-t border-border bg-bg-alt/50 flex items-center gap-2">
+                <div className="px-5 sm:px-6 py-4 text-xs font-semibold text-emerald-800 border-t border-border bg-bg-alt/50 flex items-center gap-2">
                   <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

@@ -1,5 +1,6 @@
-import { BadRequestException, Body, Controller, Get, Inject, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Inject, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { z, ZodError } from 'zod';
+import { paginateArray } from '../../common/pagination.js';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { AdminServicesService } from './admin-services.service.js';
@@ -18,7 +19,9 @@ export class AdminServicesController {
   constructor(@Inject(AdminServicesService) private readonly services: AdminServicesService) {}
 
   @Get()
-  list() { return this.services.list(); }
+  list(@Query('page') page?: string, @Query('pageSize') pageSize?: string) {
+    return paginateArray(this.services.list(), { page, pageSize });
+  }
 
   @Post()
   create(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) {

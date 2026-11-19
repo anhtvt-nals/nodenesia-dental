@@ -32,8 +32,9 @@ export async function createApi(): Promise<NestFastifyApplication> {
 if (process.env.NODE_ENV !== 'test') {
   createApi()
     .then(async (app) => {
-      await app.listen(3000, '0.0.0.0');
-      console.info('Clinic API ready at http://127.0.0.1:3000');
+      const host = process.env.HOST ?? (process.env.NODE_ENV === 'production' ? '127.0.0.1' : '0.0.0.0');
+      await app.listen(3000, host);
+      console.info(`Clinic API ready at http://${host}:3000`);
     })
     .catch((error: unknown) => {
       const code = (error as { code?: string })?.code;

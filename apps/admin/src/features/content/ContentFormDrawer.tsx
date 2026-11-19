@@ -18,11 +18,11 @@ type Props = {
 export function ContentFormDrawer({ title, open, saving, onClose, onSave, children, width = 560, saveLabel, note }: Props) {
   useAdminTranslation();
   return <ConfigProvider theme={{
-    token: { controlHeight: 44, borderRadius: 8, fontSize: 14, colorBorder: '#DDE5E0' },
+    token: { controlHeight: 44, borderRadius: 8, fontSize: 14, colorBorder: '#D6CFC3' },
     components: {
-      Input: { paddingInline: 12, paddingBlock: 10, activeShadow: '0 0 0 3px rgb(52 120 184 / 10%)' },
-      InputNumber: { controlWidth: 100, activeShadow: '0 0 0 3px rgb(52 120 184 / 10%)' },
-      Select: { optionSelectedBg: '#E7F0FA' },
+      Input: { paddingInline: 12, paddingBlock: 10, activeShadow: '0 0 0 3px rgb(24 78 63 / 10%)' },
+      InputNumber: { controlWidth: 100, activeShadow: '0 0 0 3px rgb(24 78 63 / 10%)' },
+      Select: { optionSelectedBg: '#EEF4F1' },
       Form: { itemMarginBottom: 20, verticalLabelPadding: '0 0 6px', labelFontSize: 13 },
     },
   }}>

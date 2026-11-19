@@ -18,7 +18,7 @@ export const DateStrip: React.FC<DateStripProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 scrollbar-none">
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 scrollbar-none snap-x snap-mandatory">
         {dates.map((item, idx) => {
           const isSelected = selectedDate === item.date;
           const dayName = t.schedule.days[item.dayOfWeek as keyof typeof t.schedule.days];
@@ -35,12 +35,12 @@ export const DateStrip: React.FC<DateStripProps> = ({
               type="button"
               disabled={item.isClosed}
               onClick={() => onSelectDate(item.date)}
-              className={`p-3 min-w-[82px] text-center shrink-0 rounded-xl border transition-all flex flex-col items-center justify-center ${
+              className={`p-3 min-w-[82px] text-center shrink-0 rounded-xl border transition-all flex flex-col items-center justify-center snap-start ${
                 item.isClosed
                   ? 'bg-bg-alt/60 text-text-muted/60 cursor-not-allowed border-dashed border-border'
                   : isSelected
-                  ? 'bg-primary text-white border-primary shadow-sm cursor-pointer'
-                  : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer'
+                  ? 'bg-primary text-white border-primary shadow-sm cursor-pointer ring-2 ring-primary/20 scale-[1.02]'
+                  : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer active:scale-95'
               }`}
               aria-label={`${dayName}, ${dayNumber} ${monthName}${item.isClosed ? ' (' + t.common.closed + ')' : ''}`}
             >

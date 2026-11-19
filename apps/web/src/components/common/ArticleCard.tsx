@@ -14,7 +14,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const categoryName = lang === 'en' ? article.categoryNameEn : article.categoryName;
 
   return (
-    <article className="group bg-surface rounded-2xl border border-border p-6 sm:p-7 shadow-card hover:shadow-hover hover:border-primary/40 transition-all duration-300 flex flex-col justify-between h-full">
+    <article className="group bg-surface rounded-2xl border border-border p-5 sm:p-7 shadow-card hover:shadow-hover hover:border-primary/40 transition-all duration-300 flex flex-col justify-between h-full">
       <div>
         <div className="flex items-center justify-between gap-2 text-xs text-text-muted mb-3.5">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
@@ -48,7 +48,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         </div>
         <Link
           to={localePath(`/artikel/${article.slug}`)}
-          className="inline-flex items-center gap-1 text-primary font-bold hover:text-primary-hover shrink-0"
+          className="inline-flex items-center gap-1 text-primary font-bold hover:text-primary-hover shrink-0 min-h-[44px] px-2 active:scale-95"
         >
           <span>{t.common.moreDetail}</span>
           <span aria-hidden="true">→</span>

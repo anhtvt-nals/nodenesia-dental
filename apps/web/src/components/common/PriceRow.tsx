@@ -37,24 +37,24 @@ export const PriceRow: React.FC<PriceRowProps> = ({ service, showCategory = fals
         {priceNote && <p className="text-base mt-1">{priceNote}</p>}
       </div>
 
-      <div className="md:text-right flex flex-wrap md:justify-end items-baseline gap-x-5 gap-y-2 whitespace-nowrap">
+      <div className="md:text-right flex flex-wrap md:justify-end items-center gap-x-5 gap-y-3">
         <div>
-          <span className="text-base text-text-muted mr-1.5">{t.services.startingFrom}</span>
-          <span className="font-heading font-bold text-lg text-text tabular-nums">
+          <span className="text-xs sm:text-sm text-text-muted mr-1.5">{t.services.startingFrom}</span>
+          <span className="font-heading font-bold text-base sm:text-lg text-primary tabular-nums">
             {formatRupiah(service.priceFrom, lang === 'en')}
           </span>
         </div>
 
-        <div className="flex items-center gap-4 text-base font-semibold">
+        <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold w-full sm:w-auto">
           <Link
             to={localePath(`/layanan/${service.slug}`)}
-            className="text-text-muted hover:text-primary underline underline-offset-4"
+            className="px-3.5 py-2 min-h-[44px] inline-flex items-center justify-center rounded-xl border border-border bg-surface text-secondary hover:bg-bg-alt hover:text-primary transition-colors active:scale-95"
           >
             {t.common.moreDetail}
           </Link>
           <Link
             to={localePath(`/booking?layanan=${service.slug}`)}
-            className="text-primary hover:underline underline-offset-4"
+            className="btn-primary px-4 py-2 min-h-[44px] inline-flex items-center justify-center rounded-xl text-xs sm:text-sm font-semibold active:scale-95"
           >
             {t.common.bookNow}
           </Link>

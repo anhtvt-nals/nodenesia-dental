@@ -1,29 +1,48 @@
-import { BookingLoadingOverlay } from '../components/common/BookingLoadingOverlay';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import {
   getServices,
   getDoctors,
+  getPublicTimeOffs,
   getSlots,
   createBooking,
 } from '../lib/api';
 import {
   Service,
   Doctor,
+  DoctorTimeOff,
   BookingSlot,
 } from '../types';
-import { BookingStepper } from '../components/common/BookingStepper';
-import { WhitebloomBookingModal } from '../components/common/WhitebloomBookingModal';
+import { BookingLoadingOverlay } from '../components/common/BookingLoadingOverlay';
 import { AppHelmet } from '../components/common/AppHelmet';
 import {
-  formatRupiah,
-  isValidIndonesianPhone,
+  validateIndonesianWhatsApp,
   normalizePhoneForWhatsApp,
   buildWhatsAppLink,
+  formatDateSummary,
 } from '../lib/utils';
 import { useClinicSettings } from '../lib/clinic-settings';
 import { DEFAULT_SERVICES, DEFAULT_HERO_DOCTORS } from '../lib/fallback-data';
+
+function isDateOverlapping(dateStr: string, startsAt: string, endsAt: string): boolean {
+  if (!dateStr || !startsAt || !endsAt) return false;
+  const dayStart = new Date(`${dateStr}T00:00:00+07:00`).getTime();
+  const dayEnd = new Date(`${dateStr}T23:59:59.999+07:00`).getTime();
+  const toStart = new Date(startsAt).getTime();
+  const toEnd = new Date(endsAt).getTime();
+  return toStart <= dayEnd && toEnd >= dayStart;
+}
+
+function getDefaultDateStr(): string {
+  const tmrw = new Date();
+  tmrw.setDate(tmrw.getDate() + 1);
+  if (tmrw.getDay() === 0) tmrw.setDate(tmrw.getDate() + 1);
+  const y = tmrw.getFullYear();
+  const m = String(tmrw.getMonth() + 1).padStart(2, '0');
+  const d = String(tmrw.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
 
 export const BookingPage: React.FC = () => {
   const { lang, t, localePath } = useI18n();
@@ -31,33 +50,39 @@ export const BookingPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // URL state
-  const stepParam = parseInt(searchParams.get('step') || '1', 10);
-  const currentStep = isNaN(stepParam) || stepParam < 1 || stepParam > 4 ? 1 : stepParam;
-
   const prefilledServiceSlug = searchParams.get('layanan') || '';
-  const prefilledDoctorId = searchParams.get('dokter') || 'any';
   const prefilledDate = searchParams.get('tanggal') || '';
   const prefilledTime = searchParams.get('jam') || '';
 
-  // Data
+  // Master data
   const [services, setServices] = useState<Service[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [clinicTimeOffs, setClinicTimeOffs] = useState<DoctorTimeOff[]>([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
-  const [serviceCategoryFilter, setServiceCategoryFilter] = useState<string>('all');
 
-  // Form selections
+  // 1-Step Selections (clinic assigns the doctor automatically)
   const [selectedServiceId, setSelectedServiceId] = useState<string>('');
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string>(prefilledDoctorId);
-  const [selectedDate, setSelectedDate] = useState<string>(prefilledDate);
+  const selectedDoctorId = 'any';
+  const [selectedDate, setSelectedDate] = useState<string>(prefilledDate || getDefaultDateStr());
   const [selectedTime, setSelectedTime] = useState<string>(prefilledTime);
 
-  // Patient info (Step 4)
+  // Calendar view state
+  const initialDateObj = selectedDate ? new Date(`${selectedDate}T00:00:00`) : new Date();
+  const [viewYear, setViewYear] = useState<number>(
+    isNaN(initialDateObj.getTime()) ? new Date().getFullYear() : initialDateObj.getFullYear(),
+  );
+  const [viewMonth, setViewMonth] = useState<number>(
+    isNaN(initialDateObj.getTime()) ? new Date().getMonth() : initialDateObj.getMonth(),
+  );
+
+  // Patient contact & note
   const [patientName, setPatientName] = useState<string>('');
   const [patientPhone, setPatientPhone] = useState<string>('');
-  const [complaint, setComplaint] = useState<string>('');
-  const [consentChecked, setConsentChecked] = useState<boolean>(false);
-  const [honeypotValue, setHoneypotValue] = useState<string>(''); // Bot protection
+  const [note, setNote] = useState<string>('');
+
+  // Bot protection & validation UI state
+  const [honeypotValue, setHoneypotValue] = useState<string>('');
+  const [attemptedSubmit, setAttemptedSubmit] = useState<boolean>(false);
 
   // Slots state
   const [slots, setSlots] = useState<BookingSlot[]>([]);
@@ -68,52 +93,84 @@ export const BookingPage: React.FC = () => {
   const submissionPending = useRef(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Load services and doctors with resilient fallback
+  // Load services, doctors, time offs
   useEffect(() => {
+    let active = true;
     async function loadInitial() {
-      const [allServices, allDocs] = await Promise.all([
+      const [allServices, allDocs, allTimeOffs] = await Promise.all([
         getServices().catch(() => [] as Service[]),
         getDoctors().catch(() => [] as Doctor[]),
+        getPublicTimeOffs().catch(() => [] as DoctorTimeOff[]),
       ]);
+      if (!active) return;
+
       const resolvedServices = allServices.length > 0 ? allServices : DEFAULT_SERVICES;
       const resolvedDocs = allDocs.length > 0 ? allDocs : DEFAULT_HERO_DOCTORS;
       setServices(resolvedServices);
       setDoctors(resolvedDocs);
+      setClinicTimeOffs(allTimeOffs);
 
-      // Auto-select service if slug in URL
+      // Resolve service (prefill from URL or default to consultation / first service)
+      const defaultService =
+        resolvedServices.find((s) => s.slug === 'konsultasi-umum' || s.name.toLowerCase().includes('konsultasi')) ||
+        resolvedServices[0];
+
       if (prefilledServiceSlug) {
-        const found = resolvedServices.find((s) => s.slug === prefilledServiceSlug || s.id === prefilledServiceSlug);
-        if (found) {
-          setSelectedServiceId(found.id);
-        } else if (resolvedServices.length > 0) {
-          setSelectedServiceId(resolvedServices[0].id);
-        }
-      } else if (resolvedServices.length > 0 && !selectedServiceId) {
-        setSelectedServiceId(resolvedServices[0].id);
-      }
-
-      // Auto-select doctor if slug or ID in URL
-      if (prefilledDoctorId && prefilledDoctorId !== 'any') {
-        const docFound = resolvedDocs.find((d) => d.slug === prefilledDoctorId || d.id === prefilledDoctorId);
-        if (docFound) {
-          setSelectedDoctorId(docFound.id);
-        }
-      }
-
-      // Default date to tomorrow if not set
-      if (!selectedDate) {
-        const tmrw = new Date();
-        tmrw.setDate(tmrw.getDate() + 1);
-        if (tmrw.getDay() === 0) tmrw.setDate(tmrw.getDate() + 1); // skip sunday
-        setSelectedDate(tmrw.toISOString().split('T')[0]);
+        const found = resolvedServices.find(
+          (s) => s.slug === prefilledServiceSlug || s.id === prefilledServiceSlug,
+        );
+        setSelectedServiceId(found ? found.id : defaultService?.id ?? '');
+      } else if (defaultService) {
+        setSelectedServiceId(defaultService.id);
       }
 
       setLoadingInitial(false);
     }
     loadInitial();
-  }, [prefilledServiceSlug, prefilledDoctorId]);
+    return () => {
+      active = false;
+    };
+  }, [prefilledServiceSlug]);
 
-  // Update query params as state changes
+  // Keep calendar month in sync with selectedDate
+  useEffect(() => {
+    if (!selectedDate) return;
+    const d = new Date(`${selectedDate}T00:00:00`);
+    if (!isNaN(d.getTime())) {
+      setViewYear(d.getFullYear());
+      setViewMonth(d.getMonth());
+    }
+  }, [selectedDate]);
+
+  // Fetch slots whenever service or date changes
+  useEffect(() => {
+    let active = true;
+    async function fetchAvailability() {
+      if (!selectedServiceId || !selectedDate || doctors.length === 0) return;
+      setLoadingSlots(true);
+      try {
+        const results = await Promise.all(
+          doctors.map((doc) =>
+            getSlots({
+              serviceId: selectedServiceId,
+              doctorId: doc.id,
+              date: selectedDate,
+            }).catch(() => [] as BookingSlot[]),
+          ),
+        );
+        if (active) setSlots(results.flat());
+      } catch (err) {
+        console.error('Failed to load slots', err);
+      } finally {
+        if (active) setLoadingSlots(false);
+      }
+    }
+    fetchAvailability();
+    return () => {
+      active = false;
+    };
+  }, [selectedServiceId, selectedDate, doctors]);
+
   const updateUrlState = (updates: Record<string, string | null>) => {
     const nextParams = new URLSearchParams(searchParams);
     Object.entries(updates).forEach(([key, val]) => {
@@ -126,84 +183,128 @@ export const BookingPage: React.FC = () => {
     setSearchParams(nextParams, { replace: true });
   };
 
-  const goToStep = (step: number) => {
-    setErrorMessage(null);
-    updateUrlState({ step: String(step) });
-    window.scrollTo({ top: 120, behavior: 'smooth' });
-  };
-
-  // Fetch slots whenever service or date changes across all doctors
-  useEffect(() => {
-    async function fetchAvailability() {
-      if (!selectedServiceId || !selectedDate || doctors.length === 0) return;
-      setLoadingSlots(true);
-      try {
-        const slotPromises = doctors.map((doc) =>
-          getSlots({
-            serviceId: selectedServiceId,
-            doctorId: doc.id,
-            date: selectedDate,
-          }).catch(() => [])
-        );
-        const results = await Promise.all(slotPromises);
-        setSlots(results.flat());
-      } catch (err) {
-        console.error('Failed to load slots', err);
-      } finally {
-        setLoadingSlots(false);
-      }
-    }
-    fetchAvailability();
-  }, [selectedServiceId, selectedDate, doctors]);
-
-  // Selection handlers
-  const handleSelectService = (service: Service) => {
-    setSelectedServiceId(service.id);
-    updateUrlState({ layanan: service.slug, step: '2' });
-  };
-
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    setSelectedTime(''); // Reset chosen time when date changes
+    setSelectedTime('');
+    setErrorMessage(null);
     updateUrlState({ tanggal: date, jam: null });
   };
 
-  const handleSelectSlot = (time: string) => {
+  const handleSelectTime = (time: string) => {
     setSelectedTime(time);
+    setErrorMessage(null);
     updateUrlState({ jam: time });
   };
 
+  // Slots deduplicated across all available clinic doctors
+  const visibleSlots = useMemo(() => {
+    const seen = new Set<string>();
+    const unique: BookingSlot[] = [];
+    for (const s of [...slots].sort((a, b) => a.time.localeCompare(b.time))) {
+      if (!seen.has(s.time)) {
+        seen.add(s.time);
+        unique.push(s);
+      }
+    }
+    return unique;
+  }, [slots]);
+
+  // Calendar grid
+  const monthNamesEn = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+  const monthNamesId = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+  ];
+  const monthName = lang === 'en' ? monthNamesEn[viewMonth] : monthNamesId[viewMonth];
+
+  const handlePrevMonth = () => {
+    if (viewMonth === 0) {
+      setViewMonth(11);
+      setViewYear((y) => y - 1);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (viewMonth === 11) {
+      setViewMonth(0);
+      setViewYear((y) => y + 1);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
+  };
+
+  const daysGrid = useMemo(() => {
+    const firstDayOfMonth = new Date(viewYear, viewMonth, 1);
+    const startingDay = (firstDayOfMonth.getDay() + 6) % 7; // Mon = 0 .. Sun = 6
+    const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    const cells: Array<{ dayNum: number; dateStr: string; isPast: boolean; isSunday: boolean } | null> = [];
+    for (let i = 0; i < startingDay; i++) cells.push(null);
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    for (let d = 1; d <= totalDays; d++) {
+      const mm = String(viewMonth + 1).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      const dateStr = `${viewYear}-${mm}-${dd}`;
+      const dateObj = new Date(viewYear, viewMonth, d);
+      cells.push({
+        dayNum: d,
+        dateStr,
+        isPast: dateStr < todayStr,
+        isSunday: dateObj.getDay() === 0,
+      });
+    }
+    return cells;
+  }, [viewYear, viewMonth]);
+
+  // Validation
+  const isTimeSelected = Boolean(selectedDate && selectedTime);
+  const isNameValid = patientName.trim().length >= 2;
+  const phoneCheck = patientPhone.trim()
+    ? validateIndonesianWhatsApp(patientPhone)
+    : { valid: true, error: undefined };
+  const isPhoneValid = phoneCheck.valid;
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submissionPending.current) return;
+    setAttemptedSubmit(true);
     setErrorMessage(null);
 
-    // Validations
-    if (patientName.trim().length < 3) {
+    if (!isTimeSelected) {
+      setErrorMessage(
+        lang === 'en'
+          ? 'Please select an available date and time slot first.'
+          : 'Harap pilih tanggal dan jam kunjungan yang tersedia terlebih dahulu.',
+      );
+      document.getElementById('booking-schedule-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (!isNameValid) {
       setErrorMessage(t.booking.nameError);
+      document.getElementById('patient-name')?.focus();
       return;
     }
 
-    if (!isValidIndonesianPhone(patientPhone)) {
-      setErrorMessage(t.booking.phoneError);
+    if (!isPhoneValid) {
+      setErrorMessage(phoneCheck.error || t.booking.phoneError);
+      document.getElementById('patient-phone')?.focus();
       return;
     }
 
-    if (!consentChecked) {
-      setErrorMessage(t.booking.consentError);
-      return;
-    }
-
-    if (!selectedTime) {
-      setErrorMessage('Harap pilih slot jam praktek terlebih dahulu.');
-      return;
-    }
-
+    if (submissionPending.current) return;
     submissionPending.current = true;
     setIsSubmitting(true);
-    try {
-      const normalizedPhone = normalizePhoneForWhatsApp(patientPhone);
 
+    try {
+      const normalizedPhone = patientPhone.trim() ? normalizePhoneForWhatsApp(patientPhone) : undefined;
       const booking = await createBooking({
         serviceId: selectedServiceId,
         doctorId: selectedDoctorId,
@@ -211,20 +312,36 @@ export const BookingPage: React.FC = () => {
         time: selectedTime,
         patient: {
           name: patientName.trim(),
-          phone: normalizedPhone,
+          ...(normalizedPhone ? { phone: normalizedPhone } : {}),
         },
-        complaint: complaint.trim(),
+        complaint: note.trim() || undefined,
         honeypot: honeypotValue,
+        whatsappConsent: true,
+        dataProcessingConsent: true,
       });
+
+      if (booking.token) {
+        try {
+          localStorage.setItem(`booking_token_${booking.code}`, booking.token);
+        } catch {
+          // ignore storage errors
+        }
+      }
 
       const tokenQuery = booking.token ? `?token=${encodeURIComponent(booking.token)}` : '';
       navigate(localePath(`/booking/sukses/${booking.code}${tokenQuery}`));
     } catch (err: any) {
-      if (err.status === 409) {
+      if (err?.status === 409) {
         setErrorMessage(t.booking.conflictError);
-        goToStep(2);
+        setSelectedTime('');
+      } else if (err?.status === 429) {
+        setErrorMessage(
+          lang === 'en'
+            ? 'Too many pending bookings. Maximum 3 pending bookings per WhatsApp number in 24 hours.'
+            : 'Batas reservasi tercapai. Maksimal 3 janji temu berstatus menunggu konfirmasi per nomor WhatsApp dalam 24 jam.',
+        );
       } else {
-        setErrorMessage(err.message || t.booking.generalError);
+        setErrorMessage(err?.message || t.booking.generalError);
       }
     } finally {
       submissionPending.current = false;
@@ -239,12 +356,8 @@ export const BookingPage: React.FC = () => {
     settings.whatsappNumber,
     currentService
       ? `${t.booking.waPrefillService}"${lang === 'en' ? currentService.nameEn : currentService.name}"`
-      : t.booking.waPrefillGeneral
+      : t.booking.waPrefillGeneral,
   );
-
-  const filteredServices = serviceCategoryFilter === 'all'
-    ? services
-    : services.filter((s) => s.category === serviceCategoryFilter);
 
   if (loadingInitial) {
     return (
@@ -265,11 +378,11 @@ export const BookingPage: React.FC = () => {
 
       {isSubmitting && <BookingLoadingOverlay />}
 
-      {/* Atelier Booking Hero Header */}
-      <section className="hero-pattern pt-8 pb-10 border-b border-border/80">
+      {/* Header */}
+      <section className="hero-pattern pt-8 pb-8 border-b border-border/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-xs uppercase tracking-widest font-bold text-accent block mb-2">
-            01 / RESERVASI DOKTER GIGI SPESIALIS
+            {lang === 'en' ? 'INSTANT 1-STEP BOOKING' : 'RESERVASI CEPAT 1 LANGKAH'}
           </span>
           <h1 className="font-heading text-3xl sm:text-5xl font-bold text-secondary tracking-tight">
             {t.booking.pageTitle}
@@ -280,449 +393,430 @@ export const BookingPage: React.FC = () => {
         </div>
       </section>
 
-      <div className="py-6 sm:py-8 bg-bg min-h-[70vh]">
+      <div className="py-6 sm:py-8 bg-bg min-h-[70vh] pb-28 lg:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            
-            {/* Main Booking Form Column */}
+
+            {/* Main 1-Step Booking Form */}
             <div className="lg:col-span-8">
-              {/* Stepper */}
-              <BookingStepper
-                currentStep={currentStep}
-                onStepClick={(s) => goToStep(s)}
-              />
-
-              {/* Error Banner */}
-              {errorMessage && (
-                <div
-                  role="alert"
-                  className="mb-6 p-4 rounded-2xl bg-error/10 border border-error/30 text-error-dark text-sm flex items-start gap-3 shadow-xs"
-                >
-                  <svg className="w-5 h-5 text-error-dark shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                  <div>
-                    <span className="font-bold block mb-0.5">
-                      {lang === 'en' ? 'Notice:' : 'Pemberitahuan:'}
-                    </span>
-                    <span>{errorMessage}</span>
-                  </div>
+              <form
+                id="booking-form"
+                onSubmit={handleFormSubmit}
+                noValidate
+                aria-label={t.booking.pageTitle}
+                className="space-y-6"
+              >
+                {/* Honeypot */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="booking-website">Website</label>
+                  <input
+                    id="booking-website"
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypotValue}
+                    onChange={(e) => setHoneypotValue(e.target.value)}
+                  />
                 </div>
-              )}
 
-              {/* STEP 1: LAYANAN */}
-              {currentStep === 1 && (
-                <div className="bg-surface rounded-3xl p-6 sm:p-9 border border-border shadow-soft">
-                  <div className="mb-6">
+                {/* Error Banner */}
+                {errorMessage && (
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="p-4 rounded-2xl bg-error/10 border border-error/30 text-error-dark text-sm flex items-start gap-3 shadow-xs"
+                  >
+                    <svg className="w-5 h-5 text-error-dark shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <div>
+                      <span className="font-bold block mb-0.5">
+                        {lang === 'en' ? 'Notice:' : 'Pemberitahuan:'}
+                      </span>
+                      <span>{errorMessage}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* CARD 1: SELECT DATE & TIME */}
+                <section
+                  id="booking-schedule-section"
+                  className="bg-surface rounded-3xl p-5 sm:p-8 border border-border shadow-soft"
+                >
+                  <div className="mb-5">
                     <span className="text-xs uppercase tracking-widest font-bold text-accent block mb-1">
-                      LANGKAH 01 / PILIH TINDAKAN
+                      {lang === 'en' ? '01 · DATE & TIME' : '01 · PILIH TANGGAL & JAM'}
                     </span>
-                    <h2 className="font-heading text-xl sm:text-3xl font-bold text-secondary mb-2">
-                      {t.booking.selectServicePrompt}
+                    <h2 className="font-heading text-xl sm:text-2xl font-bold text-secondary">
+                      {lang === 'en' ? 'Select your preferred date & time' : 'Tentukan tanggal & jam kunjungan'}
                     </h2>
-                    <p className="text-sm text-text-muted">
-                      {lang === 'en'
-                        ? 'Select a dental procedure to proceed to doctor & date selection'
-                        : 'Pilih salah satu perawatan untuk melanjutkan ke pemilihan jadwal dokter'}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-6 items-start">
+                    {/* Calendar */}
+                    <div className="bg-bg-alt/70 p-4 sm:p-5 rounded-2xl border border-border">
+                      <div className="flex flex-wrap items-center gap-3 mb-4 text-[11px] text-text-muted">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-surface border border-border" />
+                          {lang === 'en' ? 'Available' : 'Tersedia'}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+                          <span className="text-primary font-bold">{lang === 'en' ? 'Selected' : 'Dipilih'}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                          <span className="text-amber-700 font-semibold">{lang === 'en' ? 'Doctor Off' : 'Libur'}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-heading font-bold text-base text-secondary">
+                          {monthName} {viewYear}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={handlePrevMonth}
+                            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-border/60 text-text-muted transition-colors cursor-pointer"
+                            aria-label={lang === 'en' ? 'Previous month' : 'Bulan sebelumnya'}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleNextMonth}
+                            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-border/60 text-text-muted transition-colors cursor-pointer"
+                            aria-label={lang === 'en' ? 'Next month' : 'Bulan berikutnya'}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-7 text-center text-xs font-bold text-text-muted mb-2">
+                        <span>{lang === 'en' ? 'Mo' : 'Sn'}</span>
+                        <span>{lang === 'en' ? 'Tu' : 'Sl'}</span>
+                        <span>{lang === 'en' ? 'We' : 'Rb'}</span>
+                        <span>{lang === 'en' ? 'Th' : 'Km'}</span>
+                        <span>{lang === 'en' ? 'Fr' : 'Jm'}</span>
+                        <span>{lang === 'en' ? 'Sa' : 'Sb'}</span>
+                        <span>{lang === 'en' ? 'Su' : 'Mg'}</span>
+                      </div>
+
+                      <div className="grid grid-cols-7 gap-1.5 text-center auto-rows-[38px]">
+                        {daysGrid.map((cell, idx) => {
+                          if (!cell) return <div key={`empty-${idx}`} />;
+                          const isSelected = selectedDate === cell.dateStr;
+                          const clinicOff = clinicTimeOffs.find(
+                            (to) => !to.doctorId && isDateOverlapping(cell.dateStr, to.startsAt, to.endsAt),
+                          );
+
+                          let isDoctorOff = false;
+                          let offReason = '';
+                          if (selectedDoctorId && selectedDoctorId !== 'any') {
+                            const doc = doctors.find((d) => d.id === selectedDoctorId);
+                            const docOff = doc?.timeOffs?.find((to) =>
+                              isDateOverlapping(cell.dateStr, to.startsAt, to.endsAt),
+                            );
+                            if (clinicOff || docOff) {
+                              isDoctorOff = true;
+                              offReason = docOff?.reason || clinicOff?.reason || '';
+                            }
+                          } else {
+                            const allDocsOff =
+                              doctors.length > 0 &&
+                              doctors.every((d) =>
+                                (d.timeOffs || []).some((to) =>
+                                  isDateOverlapping(cell.dateStr, to.startsAt, to.endsAt),
+                                ),
+                              );
+                            if (clinicOff || allDocsOff) {
+                              isDoctorOff = true;
+                              offReason = clinicOff?.reason || '';
+                            }
+                          }
+
+                          const isDisabled = cell.isPast || cell.isSunday || isDoctorOff;
+                          let btnStyles =
+                            'bg-surface text-secondary hover:bg-primary/10 border border-border cursor-pointer';
+                          if (isDoctorOff) {
+                            btnStyles = 'bg-amber-500/10 text-amber-800/60 border-amber-300/40 cursor-not-allowed';
+                          } else if (isDisabled) {
+                            btnStyles = 'bg-transparent text-text-muted/40 cursor-not-allowed opacity-40';
+                          } else if (isSelected) {
+                            btnStyles = 'bg-primary text-white font-bold border-primary ring-2 ring-primary/20';
+                          }
+
+                          return (
+                            <button
+                              key={cell.dateStr}
+                              type="button"
+                              disabled={isDisabled}
+                              title={offReason || undefined}
+                              onClick={() => handleSelectDate(cell.dateStr)}
+                              className={`w-full h-full rounded-xl text-xs font-semibold transition-all flex flex-col items-center justify-center ${btnStyles}`}
+                            >
+                              <span>{cell.dayNum}</span>
+                              {isDoctorOff && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-0.5" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Time Slots */}
+                    <div>
+                      <div className="mb-3">
+                        <h3 className="font-heading text-base font-bold text-secondary">
+                          {formatDateSummary(selectedDate, lang === 'en')}
+                        </h3>
+                        <p className="text-xs text-text-muted">
+                          {lang === 'en'
+                            ? 'Doctor will be assigned automatically by the clinic'
+                            : 'Dokter akan dijadwalkan oleh klinik sesuai ketersediaan'}
+                        </p>
+                      </div>
+
+                      {loadingSlots ? (
+                        <div className="py-8 text-xs text-text-muted flex items-center gap-2">
+                          <span className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin inline-block" />
+                          <span>{lang === 'en' ? 'Checking available time slots…' : 'Memeriksa slot jam tersedia…'}</span>
+                        </div>
+                      ) : visibleSlots.length > 0 ? (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                          {visibleSlots.map((slot) => {
+                            const active = selectedTime === slot.time;
+                            return (
+                              <button
+                                key={`${slot.doctorId}-${slot.time}`}
+                                type="button"
+                                onClick={() => handleSelectTime(slot.time)}
+                                className={`px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tabular-nums transition-all cursor-pointer min-h-[44px] active:scale-95 ${
+                                  active
+                                    ? 'bg-primary text-white shadow-xs ring-2 ring-primary/30'
+                                    : 'bg-bg-alt text-secondary border border-border hover:bg-primary hover:text-white'
+                                }`}
+                              >
+                                {slot.time}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-2xl bg-bg-alt/70 border border-border text-xs text-text-muted space-y-2">
+                          <p>{t.booking.noSlotsAvailable}</p>
+                          <a
+                            href={waAskLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-primary font-bold hover:underline"
+                          >
+                            {t.booking.askViaWhatsApp} →
+                          </a>
+                        </div>
+                      )}
+
+                      {attemptedSubmit && !isTimeSelected && (
+                        <p className="text-xs text-error-dark font-semibold mt-2">
+                          {lang === 'en' ? 'Please select a time slot above.' : 'Silakan pilih salah satu jam di atas.'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </section>
+
+                {/* CARD 2: CONTACT & NOTE */}
+                <section className="bg-surface rounded-3xl p-5 sm:p-8 border border-border shadow-soft">
+                  <div className="mb-5">
+                    <span className="text-xs uppercase tracking-widest font-bold text-accent block mb-1">
+                      {lang === 'en' ? '02 · CONTACT & NOTE' : '02 · DATA KONTAK & CATATAN'}
+                    </span>
+                    <h2 className="font-heading text-xl sm:text-2xl font-bold text-secondary">
+                      {t.booking.patientFormTitle}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-text-muted mt-1">
+                      {t.booking.patientFormDesc}
                     </p>
                   </div>
 
-                  {/* Filter chips */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
-                    {[
-                      { id: 'all', label: 'Semua Layanan' },
-                      { id: 'estetik', label: 'Estetik & Veneer' },
-                      { id: 'restoratif', label: 'Tambal & Restorasi' },
-                      { id: 'ortodonti', label: 'Ortodonti / Behel' },
-                      { id: 'pencegahan', label: 'Scaling & Pembersihan' },
-                      { id: 'bedah', label: 'Implan & Bedah' },
-                    ].map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => setServiceCategoryFilter(cat.id)}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
-                          serviceCategoryFilter === cat.id
-                            ? 'bg-secondary text-white border-secondary shadow-xs'
-                            : 'bg-bg-alt text-text-muted border-border hover:bg-border/60 hover:text-secondary'
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label htmlFor="patient-name" className="block text-xs font-bold text-secondary mb-1.5">
+                        {t.booking.fullName} <span className="text-error-dark" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="patient-name"
+                        name="name"
+                        type="text"
+                        required
+                        minLength={2}
+                        maxLength={120}
+                        autoComplete="name"
+                        enterKeyHint="next"
+                        placeholder={t.booking.fullNamePlaceholder}
+                        value={patientName}
+                        onChange={(e) => setPatientName(e.target.value)}
+                        aria-invalid={attemptedSubmit && !isNameValid}
+                        aria-describedby={attemptedSubmit && !isNameValid ? 'patient-name-error' : undefined}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm bg-bg-alt/40 text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary ${
+                          attemptedSubmit && !isNameValid ? 'border-error' : 'border-border'
                         }`}
-                      >
-                        {cat.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="space-y-3">
-                    {filteredServices.map((svc) => {
-                      const isSelected = selectedServiceId === svc.id;
-                      const name = lang === 'en' ? svc.nameEn : svc.name;
-                      const desc = lang === 'en' ? svc.shortDescEn : svc.shortDesc;
-                      const priceNote = lang === 'en' ? svc.priceNoteEn : svc.priceNote;
-
-                      return (
-                        <div
-                          key={svc.id}
-                          onClick={() => handleSelectService(svc)}
-                          className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${
-                            isSelected
-                              ? 'bg-primary/5 border-primary ring-2 ring-primary/20 shadow-xs'
-                              : 'bg-surface border-border hover:border-primary/40 hover:bg-bg-alt/40'
-                          }`}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleSelectService(svc);
-                            }
-                          }}
-                        >
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                              <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                                {t.services.categories[svc.category]}
-                              </span>
-                              <span className="text-xs font-medium text-text-muted inline-flex items-center gap-1">
-                                <svg className="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                                  <circle cx="12" cy="12" r="10" />
-                                  <polyline points="12 6 12 12 16 14" />
-                                </svg>
-                                {svc.durationMinutes} {t.common.minutes}
-                              </span>
-                            </div>
-                            <h3 className="font-heading text-lg font-bold text-secondary mb-1">
-                              {name}
-                            </h3>
-                            <p className="text-xs sm:text-sm text-text-muted line-clamp-2 leading-relaxed">
-                              {desc}
-                            </p>
-                          </div>
-
-                          <div className="flex sm:flex-col items-baseline sm:items-end justify-between sm:justify-start gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-border shrink-0">
-                            <div className="flex sm:flex-col items-baseline sm:items-end gap-1.5 sm:gap-0.5 shrink-0">
-                              <span className="text-xs text-text-subtle">
-                                {t.services.startingFrom}
-                              </span>
-                              <span className="font-heading text-base sm:text-lg font-bold text-primary whitespace-nowrap tabular-nums">
-                                {formatRupiah(svc.priceFrom, lang === 'en')}
-                              </span>
-                            </div>
-                            {priceNote && (
-                              <span className="text-xs text-text-muted block text-right max-w-[200px] sm:max-w-none">
-                                {priceNote}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mt-8 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => goToStep(2)}
-                      className="btn-primary rounded-xl px-8 py-3.5 text-sm font-semibold w-full sm:w-auto cursor-pointer shadow-xs"
-                    >
-                      <span>{t.booking.nextStep}</span>
-                      <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* STEP 2 & 3: JADWAL & DOKTER */}
-              {(currentStep === 2 || currentStep === 3) && (
-                <WhitebloomBookingModal
-                  embedded={true}
-                  doctors={doctors}
-                  selectedDate={selectedDate}
-                  onSelectDate={handleSelectDate}
-                  selectedDoctorId={selectedDoctorId}
-                  onSelectDoctor={(docId) => {
-                    setSelectedDoctorId(docId);
-                    updateUrlState({ dokter: docId });
-                  }}
-                  selectedTime={selectedTime}
-                  onSelectTime={handleSelectSlot}
-                  slots={slots}
-                  loadingSlots={loadingSlots}
-                  serviceName={currentService ? (lang === 'en' ? currentService.nameEn : currentService.name) : undefined}
-                  onBack={() => goToStep(1)}
-                  onContinue={() => goToStep(4)}
-                />
-              )}
-
-              {/* STEP 4: DATA DIRI & KONFIRMASI */}
-              {currentStep === 4 && (
-                <div className="bg-surface rounded-3xl p-6 sm:p-9 border border-border shadow-soft">
-                  <form onSubmit={handleFormSubmit} aria-busy={isSubmitting}>
-                    <fieldset disabled={isSubmitting} className="min-w-0 border-0 p-0 m-0">
-                      <div className="mb-8">
-                        <span className="text-xs uppercase tracking-widest font-bold text-accent block mb-1">
-                          LANGKAH 04 / KONFIRMASI
-                        </span>
-                        <h2 className="font-heading text-xl sm:text-3xl font-bold text-secondary mb-2">
-                          {t.booking.patientFormTitle}
-                        </h2>
-                        <p className="text-sm text-text-muted mb-6 leading-relaxed">
-                          {t.booking.patientFormDesc}
+                      />
+                      {attemptedSubmit && !isNameValid && (
+                        <p id="patient-name-error" className="text-xs text-error-dark mt-1">
+                          {t.booking.nameError}
                         </p>
-
-                        {/* Summary Clinical Ticket Card */}
-                        <div className="p-6 rounded-2xl bg-bg-alt/70 border border-border mb-8 space-y-3 text-sm">
-                          <div className="flex items-center justify-between pb-3 border-b border-border/80">
-                            <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                              {t.booking.summaryTitle}
-                            </span>
-                            <span className="text-[11px] font-semibold text-accent bg-accent/15 px-2.5 py-0.5 rounded-full">
-                              Pembayaran Selesai Perawatan di Klinik
-                            </span>
-                          </div>
-
-                          <div className="flex justify-between items-center">
-                            <span className="text-text-muted">{t.booking.selectedService}:</span>
-                            <span className="font-heading font-bold text-secondary">
-                              {currentService ? (lang === 'en' ? currentService.nameEn : currentService.name) : ''}
-                            </span>
-                          </div>
-
-                          <div className="flex justify-between items-center">
-                            <span className="text-text-muted">{t.booking.selectedDoctor}:</span>
-                            <span className="font-semibold text-secondary">
-                              {currentDoctor ? currentDoctor.name : t.booking.anyDoctor}
-                            </span>
-                          </div>
-
-                          <div className="flex justify-between items-center">
-                            <span className="text-text-muted">{t.booking.selectedDate}:</span>
-                            <span className="font-semibold text-secondary">{selectedDate}</span>
-                          </div>
-
-                          <div className="flex justify-between items-center">
-                            <span className="text-text-muted">{t.booking.selectedSlot}:</span>
-                            <span className="font-bold text-primary font-mono bg-primary/10 px-2 py-0.5 rounded">
-                              {selectedTime} WIB
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Input Fields */}
-                        <div className="space-y-5">
-                          <div>
-                            <label htmlFor="patient-name" className="form-label text-sm font-bold text-secondary mb-1.5 block">
-                              {t.booking.fullName} <span className="text-error">*</span>
-                            </label>
-                            <input
-                              id="patient-name"
-                              type="text"
-                              required
-                              value={patientName}
-                              onChange={(e) => setPatientName(e.target.value)}
-                              placeholder={t.booking.fullNamePlaceholder}
-                              className="form-input rounded-xl h-12 bg-surface text-secondary"
-                            />
-                          </div>
-
-                          <div>
-                            <label htmlFor="patient-phone" className="form-label text-sm font-bold text-secondary mb-1.5 block">
-                              {t.booking.phoneLabel} <span className="text-error">*</span>
-                            </label>
-                            <input
-                              id="patient-phone"
-                              type="tel"
-                              required
-                              value={patientPhone}
-                              onChange={(e) => setPatientPhone(e.target.value)}
-                              placeholder={t.booking.phonePlaceholder}
-                              className="form-input rounded-xl h-12 bg-surface text-secondary"
-                            />
-                            <span className="text-xs text-text-muted mt-1.5 block">
-                              {t.booking.phoneHint}
-                            </span>
-                          </div>
-
-                          <div>
-                            <label htmlFor="patient-complaint" className="form-label text-sm font-bold text-secondary mb-1.5 block">
-                              {t.booking.complaintLabel}
-                            </label>
-                            <textarea
-                              id="patient-complaint"
-                              rows={3}
-                              value={complaint}
-                              onChange={(e) => setComplaint(e.target.value)}
-                              placeholder={t.booking.complaintPlaceholder}
-                              className="form-input rounded-xl bg-surface text-secondary py-3"
-                            />
-                          </div>
-
-                          {/* Hidden Honeypot Field */}
-                          <div className="hidden" aria-hidden="true">
-                            <label htmlFor="website-hp">Website</label>
-                            <input
-                              id="website-hp"
-                              type="text"
-                              name="website"
-                              tabIndex={-1}
-                              autoComplete="off"
-                              value={honeypotValue}
-                              onChange={(e) => setHoneypotValue(e.target.value)}
-                            />
-                          </div>
-
-                          {/* Consent checkbox */}
-                          <div className="pt-3">
-                            <label className="flex items-start gap-3 cursor-pointer select-none">
-                              <input
-                                type="checkbox"
-                                required
-                                checked={consentChecked}
-                                onChange={(e) => setConsentChecked(e.target.checked)}
-                                className="mt-1 h-4 w-4 rounded accent-primary cursor-pointer shrink-0"
-                              />
-                              <span className="text-xs sm:text-sm text-text-muted leading-relaxed">
-                                {t.booking.consentCheckbox}
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-6 border-t border-border">
-                        <button
-                          type="button"
-                          onClick={() => goToStep(2)}
-                          className="btn-secondary rounded-xl text-xs sm:text-sm py-2.5 px-5 cursor-pointer"
-                        >
-                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
-                          </svg>
-                          <span>{t.booking.prevStep}</span>
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="btn-primary rounded-xl text-sm py-3 px-8 disabled:opacity-50 cursor-pointer shadow-xs"
-                        >
-                          <span>{isSubmitting ? t.booking.submitting : t.booking.submitBtn}</span>
-                          <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </button>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Assistance & Booking Management Sidebar */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Assistance Card */}
-              <div className="bg-surface rounded-3xl p-6 sm:p-7 border border-border shadow-soft">
-                <span className="text-xs font-bold uppercase tracking-wider text-accent block mb-1">
-                  KONSULTASI AWAL
-                </span>
-                <h3 className="font-heading text-lg font-bold text-secondary mb-2">
-                  {lang === 'en' ? 'Need Assistance?' : 'Butuh Bantuan Reservasi?'}
-                </h3>
-                <p className="text-xs sm:text-sm text-text-muted mb-5 leading-relaxed">
-                  {lang === 'en'
-                    ? 'Our clinical team is ready to assist with treatment questions or urgent scheduling via WhatsApp.'
-                    : 'Tim resepsionis medis kami siap membantu konsultasi awal atau penjadwalan darurat via WhatsApp.'}
-                </p>
-
-                <div className="space-y-3.5 mb-6 text-xs sm:text-sm">
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
+                      )}
                     </div>
+
                     <div>
-                      <p className="font-bold text-secondary">
-                        {lang === 'en' ? 'Practice Hours' : 'Jam Praktek'}
+                      <label htmlFor="patient-phone" className="block text-xs font-bold text-secondary mb-1.5">
+                        {t.booking.phoneLabel}
+                      </label>
+                      <input
+                        id="patient-phone"
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        autoCorrect="off"
+                        autoCapitalize="none"
+                        spellCheck={false}
+                        enterKeyHint="next"
+                        placeholder={t.booking.phonePlaceholder}
+                        value={patientPhone}
+                        onChange={(e) => setPatientPhone(e.target.value)}
+                        aria-invalid={attemptedSubmit && !isPhoneValid}
+                        aria-describedby="patient-phone-hint"
+                        className={`w-full rounded-xl border px-4 py-3 text-sm bg-bg-alt/40 text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary ${
+                          attemptedSubmit && !isPhoneValid ? 'border-error' : 'border-border'
+                        }`}
+                      />
+                      <p id="patient-phone-hint" className="text-[11px] text-text-muted mt-1">
+                        {attemptedSubmit && !isPhoneValid
+                          ? (phoneCheck.error || t.booking.phoneError)
+                          : t.booking.phoneHint}
                       </p>
-                      <p className="text-xs text-text-muted">Senin – Sabtu, 09:00 – 20:00 WIB</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-accent/15 text-accent-text flex items-center justify-center shrink-0">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-bold text-secondary">WhatsApp & Telepon</p>
-                      <p className="text-xs text-text-muted font-mono">{settings.phone}</p>
-                    </div>
+                  <div>
+                    <label htmlFor="patient-note" className="block text-xs font-bold text-secondary mb-1.5">
+                      {t.booking.complaintLabel}
+                    </label>
+                    <textarea
+                      id="patient-note"
+                      name="complaint"
+                      rows={3}
+                      maxLength={500}
+                      placeholder={t.booking.complaintPlaceholder}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      className="w-full rounded-xl border border-border px-4 py-3 text-sm bg-bg-alt/40 text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                    />
                   </div>
-                </div>
-
-                <a
-                  href={waAskLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-whatsapp rounded-xl w-full justify-center text-xs sm:text-sm py-3 cursor-pointer shadow-xs"
-                >
-                  <span>{t.booking.askViaWhatsApp}</span>
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
-                  </svg>
-                </a>
-              </div>
-
-              {/* Manage Existing Booking Card */}
-              <div className="bg-surface rounded-3xl p-6 sm:p-7 border border-border shadow-soft">
-                <div className="flex items-center gap-2.5 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  </div>
-                  <h3 className="font-heading text-base font-bold text-secondary">
-                    {t.nav.manageBooking}
-                  </h3>
-                </div>
-                <p className="text-xs text-text-muted mb-4 leading-relaxed">
-                  {lang === 'en'
-                    ? 'Already have a booking code? Reschedule or cancel online without creating an account.'
-                    : 'Sudah memiliki kode booking? Ubah jadwal atau batalkan janji temu secara mandiri.'}
-                </p>
-                <Link
-                  to={localePath('/booking/kelola')}
-                  className="text-xs font-bold text-primary hover:text-primary-hover inline-flex items-center gap-1 cursor-pointer"
-                >
-                  <span>{lang === 'en' ? 'Check Booking Code →' : 'Cek Kode Booking →'}</span>
-                </Link>
-              </div>
-
-              {/* Payment Methods Card */}
-              <div className="bg-bg-alt/80 rounded-3xl p-6 border border-border">
-                <h3 className="font-heading text-xs font-bold uppercase tracking-wider text-secondary mb-2">
-                  {lang === 'en' ? 'Payment Methods at Clinic' : 'Metode Pembayaran di Klinik'}
-                </h3>
-                <p className="text-xs text-text-muted mb-3 leading-relaxed">
-                  {lang === 'en'
-                    ? 'No upfront payment required for online booking. Pay after treatment via:'
-                    : 'Booking online tanpa dipungut biaya di muka. Pembayaran dilakukan seusai perawatan melalui:'}
-                </p>
-                <div className="flex flex-wrap gap-1.5 text-xs font-semibold text-secondary">
-                  <span className="px-2.5 py-1 rounded-lg bg-surface border border-border">QRIS</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-surface border border-border">Kartu Debit & Kredit</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-surface border border-border">Transfer Bank</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-surface border border-border">Asuransi Swasta</span>
-                </div>
-              </div>
+                </section>
+              </form>
             </div>
 
+            {/* Sticky Summary Sidebar */}
+            <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+              <div className="bg-surface rounded-3xl p-6 border border-border shadow-soft">
+                <h2 className="font-heading text-lg font-bold text-secondary mb-4 pb-3 border-b border-border/80">
+                  {t.booking.summaryTitle}
+                </h2>
+
+                <dl className="space-y-3 text-sm">
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-muted">{t.booking.selectedService}</dt>
+                    <dd className="font-semibold text-secondary text-right">
+                      {currentService ? (lang === 'en' ? currentService.nameEn : currentService.name) : '—'}
+                    </dd>
+                  </div>
+
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-muted">{t.booking.selectedDate}</dt>
+                    <dd className="font-semibold text-secondary text-right">
+                      {selectedDate ? formatDateSummary(selectedDate, lang === 'en') : '—'}
+                    </dd>
+                  </div>
+
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-muted">{t.booking.selectedSlot}</dt>
+                    <dd className="font-bold text-primary text-right">
+                      {selectedTime ? `${selectedTime} WIB` : '—'}
+                    </dd>
+                  </div>
+
+                  {note.trim() && (
+                    <div className="pt-2 border-t border-border/60">
+                      <dt className="text-xs text-text-muted mb-1">{lang === 'en' ? 'Note' : 'Catatan'}</dt>
+                      <dd className="text-xs text-secondary bg-bg-alt/60 p-2.5 rounded-xl border border-border/60">
+                        {note.trim()}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+
+                <button
+                  type="submit"
+                  form="booking-form"
+                  disabled={isSubmitting}
+                  className="btn-whatsapp w-full mt-6 py-3.5 rounded-xl text-sm font-bold justify-center shadow-soft min-h-[48px] cursor-pointer active:scale-[0.98]"
+                >
+                  {isSubmitting ? t.booking.submitting : t.booking.submitBtn}
+                </button>
+
+                <div className="mt-4 pt-4 border-t border-border/70 text-center space-y-2">
+                  <Link
+                    to={localePath('/booking/kelola')}
+                    className="block text-xs font-semibold text-primary hover:underline"
+                  >
+                    {lang === 'en' ? 'Already have a booking code? Manage booking →' : 'Sudah punya kode booking? Kelola jadwal →'}
+                  </Link>
+                  <a
+                    href={waAskLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-muted hover:text-secondary"
+                  >
+                    {t.booking.needHelpBooking}
+                  </a>
+                </div>
+              </div>
+            </aside>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Submit Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center justify-between gap-3 max-w-xl mx-auto">
+          <div className="min-w-0">
+            <div className="text-xs font-bold text-secondary truncate">
+              {currentService ? (lang === 'en' ? currentService.nameEn : currentService.name) : t.booking.summaryTitle}
+            </div>
+            <div className="text-[11px] text-primary font-semibold truncate">
+              {selectedDate ? formatDateSummary(selectedDate, lang === 'en') : ''}
+              {selectedTime ? ` · ${selectedTime} WIB` : ''}
+            </div>
+          </div>
+          <button
+            type="submit"
+            form="booking-form"
+            disabled={isSubmitting}
+            className="btn-whatsapp px-4 py-3 rounded-xl text-xs font-bold shrink-0 min-h-[44px] cursor-pointer"
+          >
+            {isSubmitting ? t.booking.submitting : (lang === 'en' ? 'Book via WA' : 'Pesan via WA')}
+          </button>
         </div>
       </div>
     </>

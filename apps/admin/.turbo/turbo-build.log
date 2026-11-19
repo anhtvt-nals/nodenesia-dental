@@ -1,12 +1,664 @@
 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
 vite v5.4.21 building for production...
-[2K[1Gtransforming (1) index.html[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (48) ../../node_modules/i18next/dist/esm/i18next.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (94) ../../node_modules/antd/es/watermark/index.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (145) ../../node_modules/antd/es/avatar/Avatar.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (267) ../../node_modules/antd/es/splitter/Panel.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (324) ../../node_modules/antd/es/statistic/Countdown.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (420) ../../node_modules/antd/es/menu/menu.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (642) ../../node_modules/antd/es/form/hooks/useFormWarning.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (765) ../../node_modules/@rc-component/input-number/es/InputNumber[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (890) ../../node_modules/@ant-design/icons/es/components/Icon.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (954) ../../node_modules/antd/es/transfer/ListBody.js[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (1057) ../../node_modules/@rc-component/select/es/SelectTrigger.js[2K[1G[2K[1G[2K[1Gtransforming (1155) ../../node_modules/@ant-design/icons/es/icons/AudioTwoTone.[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (1414) ../../node_modules/@ant-design/icons/es/icons/CameraOutline[2K[1G[2K[1Gtransforming (1688) ../../node_modules/@ant-design/icons/es/icons/DatabaseTwoTo[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (1923) ../../node_modules/@ant-design/icons/es/icons/FileImageFill[2K[1G[2K[1Gtransforming (2212) ../../node_modules/@ant-design/icons/es/icons/JavaOutlined.[2K[1Gtransforming (2546) ../../node_modules/@ant-design/icons/es/icons/ProjectFilled[2K[1Gtransforming (2866) ../../node_modules/@ant-design/icons/es/icons/FilePptTwoTon[2K[1G[2K[1G[2K[1Gtransforming (3110) ../../node_modules/@rc-component/async-validator/es/util.js[2K[1G[2K[1G[2K[1G[2K[1G✓ 3225 modules transformed.
-[2K[1Grendering chunks (1)...[2K[1G[2K[1Gcomputing gzip size (0)...[2K[1Gcomputing gzip size (1)...[2K[1Gcomputing gzip size (2)...[2K[1Gcomputing gzip size (3)...[2K[1Gdist/index.html                     0.73 kB │ gzip:   0.41 kB
-dist/assets/index-1xSvcIuU.css     36.03 kB │ gzip:   6.81 kB
-dist/assets/index-BGsfE953.js   1,501.92 kB │ gzip: 468.39 kB
+transforming...
+✓ 4099 modules transformed.
+warnings when minifying css:
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:552:18:
+      552 │       [dir="ltr"] & {
+          ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:556:18:
+      556 │       [dir="rtl"] & {
+          ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:922:16:
+      922 │     [dir="ltr"] & {
+          ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:926:16:
+      926 │     [dir="rtl"] & {
+          ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:938:16:
+      938 │     [dir="ltr"] & {
+          ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:942:16:
+      942 │     [dir="rtl"] & {
+          ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:967:18:
+      967 │       [dir="ltr"] & {
+          ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:971:18:
+      971 │       [dir="rtl"] & {
+          ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1122:16:
+      1122 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1126:16:
+      1126 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1140:16:
+      1140 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1144:16:
+      1144 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1198:20:
+      1198 │         [dir="ltr"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1202:20:
+      1202 │         [dir="rtl"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1297:16:
+      1297 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1301:16:
+      1301 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1498:18:
+      1498 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1503:20:
+      1503 │         [dir="ltr"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1507:20:
+      1507 │         [dir="rtl"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1681:16:
+      1681 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1687:16:
+      1687 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1823:16:
+      1823 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1828:16:
+      1828 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1837:16:
+      1837 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:1842:16:
+      1842 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2043:16:
+      2043 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2050:16:
+      2050 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2535:18:
+      2535 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2541:18:
+      2541 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2576:16:
+      2576 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2580:16:
+      2580 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2668:16:
+      2668 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2672:16:
+      2672 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:2726:21:
+      2726 │   :not(.ck-hidden) ~ & {
+           ╵                      ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3114:18:
+      3114 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3118:18:
+      3118 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3144:20:
+      3144 │         [dir="ltr"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3148:20:
+      3148 │         [dir="rtl"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3170:20:
+      3170 │         [dir="ltr"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3174:20:
+      3174 │         [dir="rtl"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3186:20:
+      3186 │         [dir="ltr"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3192:20:
+      3192 │         [dir="rtl"] & {
+           ╵                     ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3587:16:
+      3587 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3593:16:
+      3593 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3627:18:
+      3627 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3633:18:
+      3633 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3789:18:
+      3789 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:3793:18:
+      3793 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4549:16:
+      4549 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4555:16:
+      4555 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4590:18:
+      4590 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4594:18:
+      4594 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4603:18:
+      4603 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4607:18:
+      4607 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4648:18:
+      4648 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4652:18:
+      4652 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4672:22:
+      4672 │           [dir="ltr"] & {
+           ╵                       ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4676:22:
+      4676 │           [dir="rtl"] & {
+           ╵                       ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4698:22:
+      4698 │           [dir="ltr"] & {
+           ╵                       ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:4702:22:
+      4702 │           [dir="rtl"] & {
+           ╵                       ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:5211:44:
+      5211 │     .ck-editor__editable:not(.ck-read-only) & {
+           ╵                                             ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:5607:16:
+      5607 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:5611:16:
+      5611 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:5865:16:
+      5865 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:5870:16:
+      5870 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8015:16:
+      8015 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8020:16:
+      8020 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8036:18:
+      8036 │       [dir="ltr"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8045:18:
+      8045 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8092:16:
+      8092 │     [dir="ltr"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8096:16:
+      8096 │     [dir="rtl"] & {
+           ╵                 ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+▲ [WARNING] Transforming this CSS nesting syntax is not supported in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14") [unsupported-css-nesting]
+
+    <stdin>:8103:18:
+      8103 │       [dir="rtl"] & {
+           ╵                   ^
+
+  The nesting transform for this case must generate an ":is(...)" but the configured target environment does not support the ":is" pseudo-class.
+
+
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.73 kB │ gzip:   0.41 kB
+dist/assets/index-D-tSFn9-.css    362.85 kB │ gzip:  55.21 kB
+dist/assets/index-9l7IuJl9.js   2,808.85 kB │ gzip: 815.10 kB
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 4.56s
+✓ built in 7.34s

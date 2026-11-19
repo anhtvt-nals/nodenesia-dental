@@ -90,11 +90,11 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
 
   return (
     <div className="w-full">
-      {/* 1. Segmented Control Day Selector */}
+      {/* 1. Segmented Control Day Selector (Snap-scrollable on mobile) */}
       <div
         role="tablist"
         aria-label={lang === 'en' ? 'Select weekday schedule' : 'Pilih jadwal hari praktek'}
-        className={`p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar border ${
+        className={`p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto scrollbar-none snap-x snap-mandatory border ${
           isPine
             ? 'bg-black/30 border-white/10 backdrop-blur-md'
             : 'bg-surface border-border shadow-xs'
@@ -112,7 +112,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
               role="tab"
               aria-selected={isSelected}
               onClick={() => setActiveDay(dayNum)}
-              className={`flex-1 min-w-[96px] py-3 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center justify-center gap-2 ${
+              className={`flex-1 min-w-[96px] snap-center py-3 px-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center justify-center gap-2 active:scale-[0.98] ${
                 isSelected
                   ? isPine
                     ? 'bg-white text-secondary shadow-md font-bold scale-[1.01]'
@@ -190,12 +190,12 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
                 </div>
 
                 {/* Shift Hours & Action CTA */}
-                <div className="flex flex-wrap items-center justify-between md:justify-end gap-3 sm:gap-4 pt-3 md:pt-0 border-t md:border-t-0 border-white/10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between md:justify-end gap-3.5 sm:gap-4 pt-3.5 md:pt-0 border-t md:border-t-0 border-white/10 w-full md:w-auto">
                   <div className="flex flex-wrap items-center gap-2">
                     {shifts.map((s, idx) => (
                       <span
                         key={idx}
-                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold tabular-nums border ${
+                        className={`inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tabular-nums border ${
                           isPine
                             ? 'bg-white/10 text-white border-white/15'
                             : 'bg-bg-alt text-secondary border-border'
@@ -221,9 +221,9 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
 
                   <Link
                     to={localePath(`/booking?dokter=${doc.id}`)}
-                    className={`inline-flex items-center justify-center min-h-[46px] px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shrink-0 cursor-pointer ${
+                    className={`inline-flex items-center justify-center min-h-[48px] w-full md:w-auto px-6 py-3 rounded-xl text-sm font-bold transition-all shrink-0 cursor-pointer active:scale-[0.98] ${
                       isPine
-                        ? 'bg-accent text-white hover:bg-accent-hover shadow-md active:scale-[0.98]'
+                        ? 'bg-accent text-white hover:bg-accent-hover shadow-md'
                         : 'btn-primary'
                     }`}
                   >

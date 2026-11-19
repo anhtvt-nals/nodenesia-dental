@@ -22,6 +22,8 @@ enum ServiceZone {
 enum BookingStatus {
   pending
   confirmed
+  arrived
+  in_chair
   completed
   cancelled
   no_show
@@ -100,6 +102,10 @@ model ClinicSettings {
   bookingHorizonDays Int      @default(60) @map("booking_horizon_days")
   cancelCutoffHours  Int      @default(24) @map("cancel_cutoff_hours")
   chairsCount        Int      @default(3) @map("chairs_count")
+  turnoverBufferMinutes Int   @default(15) @map("turnover_buffer_minutes")
+  blockedTimes       Json?    @map("blocked_times")
+  autoReleaseHours   Int      @default(2) @map("auto_release_hours")
+  paymentMethods     Json?    @map("payment_methods")
   reminderTemplates  Json     @map("reminder_templates")
   socials            Json
   tagline            String?
@@ -124,6 +130,7 @@ model Doctor {
   specialtyEn  String?         @map("specialty_en")
   bioEn        String?         @map("bio_en")
   sipNumber    String?         @map("sip_number")
+  gender       String?
   experienceYears Int?         @map("experience_years")
   education    Json?
   isActive     Boolean         @default(true) @map("is_active")
@@ -147,6 +154,8 @@ model Service {
   zone            ServiceZone
   category        ServiceCategory
   durationMinutes Int             @map("duration_minutes")
+  requiresConsultation Boolean        @default(false) @map("requires_consultation")
+  turnoverBufferMinutes Int?          @map("turnover_buffer_minutes")
   priceFrom       Decimal         @map("price_from") @db.Decimal(12, 2)
   priceTo         Decimal?        @map("price_to") @db.Decimal(12, 2)
   priceNote       String?         @map("price_note")
@@ -213,10 +222,20 @@ model Booking {
   serviceId       String          @map("service_id") @db.Uuid
   startsAt        DateTime        @map("starts_at") @db.Timestamptz(6)
   endsAt          DateTime        @map("ends_at") @db.Timestamptz(6)
-  status          BookingStatus   @default(confirmed)
+  status          BookingStatus   @default(pending)
   source          BookingSource
   notes           String?
   complaint       String?
+  chairIndex      Int?            @map("chair_index")
+  parentBookingId String?         @map("parent_booking_id") @db.Uuid
+  bookingFor      String?         @default("self") @map("booking_for")
+  bookerName      String?         @map("booker_name")
+  bookerPhone     String?         @map("booker_phone")
+  patientAge      Int?            @map("patient_age")
+  patientType     String?         @default("new") @map("patient_type")
+  birthDate       DateTime?       @map("birth_date") @db.Date
+  payer           String?         @default("umum") @map("payer")
+  turnoverEndsAt  DateTime?       @map("turnover_ends_at") @db.Timestamptz(6)
   manageTokenHash String?         @map("manage_token_hash")
   cancelledReason String?         @map("cancelled_reason")
   createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -224,6 +243,8 @@ model Booking {
   patient         Patient         @relation(fields: [patientId], references: [id])
   doctor          Doctor          @relation(fields: [doctorId], references: [id])
   service         Service         @relation(fields: [serviceId], references: [id])
+  parentBooking   Booking?        @relation("TreatmentSeries", fields: [parentBookingId], references: [id])
+  followUps       Booking[]       @relation("TreatmentSeries")
   notifications   NotificationLog[]
   @@index([startsAt])
   @@index([doctorId, startsAt])
@@ -358,4 +379,20 @@ model Article {
   category    ArticleCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   @@index([publishedAt])
   @@map("articles")
+}
+
+model AdminNotification {
+  id         String    @id @default(uuid()) @db.Uuid
+  type       String
+  title      String
+  body       String
+  entityType String?   @map("entity_type")
+  entityId   String?   @map("entity_id")
+  isRead     Boolean   @default(false) @map("is_read")
+  readAt     DateTime? @map("read_at") @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([isRead, createdAt])
+  @@index([createdAt])
+  @@map("admin_notifications")
 }

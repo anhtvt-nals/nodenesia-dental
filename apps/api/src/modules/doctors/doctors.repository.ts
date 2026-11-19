@@ -1,14 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import type { DoctorInput, TimeOffInput, WorkingHourInput } from './admin-doctors.service.js';
-import type { DoctorsReader, PublicDoctor } from './doctors.service.js';
+import type { DoctorsReader, PublicDoctor, PublicTimeOff } from './doctors.service.js';
 @Injectable()
 export class DoctorsRepository implements DoctorsReader {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
   async listPublic(): Promise<PublicDoctor[]> {
     const doctors = await this.prisma.doctor.findMany({
       where: { isActive: true },
-      include: { services: true, workingHours: { orderBy: [{ weekday: 'asc' }, { startTime: 'asc' }] } },
+      include: {
+        services: true,
+        workingHours: { orderBy: [{ weekday: 'asc' }, { startTime: 'asc' }] },
+        timeOffs: { orderBy: { startsAt: 'asc' } },
+      },
       orderBy: { sortOrder: 'asc' },
     });
     return doctors.map((doctor) => ({
@@ -23,10 +27,31 @@ export class DoctorsRepository implements DoctorsReader {
       bioEn: doctor.bioEn,
       photoUrl: doctor.photoUrl,
       sipNumber: doctor.sipNumber,
+      gender: doctor.gender,
       experienceYears: doctor.experienceYears,
       education: Array.isArray(doctor.education) ? doctor.education.map((item) => String(item)) : [],
       serviceIds: doctor.services.map((item) => item.serviceId),
       workingHours: doctor.workingHours.map((hour) => ({ weekday: hour.weekday, start: hour.startTime.toISOString().slice(11, 16), end: hour.endTime.toISOString().slice(11, 16) })),
+      timeOffs: doctor.timeOffs.map((t) => ({
+        id: t.id,
+        doctorId: t.doctorId,
+        startsAt: t.startsAt.toISOString(),
+        endsAt: t.endsAt.toISOString(),
+        reason: t.reason,
+      })),
+    }));
+  }
+
+  async listPublicTimeOffs(): Promise<PublicTimeOff[]> {
+    const timeOffs = await this.prisma.timeOff.findMany({
+      orderBy: { startsAt: 'asc' },
+    });
+    return timeOffs.map((t) => ({
+      id: t.id,
+      doctorId: t.doctorId,
+      startsAt: t.startsAt.toISOString(),
+      endsAt: t.endsAt.toISOString(),
+      reason: t.reason,
     }));
   }
 

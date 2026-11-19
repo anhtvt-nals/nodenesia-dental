@@ -12,4 +12,12 @@ export class AuditLogService {
   list() {
     return this.prisma.auditLog.findMany({ orderBy: { createdAt: 'desc' }, take: 200, include: { user: { select: { name: true, email: true } } } });
   }
+
+  async listPaginated(page: number, pageSize: number, skip: number) {
+    const [items, total] = await Promise.all([
+      this.prisma.auditLog.findMany({ orderBy: { createdAt: 'desc' }, skip, take: pageSize, include: { user: { select: { name: true, email: true } } } }),
+      this.prisma.auditLog.count(),
+    ]);
+    return { items, total, page, pageSize };
+  }
 }

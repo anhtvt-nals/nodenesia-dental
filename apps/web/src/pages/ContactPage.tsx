@@ -33,7 +33,7 @@ export const ContactPage: React.FC = () => {
             {/* Left 6 cols: Details & Direct Channels */}
             <div className="lg:col-span-6 space-y-6">
               {/* Status & Hours Table */}
-              <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-card">
+              <div className="bg-surface rounded-2xl border border-border p-5 sm:p-8 shadow-card">
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-border">
                   <h2 className="font-heading text-xl font-bold text-secondary">
                     {t.contact.hoursTitle}
@@ -58,7 +58,7 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {/* Direct Communication Channels */}
-              <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-card space-y-4">
+              <div className="bg-surface rounded-2xl border border-border p-5 sm:p-8 shadow-card space-y-4">
                 <h2 className="font-heading text-xl font-bold text-secondary">
                   {t.contact.contactTitle}
                 </h2>
@@ -68,7 +68,7 @@ export const ContactPage: React.FC = () => {
                     href={waLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-whatsapp w-full justify-between py-3.5 px-5 text-sm cursor-pointer shadow-soft"
+                    className="btn-whatsapp w-full justify-between py-3.5 px-5 text-sm cursor-pointer shadow-soft min-h-[48px] flex items-center active:scale-[0.98]"
                   >
                     <span>{t.contact.chatWhatsApp}</span>
                     <span className="font-mono">+{settings.whatsappNumber}</span>
@@ -76,7 +76,7 @@ export const ContactPage: React.FC = () => {
 
                   <a
                     href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
-                    className="btn-secondary w-full justify-between py-3.5 px-5 text-sm cursor-pointer"
+                    className="btn-secondary w-full justify-between py-3.5 px-5 text-sm cursor-pointer min-h-[48px] flex items-center active:scale-[0.98]"
                   >
                     <span>{t.contact.callClinic}</span>
                     <span className="font-mono">{settings.phone}</span>
@@ -90,7 +90,7 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {/* Emergency Call Box */}
-              <div className="p-6 rounded-2xl border border-amber-300/60 bg-amber-50/50">
+              <div className="p-5 sm:p-6 rounded-2xl border border-amber-300/60 bg-amber-50/50">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-950 block mb-1.5">
                   {t.contact.emergencyTitle}
                 </span>
@@ -99,7 +99,7 @@ export const ContactPage: React.FC = () => {
                 </p>
                 <a
                   href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
-                  className="btn-whatsapp py-2.5 px-5 text-xs font-semibold cursor-pointer"
+                  className="btn-whatsapp py-3 px-5 text-xs sm:text-sm font-semibold cursor-pointer min-h-[44px] inline-flex items-center active:scale-[0.98]"
                 >
                   <span>{t.contact.emergencyBtn}</span>
                 </a>
@@ -108,7 +108,7 @@ export const ContactPage: React.FC = () => {
 
             {/* Right 6 cols: Address & Full-bleed Map */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-card">
+              <div className="bg-surface rounded-2xl border border-border p-5 sm:p-8 shadow-card">
                 <h2 className="font-heading text-xl font-bold text-secondary mb-2">
                   {t.contact.addressTitle}
                 </h2>
@@ -124,7 +124,7 @@ export const ContactPage: React.FC = () => {
                   href={settings.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary text-sm py-2.5 px-5 cursor-pointer inline-flex items-center gap-2"
+                  className="btn-secondary text-sm py-3 px-5 cursor-pointer inline-flex items-center gap-2 min-h-[44px] active:scale-[0.98]"
                 >
                   <span>{t.contact.viewOnMap}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">

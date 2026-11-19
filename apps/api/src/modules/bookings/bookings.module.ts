@@ -15,10 +15,12 @@ import { PublicBookingRateLimiter } from './public-booking-rate-limiter.js';
 import { ManageBookingsController } from './manage-bookings.controller.js';
 import { ManageBookingsService } from './manage-bookings.service.js';
 import { AuditLogsModule } from '../audit-logs/audit-logs.module.js';
+import { NotificationModule } from '../notifications/notification.module.js';
 import { ManualBookingService } from './manual-booking.service.js';
+import { BookingStatusStreamService } from './booking-status-stream.service.js';
 
 @Module({
-  imports: [PatientsModule, AuthModule, AuditLogsModule],
+  imports: [PatientsModule, AuthModule, AuditLogsModule, NotificationModule],
   controllers: [SlotsController, PublicBookingsController, AdminBookingsController, ManageBookingsController],
   providers: [
     AvailabilityService,
@@ -29,6 +31,7 @@ import { ManualBookingService } from './manual-booking.service.js';
     PublicBookingRateLimiter,
     ManageBookingsService,
     ManualBookingService,
+    BookingStatusStreamService,
     {
       provide: BookingsService,
       useFactory: (repository: BookingsRepository) => new BookingsService(repository),

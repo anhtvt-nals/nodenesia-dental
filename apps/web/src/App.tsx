@@ -20,7 +20,6 @@ import { ContactPage } from './pages/ContactPage';
 import { BookingPage } from './pages/BookingPage';
 import { BookingSuccessPage } from './pages/BookingSuccessPage';
 import { ManageBookingPage } from './pages/ManageBookingPage';
-import { LegalPage } from './pages/LegalPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 interface ErrorBoundaryProps {
@@ -123,8 +122,6 @@ function AppRoutes() {
           <Route path="/booking/sukses/:code" element={<BookingSuccessPage />} />
           <Route path="/booking/kelola/:code" element={<ManageBookingPage />} />
           <Route path="/booking/kelola" element={<ManageBookingPage />} />
-          <Route path="/privacy" element={<LegalPage />} />
-          <Route path="/terms" element={<LegalPage />} />
 
           {/* English Mirrored Routes (/en/...) */}
           <Route path="/en" element={<HomePage />} />
@@ -156,8 +153,6 @@ function AppRoutes() {
           <Route path="/en/booking/kelola/:code" element={<ManageBookingPage />} />
           <Route path="/en/booking/kelola" element={<ManageBookingPage />} />
           <Route path="/en/booking/manage/:code" element={<ManageBookingPage />} />
-          <Route path="/en/privacy" element={<LegalPage />} />
-          <Route path="/en/terms" element={<LegalPage />} />
 
           {/* Catch-all 404 */}
           <Route path="*" element={<NotFoundPage />} />

@@ -5,6 +5,7 @@ import type {
   BookingSlot,
   ClinicSettings,
   Doctor,
+  DoctorTimeOff,
   Faq,
   GalleryItem,
   Service,
@@ -177,6 +178,10 @@ function mapSettings(raw: ApiSettings): ClinicSettings {
       value: stat.value,
       unit: stat.unit,
     })),
+    paymentMethods: (raw as any).paymentMethods ?? ['QRIS', 'GoPay', 'OVO', 'DANA', 'Debit / Kredit', 'Asuransi'],
+    cancelCutoffHours: (raw as any).cancelCutoffHours ?? 3,
+    autoReleaseHours: (raw as any).autoReleaseHours ?? 2,
+    blockedTimes: (raw as any).blockedTimes ?? [],
   };
 }
 
@@ -247,6 +252,14 @@ export async function getService(slug: string): Promise<Service | null> {
 
 type ApiDoctorWorkingHour = { weekday: number; start: string; end: string };
 
+type ApiDoctorTimeOff = {
+  id: string;
+  doctorId?: string | null;
+  startsAt: string;
+  endsAt: string;
+  reason?: string | null;
+};
+
 type ApiDoctor = {
   id: string;
   name: string;
@@ -263,6 +276,7 @@ type ApiDoctor = {
   education: string[];
   serviceIds: string[];
   workingHours: ApiDoctorWorkingHour[];
+  timeOffs?: ApiDoctorTimeOff[];
 };
 
 function mapDoctor(raw: ApiDoctor): Doctor {
@@ -280,8 +294,16 @@ function mapDoctor(raw: ApiDoctor): Doctor {
     photoUrl: raw.photoUrl ?? '',
     serviceIds: raw.serviceIds,
     workingHours: raw.workingHours.map((hour) => ({ weekday: hour.weekday, start: hour.start, end: hour.end })),
+    timeOffs: (raw.timeOffs || []).map((t) => ({
+      id: t.id,
+      doctorId: t.doctorId,
+      startsAt: t.startsAt,
+      endsAt: t.endsAt,
+      reason: t.reason,
+    })),
     education: raw.education ?? [],
     sipNumber: raw.sipNumber ?? undefined,
+    gender: (raw as any).gender ?? null,
     experienceYears: years ?? undefined,
     experience: years ? `${years}+ Tahun Pengalaman Klinis` : undefined,
     experienceEn: years ? `${years}+ Years Clinical Experience` : undefined,
@@ -293,6 +315,21 @@ export async function getDoctors(): Promise<Doctor[]> {
   return raw
     .map(mapDoctor)
     .filter((doc) => doc.slug !== 'dev' && doc.name.toLowerCase() !== 'dev' && doc.title !== 'dra oaovoaa');
+}
+
+export async function getPublicTimeOffs(): Promise<DoctorTimeOff[]> {
+  try {
+    const raw = await request<ApiDoctorTimeOff[]>('/public/doctors/time-offs');
+    return raw.map((t) => ({
+      id: t.id,
+      doctorId: t.doctorId,
+      startsAt: t.startsAt,
+      endsAt: t.endsAt,
+      reason: t.reason,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getDoctor(slug: string): Promise<Doctor | null> {
@@ -320,16 +357,38 @@ export async function getSlots(params: GetSlotsParams): Promise<BookingSlot[]> {
       .map((slot) => ({ time: slot.start, available: true, doctorId: slot.doctorId }))
       .sort((left, right) => left.time.localeCompare(right.time));
   } catch {
-    // Graceful offline fallback: realistic clinic appointment slots
-    const defaultSlots = [
-      '09:00', '09:45', '10:30', '11:15',
-      '13:30', '14:15', '15:00', '15:45', '16:30', '17:15', '18:00', '18:45'
-    ];
-    return defaultSlots.map((time) => ({
-      time,
-      available: true,
-      doctorId: params.doctorId || 'any',
-    }));
+    // Dynamic duration-based fallback (service duration + 15 min turnover buffer)
+    const services = await getServices().catch(() => []);
+    const foundSvc = services.find((s) => s.id === params.serviceId || s.slug === params.serviceId);
+    const duration = foundSvc?.durationMinutes || 45;
+    const turnover = foundSvc?.turnoverBufferMinutes || 15;
+    const step = duration + turnover;
+
+    const dateObj = new Date(params.date + 'T00:00:00+07:00');
+    const isFriday = dateObj.getDay() === 5;
+    const blockedStart = isFriday ? 11 * 60 + 30 : 12 * 60;
+    const blockedEnd = 13 * 60;
+
+    const slots: BookingSlot[] = [];
+    const openMinute = 9 * 60; // 09:00
+    const closeMinute = 19 * 60 + 30; // 19:30
+
+    for (let cursor = openMinute; cursor + duration <= closeMinute; cursor += step) {
+      const slotEnd = cursor + duration;
+      // Skip if overlaps Friday prayer or lunch
+      if (cursor < blockedEnd && blockedStart < slotEnd) {
+        continue;
+      }
+      const hour = String(Math.floor(cursor / 60)).padStart(2, '0');
+      const minute = String(cursor % 60).padStart(2, '0');
+      slots.push({
+        time: `${hour}:${minute}`,
+        available: true,
+        doctorId: params.doctorId || 'any',
+      });
+    }
+
+    return slots;
   }
 }
 
@@ -338,9 +397,17 @@ export interface CreateBookingPayload {
   doctorId: string; // doctor ID or 'any'
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
-  patient: { name: string; phone: string };
+  patient: { name: string; phone?: string };
   complaint?: string;
   honeypot?: string; // Bot protection
+  bookingFor?: 'self' | 'child' | 'other_family';
+  booker?: { name: string; phone: string };
+  patientAge?: number;
+  patientType?: 'new' | 'returning';
+  birthDate?: string;
+  payer?: 'umum' | 'asuransi';
+  whatsappConsent?: boolean;
+  dataProcessingConsent?: boolean;
 }
 
 type ApiCreatedBooking = {
@@ -356,15 +423,23 @@ type ApiCreatedBooking = {
 export async function createBooking(payload: CreateBookingPayload): Promise<Booking> {
   const timezone = (await getSettings()).timezone;
   const name = payload.patient.name.trim();
-  const phone = toE164(payload.patient.phone);
+  const phone = payload.patient.phone?.trim() ? toE164(payload.patient.phone) : undefined;
 
   const body = {
     name,
-    phone,
+    ...(phone ? { phone } : {}),
     serviceId: payload.serviceId,
     ...(payload.doctorId && payload.doctorId !== 'any' ? { doctorId: payload.doctorId } : {}),
     startsAt: zonedWallClockToUtc(payload.date, payload.time, timezone),
     ...(payload.complaint ? { complaint: payload.complaint.trim() } : {}),
+    bookingFor: payload.bookingFor ?? 'self',
+    ...(payload.booker ? { booker: { name: payload.booker.name.trim(), phone: toE164(payload.booker.phone) } } : {}),
+    ...(payload.patientAge !== undefined ? { patientAge: payload.patientAge } : {}),
+    patientType: payload.patientType ?? 'new',
+    ...(payload.birthDate ? { birthDate: payload.birthDate } : {}),
+    payer: payload.payer ?? 'umum',
+    whatsappConsent: payload.whatsappConsent ?? true,
+    dataProcessingConsent: payload.dataProcessingConsent ?? true,
     website: payload.honeypot ?? '',
   };
 
@@ -379,7 +454,7 @@ export async function createBooking(payload: CreateBookingPayload): Promise<Book
     startsAt: toLocalNaive(created.startsAt, timezone),
     endsAt: toLocalNaive(created.endsAt, timezone),
     status: created.status as Booking['status'],
-    patient: { name, phone },
+    patient: { name, phone: phone ?? '' },
     complaint: payload.complaint?.trim(),
     createdAt: new Date().toISOString(),
   };
@@ -396,10 +471,13 @@ type ApiBookingSummary = {
   complaint: string | null;
 };
 
-export async function getBooking(code: string, token?: string): Promise<Booking | null> {
-  if (!token) throw new ApiError('Token pengelolaan booking diperlukan.', 403);
+export async function getBooking(code: string, token?: string, phone?: string): Promise<Booking | null> {
+  const query = new URLSearchParams();
+  if (token) query.set('token', token);
+  if (phone) query.set('phone', phone);
+  const qs = query.toString() ? `?${query.toString()}` : '';
   try {
-    const summary = await request<ApiBookingSummary>(`/public/bookings/${encodeURIComponent(code)}?token=${encodeURIComponent(token)}`);
+    const summary = await request<ApiBookingSummary & { canManage?: boolean }>(`/public/bookings/${encodeURIComponent(code)}${qs}`);
     const timezone = (await getSettings()).timezone;
     return {
       id: summary.code,
@@ -412,18 +490,22 @@ export async function getBooking(code: string, token?: string): Promise<Booking 
       status: summary.status as Booking['status'],
       patient: summary.patient ?? { name: '', phone: '' },
       complaint: summary.complaint ?? undefined,
+      canManage: summary.canManage ?? Boolean(token),
       createdAt: summary.startsAt,
     };
   } catch (error) {
-    if (error instanceof ApiError && error.status === 404) return null;
+    if (error instanceof ApiError && (error.status === 404 || error.status === 400)) return null;
     throw error;
   }
 }
 
-export async function cancelBooking(code: string, token?: string): Promise<Booking> {
-  if (!token) throw new ApiError('Token pengelolaan booking diperlukan.', 403);
-  await request(`/public/bookings/${encodeURIComponent(code)}/cancel`, { method: 'PATCH', body: JSON.stringify({ token }) });
-  const booking = await getBooking(code, token);
+export async function cancelBooking(code: string, token?: string, phone?: string): Promise<Booking> {
+  if (!token && !phone) throw new ApiError('Token atau nomor HP diperlukan untuk membatalkan booking.', 403);
+  await request(`/public/bookings/${encodeURIComponent(code)}/cancel`, {
+    method: 'PATCH',
+    body: JSON.stringify({ token, phone }),
+  });
+  const booking = await getBooking(code, token, phone);
   if (!booking) throw new ApiError('Booking tidak ditemukan.', 404);
   return { ...booking, status: 'cancelled' };
 }
@@ -432,16 +514,21 @@ export interface ReschedulePayload {
   newDate: string;
   newTime: string;
   token?: string;
+  phone?: string;
 }
 
 export async function rescheduleBooking(code: string, payload: ReschedulePayload): Promise<Booking> {
-  if (!payload.token) throw new ApiError('Token pengelolaan booking diperlukan.', 403);
+  if (!payload.token && !payload.phone) throw new ApiError('Token atau nomor HP diperlukan untuk mengubah jadwal.', 403);
   const timezone = (await getSettings()).timezone;
   await request(`/public/bookings/${encodeURIComponent(code)}/reschedule`, {
     method: 'PATCH',
-    body: JSON.stringify({ token: payload.token, startsAt: zonedWallClockToUtc(payload.newDate, payload.newTime, timezone) }),
+    body: JSON.stringify({
+      token: payload.token,
+      phone: payload.phone,
+      startsAt: zonedWallClockToUtc(payload.newDate, payload.newTime, timezone),
+    }),
   });
-  const booking = await getBooking(code, payload.token);
+  const booking = await getBooking(code, payload.token, payload.phone);
   if (!booking) throw new ApiError('Booking tidak ditemukan.', 404);
   return booking;
 }
@@ -543,6 +630,7 @@ type ApiArticle = {
   excerptEn: string | null;
   body: string;
   bodyEn: string | null;
+  coverUrl?: string | null;
   readTime: string | null;
   authorName: string | null;
   authorTitle: string | null;
@@ -578,6 +666,7 @@ function mapArticle(raw: ApiArticle): Article {
     summaryEn: raw.excerptEn ?? raw.excerpt,
     content: splitBody(raw.body),
     contentEn: splitBody(raw.bodyEn ?? raw.body),
+    coverUrl: raw.coverUrl ?? null,
   };
 }
 

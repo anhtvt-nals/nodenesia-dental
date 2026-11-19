@@ -4,12 +4,45 @@ export function cn(...classes: (string | boolean | undefined | null)[]): string 
 
 /**
  * Validates Indonesian phone format (08... or +62... or 62...)
+ * Accepts 08xx / +62xx / 62xx with 9–13 digits after the prefix.
  */
 export function isValidIndonesianPhone(input: string): boolean {
-  const cleaned = input.replace(/[\s\-\(\)]/g, '');
-  // Matches 08xx... (10 to 13 digits total) or +628xx... or 628xx...
-  const idRegex = /^(?:\+62|62|0)8[1-9][0-9]{7,10}$/;
-  return idRegex.test(cleaned);
+  return validateIndonesianWhatsApp(input).valid;
+}
+
+export function validateIndonesianWhatsApp(input: string): { valid: boolean; normalized: string; error?: string } {
+  if (!input) return { valid: false, normalized: '', error: 'Nomor tidak valid. Contoh: 08123456789' };
+  const cleaned = input.replace(/[\s\-\(\)\+]/g, '');
+  let rest = '';
+  if (cleaned.startsWith('08')) {
+    rest = cleaned.slice(1);
+  } else if (cleaned.startsWith('628')) {
+    rest = cleaned.slice(2);
+  } else {
+    return { valid: false, normalized: '', error: 'Nomor tidak valid. Contoh: 08123456789' };
+  }
+  if (!/^8\d{8,12}$/.test(rest)) {
+    return { valid: false, normalized: '', error: 'Nomor tidak valid. Contoh: 08123456789' };
+  }
+  return { valid: true, normalized: `62${rest}` };
+}
+
+/**
+ * Formats a date string (YYYY-MM-DD) into Indonesian ("Jumat, 13 November 2026") or English ("Friday, November 13, 2026")
+ */
+export function formatDateSummary(dateStr: string, isEn = false): string {
+  if (!dateStr) return '';
+  const clean = dateStr.split('T')[0];
+  const [y, m, d] = clean.split('-').map(Number);
+  if (!y || !m || !d) return dateStr;
+  const dateObj = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  return new Intl.DateTimeFormat(isEn ? 'en-US' : 'id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(dateObj);
 }
 
 /**

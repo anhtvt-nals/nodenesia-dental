@@ -6,6 +6,11 @@ export type AdminClinicSettings = {
   phone: string;
   waNumber: string;
   address: string;
+  tagline: string | null;
+  taglineEn: string | null;
+  city: string | null;
+  instagramHandle: string | null;
+  googleMapsUrl: string | null;
   timezone: string;
   adminLocale: string;
   slotStepMinutes: number;
@@ -13,6 +18,9 @@ export type AdminClinicSettings = {
   bookingHorizonDays: number;
   cancelCutoffHours: number;
   chairsCount: number;
+  blockedTimes: unknown;
+  autoReleaseHours: number;
+  paymentMethods: unknown;
 };
 
 export interface AdminSettingsRepository {

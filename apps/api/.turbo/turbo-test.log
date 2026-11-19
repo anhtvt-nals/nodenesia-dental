@@ -1,818 +1,49 @@
-[2K[1G[1myarn run v1.22.19[22m
-[2K[1G[2m$ DATABASE_URL='postgresql://clinic:clinic@localhost:5432/clinic?schema=public' vitest run --exclude 'src/**/*.integration.spec.ts'[22m
 
  RUN  v2.1.9 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api
 
-[?25l ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
-[?25l[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- · src/modules/auth/admin-users.service.spec.ts (3)
-[?25l[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- · src/modules/auth/admin-users.service.spec.ts (3)
- · src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- · src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠙ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G · src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠹ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠸ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠼ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠴ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠦ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠧ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- · src/modules/bookings/manage-bookings.service.spec.ts (1)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠇ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- · src/modules/bookings/manage-bookings.service.spec.ts (1)
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠏ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠙ only reschedules an active booking into an available clinic-local slot
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠋ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠹ only reschedules an active booking into an available clinic-local slot
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠙ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠸ only reschedules an active booking into an available clinic-local slot
- ❯ src/modules/auth/auth.service.spec.ts (3)
-   ❯ AuthService (3)
-     ✓ rejects an inactive account before issuing a session
-     ✓ rejects an unknown refresh token
-     ⠹ does not revoke a refresh token until its secret is verified
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠼ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠴ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠦ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠧ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠇ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠏ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠋ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠙ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠹ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠸ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠼ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠴ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ❯ src/modules/bookings/manage-bookings.service.spec.ts (1)
-   ❯ ManageBookingsService (1)
-     ⠦ only reschedules an active booking into an available clinic-local slot
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
-[?25l[?25l[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- · src/modules/bookings/slot-engine.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
-[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
-[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- · src/modules/bookings/manual-booking.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- · src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ❯ src/modules/bookings/bookings.repository.spec.ts (1)
-   ❯ BookingsRepository (1)
-     ⠙ does not queue reminders whose scheduled time has already passed
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ❯ src/modules/bookings/bookings.repository.spec.ts (1)
-   ❯ BookingsRepository (1)
-     ⠹ does not queue reminders whose scheduled time has already passed
- · src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ❯ src/modules/bookings/bookings.repository.spec.ts (1)
-   ❯ BookingsRepository (1)
-     ⠸ does not queue reminders whose scheduled time has already passed
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ❯ src/modules/bookings/bookings.repository.spec.ts (1)
-   ❯ BookingsRepository (1)
-     ⠼ does not queue reminders whose scheduled time has already passed
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
-[?25l[?25l[?25l[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- · src/modules/articles/articles.service.spec.ts (2)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
-[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- · src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- · src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- · src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- · src/modules/content/content.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠙ does not return a booking when its management token is invalid
- · src/modules/content/content.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠹ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠸ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠼ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- · src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠴ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- · src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠦ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- · src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠧ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠇ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ❯ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
-   ❯ ManageBookingsService.get (1)
-     ⠏ does not return a booking when its management token is invalid
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- · src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- · src/modules/bookings/bookings.service.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
-[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:53 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+ ✓ src/modules/bookings/slot-engine.spec.ts (6 tests) 5ms
+ ✓ src/modules/doctors/doctor-avatar.service.spec.ts (8 tests) 8ms
+ ✓ src/modules/gallery/gallery-image.service.spec.ts (8 tests) 5ms
+ ✓ src/modules/notifications/admin-notifications.service.spec.ts (2 tests) 5ms
+ ✓ src/modules/doctors/admin-doctors.service.spec.ts (4 tests) 26ms
+ ❯ src/modules/bookings/admin-bookings.service.spec.ts (7 tests | 1 failed) 16ms
+   × AdminBookingsService > only allows valid status transitions 11ms
+     → promise rejected "TypeError: this.repository.queueConfirmat…" instead of resolving
+ ✓ src/modules/gallery/gallery.service.spec.ts (3 tests) 3ms
+ ✓ src/modules/bookings/manage-bookings.service.spec.ts (1 test) 292ms
+ ✓ src/modules/articles/articles.service.spec.ts (3 tests) 7ms
+ ✓ src/modules/auth/auth.service.spec.ts (3 tests) 227ms
+ ❯ src/modules/bookings/public-booking.service.spec.ts (1 test | 1 failed) 5ms
+   × PublicBookingService > does not create a patient when the selected slot is unavailable 4ms
+     → expected TypeError: Cannot read properties of unde… to be an instance of BadRequestException
+ ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (2 tests) 282ms
+ ✓ src/modules/auth/admin-users.service.spec.ts (3 tests) 4ms
+ ✓ src/modules/doctors/doctor-avatar-upload.spec.ts (1 test) 75ms
+ ✓ src/modules/notifications/notification.service.spec.ts (1 test) 5ms
+ ✓ src/modules/auth/guards/access-token.guard.spec.ts (2 tests) 6ms
+ ✓ src/modules/bookings/admin-bookings.repository.spec.ts (2 tests) 4ms
+ ✓ src/modules/patients/patients-admin.service.spec.ts (2 tests) 4ms
+ ✓ src/modules/settings/settings.service.spec.ts (2 tests) 2ms
+ ✓ src/modules/notifications/notification-operations.service.spec.ts (1 test) 4ms
+ ✓ src/modules/bookings/manual-booking.service.spec.ts (1 test) 5ms
+ ✓ src/modules/reports/reports.service.spec.ts (1 test) 8ms
+ ❯ src/modules/bookings/bookings.repository.spec.ts (1 test | 1 failed) 110ms
+   × BookingsRepository > does not queue reminders whose scheduled time has already passed 109ms
+     → expected "spy" to be called 1 times, but got 0 times
+ ✓ src/modules/services/admin-services.service.spec.ts (1 test) 4ms
+ ✓ src/modules/faqs/faqs.service.spec.ts (1 test) 6ms
+ ✓ src/config/production-config.spec.ts (1 test) 5ms
+ ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1 test) 2ms
+ ✓ src/modules/bookings/bookings.service.spec.ts (1 test) 6ms
+ ✓ src/modules/content/content.service.spec.ts (1 test) 4ms
+ ✓ src/modules/testimonials/testimonials.service.spec.ts (1 test) 13ms
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `prisma.$queryRaw()` invocation:
 
 
 Can't reach database server at `localhost:5432`
 
-Please make sure your database server is running at `localhost:5432`.[39m
+Please make sure your database server is running at `localhost:5432`.
 PrismaClientInitializationError: 
 Invalid `prisma.$queryRaw()` invocation:
 
@@ -827,53 +58,8 @@ Please make sure your database server is running at `localhost:5432`.
     at HealthController.health (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/app.module.ts:25:5)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
- ✓ src/config/swagger-config.spec.ts (1)
-[31m[Nest] 84798  - [39m11/01/2026, 10:32:53 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+ ✓ src/modules/notifications/notification-template.spec.ts (1 test) 4ms
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `this.prisma.clinicSettings.findUniqueOrThrow()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/settings/settings.repository.ts:10:55
 
@@ -883,7 +69,7 @@ Invalid `this.prisma.clinicSettings.findUniqueOrThrow()` invocation in
 → 10     const settings = await this.prisma.clinicSettings.findUniqueOrThrow(
 Can't reach database server at `localhost:5432`
 
-Please make sure your database server is running at `localhost:5432`.[39m
+Please make sure your database server is running at `localhost:5432`.
 PrismaClientInitializationError: 
 Invalid `this.prisma.clinicSettings.findUniqueOrThrow()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/settings/settings.repository.ts:10:55
@@ -902,76 +88,11 @@ Please make sure your database server is running at `localhost:5432`.
     at SettingsRepository.getPublic (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/settings/settings.repository.ts:10:22)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
- ✓ src/config/swagger-config.spec.ts (1)
- ✓ src/modules/auth/refresh-cookie.spec.ts (1)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- · src/modules/promotions/promotions.service.spec.ts (1)
- ✓ src/modules/gallery/gallery.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
- ✓ src/config/swagger-config.spec.ts (1)
- ✓ src/modules/auth/refresh-cookie.spec.ts (1)
- ✓ src/workspace-smoke.spec.ts (1)
-[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- ✓ src/modules/promotions/promotions.service.spec.ts (1)
- ✓ src/modules/gallery/gallery.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
- ✓ src/config/swagger-config.spec.ts (1)
- ✓ src/modules/auth/refresh-cookie.spec.ts (1)
- ✓ src/workspace-smoke.spec.ts (1)
-[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:54 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+ ✓ src/modules/auth/refresh-cookie.spec.ts (1 test) 4ms
+ ✓ src/config/swagger-config.spec.ts (1 test) 5ms
+ ✓ src/workspace-smoke.spec.ts (1 test) 2ms
+ ✓ src/modules/promotions/promotions.service.spec.ts (1 test) 2ms
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `this.prisma.service.findMany()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/services/services.repository.ts:9:48
 
@@ -981,7 +102,7 @@ Invalid `this.prisma.service.findMany()` invocation in
 → 9     const services = await this.prisma.service.findMany(
 Can't reach database server at `localhost:5432`
 
-Please make sure your database server is running at `localhost:5432`.[39m
+Please make sure your database server is running at `localhost:5432`.
 PrismaClientInitializationError: 
 Invalid `this.prisma.service.findMany()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/services/services.repository.ts:9:48
@@ -1000,7 +121,7 @@ Please make sure your database server is running at `localhost:5432`.
     at ServicesRepository.listPublic (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/services/services.repository.ts:9:22)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:54 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `this.prisma.doctor.findMany()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/doctors/doctors.repository.ts:9:46
 
@@ -1010,7 +131,7 @@ Invalid `this.prisma.doctor.findMany()` invocation in
 → 9     const doctors = await this.prisma.doctor.findMany(
 Can't reach database server at `localhost:5432`
 
-Please make sure your database server is running at `localhost:5432`.[39m
+Please make sure your database server is running at `localhost:5432`.
 PrismaClientInitializationError: 
 Invalid `this.prisma.doctor.findMany()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/doctors/doctors.repository.ts:9:46
@@ -1029,18 +150,7 @@ Please make sure your database server is running at `localhost:5432`.
     at DoctorsRepository.listPublic (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/doctors/doctors.repository.ts:9:21)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:54 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
-Invalid `this.prisma.faq.findMany()` invocation in
-/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/faqs/faqs.repository.ts:8:41
-
-  5 @Injectable()
-  6 export class FaqsRepository {
-  7   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
-→ 8   listPublic() { return this.prisma.faq.findMany(
-Can't reach database server at `localhost:5432`
-
-Please make sure your database server is running at `localhost:5432`.[39m
-PrismaClientInitializationError: 
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `this.prisma.faq.findMany()` invocation in
 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/faqs/faqs.repository.ts:8:41
 
@@ -1051,31 +161,14 @@ Invalid `this.prisma.faq.findMany()` invocation in
 Can't reach database server at `localhost:5432`
 
 Please make sure your database server is running at `localhost:5432`.
-    at ei.handleRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:242:13)
-    at ei.handleAndLogRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
-    at ei.request (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
-    at a (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
-    at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
-    at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:54 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
-Invalid `this.prisma.service.findFirst()` invocation in
-/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:47
-
-   7 constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
-   8 async find(serviceId: string, date: string, doctorId?: string) {
-   9   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
-→ 10   const service = await this.prisma.service.findFirst(
-Can't reach database server at `localhost:5432`
-
-Please make sure your database server is running at `localhost:5432`.[39m
 PrismaClientInitializationError: 
-Invalid `this.prisma.service.findFirst()` invocation in
-/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:47
+Invalid `this.prisma.faq.findMany()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/faqs/faqs.repository.ts:8:41
 
-   7 constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
-   8 async find(serviceId: string, date: string, doctorId?: string) {
-   9   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
-→ 10   const service = await this.prisma.service.findFirst(
+  5 @Injectable()
+  6 export class FaqsRepository {
+  7   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+→ 8   listPublic() { return this.prisma.faq.findMany(
 Can't reach database server at `localhost:5432`
 
 Please make sure your database server is running at `localhost:5432`.
@@ -1083,28 +176,27 @@ Please make sure your database server is running at `localhost:5432`.
     at ei.handleAndLogRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
     at ei.request (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
     at a (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
-    at AvailabilityService.find (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:21)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[31m[Nest] 84798  - [39m11/01/2026, 10:32:54 AM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
 Invalid `this.prisma.service.findFirst()` invocation in
-/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:47
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:47
 
-   7 constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
-   8 async find(serviceId: string, date: string, doctorId?: string) {
-   9   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
-→ 10   const service = await this.prisma.service.findFirst(
+   9 
+  10 async find(serviceId: string, date: string, doctorId?: string) {
+  11   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
+→ 12   const service = await this.prisma.service.findFirst(
 Can't reach database server at `localhost:5432`
 
-Please make sure your database server is running at `localhost:5432`.[39m
+Please make sure your database server is running at `localhost:5432`.
 PrismaClientInitializationError: 
 Invalid `this.prisma.service.findFirst()` invocation in
-/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:47
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:47
 
-   7 constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
-   8 async find(serviceId: string, date: string, doctorId?: string) {
-   9   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
-→ 10   const service = await this.prisma.service.findFirst(
+   9 
+  10 async find(serviceId: string, date: string, doctorId?: string) {
+  11   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
+→ 12   const service = await this.prisma.service.findFirst(
 Can't reach database server at `localhost:5432`
 
 Please make sure your database server is running at `localhost:5432`.
@@ -1112,62 +204,103 @@ Please make sure your database server is running at `localhost:5432`.
     at ei.handleAndLogRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
     at ei.request (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
     at a (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
-    at AvailabilityService.find (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:10:21)
+    at AvailabilityService.find (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:21)
     at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
     at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
-[?25l[?25l[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ❯ src/app.spec.ts (19) 559ms
-   ❯ API bootstrap (19) 558ms
-     × serves the versioned health endpoint
-     × serves public settings
-     ✓ protects admin settings from anonymous requests
-     × keeps the rotated refresh token in an HttpOnly cookie
-     ✓ protects admin bookings from anonymous requests
-     ✓ protects admin catalogue from anonymous requests
-     ✓ protects doctor schedule administration from anonymous requests
-     ✓ forbids staff from owner-only user administration
-     ✓ forbids staff from changing clinic settings
-     × serves active public services
-     × serves active public doctors
-     × serves public FAQs
-     × returns slots for a service and date
-     × does not return slots outside the configured booking horizon
-     ✓ rejects an invalid slot query
-     × removes slots during a clinic-wide time off
-     × removes slots covered by a confirmed booking
-     × creates a public booking for an available slot
-     ✓ rejects an invalid public booking with 400
- ✓ src/workspace-smoke.spec.ts (1)
- ✓ src/config/production-config.spec.ts (1)
- ✓ src/config/swagger-config.spec.ts (1)
- ✓ src/modules/articles/articles.service.spec.ts (2)
- ✓ src/modules/auth/admin-users.service.spec.ts (3)
- ✓ src/modules/auth/auth.service.spec.ts (3)
- ✓ src/modules/auth/refresh-cookie.spec.ts (1)
- ✓ src/modules/bookings/admin-bookings.service.spec.ts (5)
- ✓ src/modules/bookings/bookings.repository.spec.ts (1)
- ✓ src/modules/bookings/bookings.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings-get.service.spec.ts (1)
- ✓ src/modules/bookings/manage-bookings.service.spec.ts (1) 305ms
- ✓ src/modules/bookings/manual-booking.service.spec.ts (1)
- ✓ src/modules/bookings/public-booking-rate-limiter.spec.ts (1)
- ✓ src/modules/bookings/public-booking.service.spec.ts (1)
- ✓ src/modules/bookings/slot-engine.spec.ts (2)
- ✓ src/modules/content/content.service.spec.ts (1)
- ✓ src/modules/doctors/admin-doctors.service.spec.ts (4)
- ✓ src/modules/faqs/faqs.service.spec.ts (1)
- ✓ src/modules/gallery/gallery.service.spec.ts (1)
- ✓ src/modules/notifications/notification-operations.service.spec.ts (1)
- ✓ src/modules/notifications/notification-template.spec.ts (1)
- ✓ src/modules/notifications/notification.service.spec.ts (1)
- ✓ src/modules/patients/patients-admin.service.spec.ts (2)
- ✓ src/modules/promotions/promotions.service.spec.ts (1)
- ✓ src/modules/reports/reports.service.spec.ts (1)
- ✓ src/modules/services/admin-services.service.spec.ts (1)
- ✓ src/modules/settings/settings.service.spec.ts (2)
- ✓ src/modules/testimonials/testimonials.service.spec.ts (1)
- ✓ src/modules/auth/guards/access-token.guard.spec.ts (2)
+[Nest] 93219  - 11/18/2026, 3:51:43 PM   ERROR [ExceptionsHandler] 
+Invalid `this.prisma.service.findFirst()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:47
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+   9 
+  10 async find(serviceId: string, date: string, doctorId?: string) {
+  11   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
+→ 12   const service = await this.prisma.service.findFirst(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `this.prisma.service.findFirst()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:47
+
+   9 
+  10 async find(serviceId: string, date: string, doctorId?: string) {
+  11   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
+→ 12   const service = await this.prisma.service.findFirst(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
+    at ei.request (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
+    at a (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
+    at AvailabilityService.find (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/modules/bookings/availability.service.ts:12:21)
+    at /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-execution-context.js:46:28
+    at Object.<anonymous> (/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/node_modules/@nestjs/core/router/router-proxy.js:9:17)
+ ❯ src/app.spec.ts (19 tests | 11 failed) 760ms
+   × API bootstrap > serves the versioned health endpoint 393ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > serves public settings 63ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > keeps the rotated refresh token in an HttpOnly cookie 97ms
+     → 
+Invalid `prisma.user.create()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/app.spec.ts:38:23
+
+  35 it('keeps the rotated refresh token in an HttpOnly cookie', async () => {
+  36   const prisma = new PrismaClient();
+  37   const email = `auth-${Date.now()}@example.test`;
+→ 38   await prisma.user.create(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+   × API bootstrap > serves active public services 23ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > serves active public doctors 12ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > serves public FAQs 13ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > returns slots for a service and date 15ms
+     → expected 500 to be 200 // Object.is equality
+   × API bootstrap > does not return slots outside the configured booking horizon 11ms
+     → expected { statusCode: 500, …(1) } to deeply equal []
+   × API bootstrap > removes slots during a clinic-wide time off 3ms
+     → 
+Invalid `prisma.timeOff.create()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/app.spec.ts:152:42
+
+  149 
+  150 it('removes slots during a clinic-wide time off', async () => {
+  151   const prisma = new PrismaClient();
+→ 152   const timeOff = await prisma.timeOff.create(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+   × API bootstrap > removes slots covered by a confirmed booking 3ms
+     → 
+Invalid `Promise.all([prisma.doctor.findUniqueOrThrow()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/app.spec.ts:164:205
+
+  161 
+  162 it('removes slots covered by a confirmed booking', async () => {
+  163   const prisma = new PrismaClient();
+→ 164   const [doctor, service, patient] = await Promise.all([prisma.doctor.findUniqueOrThrow(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+   × API bootstrap > creates a public booking for an available slot 2ms
+     → 
+Invalid `prisma.doctor.findUniqueOrThrow()` invocation in
+/Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/api/src/app.spec.ts:178:40
+
+  175 
+  176 it('creates a public booking for an available slot', async () => {
+  177   const prisma = new PrismaClient();
+→ 178   const doctor = await prisma.doctor.findUniqueOrThrow(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
 
  FAIL  src/app.spec.ts > API bootstrap > serves the versioned health endpoint
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1186,7 +319,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
      14|     expect(response.json()).toEqual({ status: 'ok' });
      15|     expect(response.headers['x-content-type-options']).toBe('nosniff');
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > serves public settings
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1205,7 +338,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
      25|   });
      26| 
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > keeps the rotated refresh token in an HttpOnly cookie
 PrismaClientInitializationError: 
@@ -1231,7 +364,7 @@ Please make sure your database server is running at `localhost:5432`.
      39|     const app = await createApi();
      40|     const login = await app.inject({ method: 'POST', url: '/api/v1/aut…
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > serves active public services
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1250,7 +383,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
     102|     expect(response.json()).toContainEqual(expect.objectContaining({ s…
     103|   });
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > serves active public doctors
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1269,7 +402,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
     111|     expect(response.json()).toContainEqual(expect.objectContaining({ s…
     112|   });
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > serves public FAQs
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1288,7 +421,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
     120|   });
     121| 
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > returns slots for a service and date
 AssertionError: expected 500 to be 200 // Object.is equality
@@ -1307,7 +440,7 @@ AssertionError: expected 500 to be 200 // Object.is equality
     128|     expect(response.json()).toContainEqual(expect.objectContaining({ s…
     129|   });
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > does not return slots outside the configured booking horizon
 AssertionError: expected { statusCode: 500, …(1) } to deeply equal []
@@ -1329,7 +462,7 @@ Object {
     137|   });
     138| 
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > removes slots during a clinic-wide time off
 PrismaClientInitializationError: 
@@ -1355,7 +488,7 @@ Please make sure your database server is running at `localhost:5432`.
     153|     const app = await createApi();
     154|     const response = await app.inject({ method: 'GET', url: '/api/v1/p…
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > removes slots covered by a confirmed booking
 PrismaClientInitializationError: 
@@ -1376,7 +509,7 @@ Please make sure your database server is running at `localhost:5432`.
  ❯ src/app.spec.ts:164:40
 
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
 
  FAIL  src/app.spec.ts > API bootstrap > creates a public booking for an available slot
 PrismaClientInitializationError: 
@@ -1402,12 +535,44 @@ Please make sure your database server is running at `localhost:5432`.
     179|     const phone = `+62866${String(Date.now()).slice(-8)}`;
     180|     const app = await createApi();
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
 
- Test Files  1 failed | 30 passed (31)
-      Tests  11 failed | 54 passed (65)
-   Start at  10:32:51
-   Duration  3.13s (transform 1.30s, setup 0ms, collect 10.36s, tests 1.56s, environment 4ms, prepare 1.92s)
+ FAIL  src/modules/bookings/admin-bookings.service.spec.ts > AdminBookingsService > only allows valid status transitions
+AssertionError: promise rejected "TypeError: this.repository.queueConfirmat…" instead of resolving
+ ❯ src/modules/bookings/admin-bookings.service.spec.ts:20:84
+     18|     const repository = { changeStatus: async (_code: string, _status: …
+     19|     const service = new AdminBookingsService(repository as never, { re…
+     20|     await expect(service.changeStatus('DNT-OK', 'confirmed', { userId:…
+       |                                                                                    ^
+     21|   });
+     22| 
 
-[?25h[?25h[2K[1G[31merror[39m Command failed with exit code 1.
-[2K[1G[34minfo[39m Visit [1mhttps://yarnpkg.com/en/docs/cli/run[22m for documentation about this command.
+Caused by: TypeError: this.repository.queueConfirmationAndReminders is not a function
+ ❯ AdminBookingsService.changeStatus src/modules/bookings/admin-bookings.service.ts:124:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  src/modules/bookings/bookings.repository.spec.ts > BookingsRepository > does not queue reminders whose scheduled time has already passed
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ src/modules/bookings/bookings.repository.spec.ts:13:36
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  src/modules/bookings/public-booking.service.spec.ts > PublicBookingService > does not create a patient when the selected slot is unavailable
+AssertionError: expected TypeError: Cannot read properties of unde… to be an instance of BadRequestException
+ ❯ src/modules/bookings/public-booking.service.spec.ts:16:5
+     14|     const service = new PublicBookingService(prisma as never, patients…
+     15| 
+     16|     await expect(
+       |     ^
+     17|       service.create({
+     18|         name: 'Booking Test',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+ Test Files  4 failed | 32 passed (36)
+      Tests  14 failed | 82 passed (96)
+   Start at  15:51:40
+   Duration  2.98s (transform 1.34s, setup 0ms, collect 9.29s, tests 1.93s, environment 5ms, prepare 2.32s)
+

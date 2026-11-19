@@ -1,7 +1,8 @@
 import type { FastifyRequest } from 'fastify';
 import { DoctorAvatarService } from './doctor-avatar.service.js';
-import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { z, ZodError } from 'zod';
+import { paginateArray } from '../../common/pagination.js';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { AdminDoctorsService } from './admin-doctors.service.js';
@@ -32,12 +33,12 @@ export class AdminDoctorsController {
     }
   }
 
-  @Get('doctors') list() { return this.doctors.list(); }
+  @Get('doctors') list(@Query('page') page?: string, @Query('pageSize') pageSize?: string) { return paginateArray(this.doctors.list(), { page, pageSize }); }
   @Post('doctors') create(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.create(doctorSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Patch('doctors/:id') update(@Param('id') id: string, @Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.update(id, doctorSchema.partial().refine((input) => Object.keys(input).length > 0).parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Delete('doctors/:id') remove(@Param('id') id: string, @Req() request: { user: { sub: string }; ip?: string }) { return this.doctors.remove(id, actor(request)); }
   @Put('doctors/:id/working-hours') replaceHours(@Param('id') id: string, @Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.replaceWorkingHours(id, hoursSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Post('time-offs') addTimeOff(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.doctors.addTimeOff(timeOffSchema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
-  @Get('time-offs') listTimeOffs() { return this.doctors.listTimeOffs(); }
+  @Get('time-offs') listTimeOffs(@Query('page') page?: string, @Query('pageSize') pageSize?: string) { return paginateArray(this.doctors.listTimeOffs(), { page, pageSize }); }
   @Delete('time-offs/:id') removeTimeOff(@Param('id') id: string, @Req() request: { user: { sub: string }; ip?: string }) { return this.doctors.removeTimeOff(id, actor(request)); }
 }

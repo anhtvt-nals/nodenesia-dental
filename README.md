@@ -1,6 +1,28 @@
 # Clinic platform
 
-## Local pilot
+## Docker demo
+
+Create `.env` from `.env.example`, set a non-default `JWT_SECRET` and an `ADMIN_SEED_PASSWORD`, then start the complete demo:
+
+```sh
+cp .env.example .env
+docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d --build
+docker compose exec api yarn workspace @clinic/api exec tsx prisma/seed.ts
+```
+
+- Public web: `http://localhost:5173`
+- Admin: `http://localhost:5174`
+- API health: `http://localhost:5173/api/v1/health`
+
+The owner email is `owner@clinic.local` unless `ADMIN_SEED_EMAIL` is set. Reset demo data only in a demo environment:
+
+```sh
+docker compose exec api yarn workspace @clinic/api reset-demo
+```
+
+Stop the stack with `docker compose -f docker-compose.yml -f docker-compose.demo.yml down`. Add `-v` only when intentionally deleting the local database volume. PostgreSQL and the API are deliberately not exposed on host ports.
+
+## Local development
 
 ```sh
 corepack yarn

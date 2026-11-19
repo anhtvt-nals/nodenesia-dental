@@ -7,16 +7,19 @@ import { AuthModule } from '../auth/auth.module.js';
 import { AuditLogsModule } from '../audit-logs/audit-logs.module.js';
 import { NotificationOperationsController } from './notification-operations.controller.js';
 import { NotificationOperationsService } from './notification-operations.service.js';
+import { AdminNotificationsController } from './admin-notifications.controller.js';
+import { AdminNotificationsService } from './admin-notifications.service.js';
 
 @Module({
   imports: [AuthModule, AuditLogsModule],
-  controllers: [NotificationOperationsController],
+  controllers: [NotificationOperationsController, AdminNotificationsController],
   providers: [
     NotificationService,
     NotificationWorker,
     NotificationOperationsService,
+    AdminNotificationsService,
     { provide: notificationProviderToken, useFactory: () => process.env.FONNTE_TOKEN ? new FonnteProvider(process.env.FONNTE_TOKEN) : { send: async () => { throw new Error('Notification provider is not configured'); } } },
   ],
-  exports: [NotificationService],
+  exports: [NotificationService, AdminNotificationsService],
 })
 export class NotificationModule {}

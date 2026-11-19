@@ -13,7 +13,7 @@ export class PublicBookingsController {
   async create(@Body() body: unknown, @Req() request: FastifyRequest) {
     try {
       const input = createPublicBookingSchema.parse(body);
-      this.limiter.check([`ip:${request.ip}`, `phone:${input.phone}`]);
+      this.limiter.check([`ip:${request.ip}`, ...(input.phone ? [`phone:${input.phone}`] : [])]);
       return await this.publicBookings.create(input);
     } catch (error) {
       if (error instanceof ZodError) throw new BadRequestException(error.flatten());

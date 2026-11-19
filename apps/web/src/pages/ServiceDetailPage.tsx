@@ -108,7 +108,7 @@ export const ServiceDetailPage: React.FC = () => {
           </div>
 
           {/* Service Header & Meta Card */}
-          <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 lg:p-10 shadow-card mb-10">
+          <div className="bg-surface rounded-2xl border border-border p-5 sm:p-8 lg:p-10 shadow-card mb-10">
             <div className="flex flex-wrap items-center gap-2.5 mb-5">
               <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
                 {t.services.categories[service.category]}
@@ -118,12 +118,12 @@ export const ServiceDetailPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="p-6 rounded-2xl bg-bg-alt/70 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+            <div className="p-5 sm:p-6 rounded-2xl bg-bg-alt/70 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
               <div className="space-y-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-text-muted block">
                   {t.services.startingFrom}
                 </span>
-                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-primary">
+                <div className="font-heading text-2xl sm:text-4xl font-extrabold text-primary">
                   {formatRupiah(service.priceFrom, lang === 'en')}
                 </div>
                 {priceNote && (
@@ -137,7 +137,7 @@ export const ServiceDetailPage: React.FC = () => {
                 <span className="text-xs font-bold uppercase tracking-wider text-text-muted block">
                   {t.services.duration}
                 </span>
-                <div className="font-heading text-2xl font-bold text-secondary flex items-center sm:justify-end gap-2">
+                <div className="font-heading text-xl sm:text-2xl font-bold text-secondary flex items-center sm:justify-end gap-2">
                   <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
@@ -147,14 +147,14 @@ export const ServiceDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-3.5">
+            {/* CTAs: Full width on mobile for easy one-hand tapping */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
               <Link
                 to={localePath(`/booking?layanan=${service.slug}`)}
-                className="btn-primary text-sm py-3.5 px-8 cursor-pointer shadow-soft"
+                className="btn-primary text-sm py-3.5 px-8 cursor-pointer shadow-soft w-full sm:w-auto text-center justify-center min-h-[48px] active:scale-[0.98]"
               >
                 <span>{t.services.bookThisService}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </Link>
@@ -162,10 +162,10 @@ export const ServiceDetailPage: React.FC = () => {
                 href={waServiceLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp text-sm py-3.5 px-6 cursor-pointer"
+                className="btn-whatsapp text-sm py-3.5 px-6 cursor-pointer w-full sm:w-auto text-center justify-center min-h-[48px] active:scale-[0.98]"
               >
                 <span>{t.booking.askViaWhatsApp}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
                 </svg>
               </a>

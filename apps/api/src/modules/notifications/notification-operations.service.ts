@@ -10,6 +10,14 @@ export class NotificationOperationsService {
     return this.prisma.notificationLog.findMany({ orderBy: { scheduledAt: 'desc' }, take: 200, include: { booking: { include: { patient: true } } } });
   }
 
+  async listPaginated(page: number, pageSize: number, skip: number) {
+    const [items, total] = await Promise.all([
+      this.prisma.notificationLog.findMany({ orderBy: { scheduledAt: 'desc' }, skip, take: pageSize, include: { booking: { include: { patient: true } } } }),
+      this.prisma.notificationLog.count(),
+    ]);
+    return { items, total, page, pageSize };
+  }
+
   async resend(id: string, actor: { userId: string; ip?: string }) {
     const original = await this.prisma.notificationLog.findUnique({ where: { id } });
     if (!original) throw new NotFoundException('Notification not found');

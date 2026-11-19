@@ -20,6 +20,12 @@ describe('PublicBookingService', () => {
         serviceId: 'scaling',
         doctorId: 'doctor-id',
         startsAt: '2026-11-04T02:00:00.000Z',
+        bookingFor: 'self',
+        patientType: 'new',
+        birthDate: '1995-05-15',
+        payer: 'umum',
+        whatsappConsent: true,
+        dataProcessingConsent: true,
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
 

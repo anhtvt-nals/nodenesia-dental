@@ -150,15 +150,6 @@ Viết test trước cho: ca chia đôi, nghỉ trưa, qua nửa đêm, DST khô
 - Ảnh thật của phòng khám, drg và ca điều trị (có consent), copy cụ thể bằng Bahasa tự nhiên.
 - Art direction cuối cùng: chờ chốt (xem mục 12).
 
-## 9. Bảo mật và pháp lý
-
-- MVP chỉ thu: nama, nomor HP, layanan, giờ hẹn, ghi chú ngắn. Không lưu hồ sơ bệnh án.
-- Klinik là bên kiểm soát dữ liệu theo UU PDP, bạn là bên xử lý; ghi rõ trong hợp đồng.
-- HTTPS bắt buộc, cookie httpOnly + SameSite, CORS whitelist, helmet, giới hạn kích thước upload, kiểm tra MIME.
-- Phân quyền kiểm tra ở từng endpoint, không chỉ ở middleware.
-- Audit log cho thao tác admin; backup mã hoá; có trang Privacy Policy và điều khoản đặt lịch.
-- Before/after chỉ đăng khi có consent (cờ `consent_confirmed`).
-
 ## 10. Deploy và bàn giao
 
 - Mọi tài khoản đứng tên klinik: domain, VPS/hosting, Google Business Profile, số WhatsApp, object storage.

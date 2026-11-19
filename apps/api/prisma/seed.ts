@@ -33,6 +33,7 @@ type DoctorSeed = {
   /** Public portrait URL (Unsplash, face-cropped 16:10) used across web + admin. */
   photoUrl: string;
   sipNumber: string;
+  gender: 'female' | 'male';
   experienceYears: number;
   education: string[];
   sortOrder: number;
@@ -75,8 +76,46 @@ const drgCitraHours = [
 
 const serviceSeeds: ServiceSeed[] = [
   {
+    slug: 'konsultasi-umum',
+    name: 'Konsultasi / Pemeriksaan Umum',
+    nameEn: 'General Consultation & Examination',
+    shortDesc: 'Pemeriksaan rongga mulut menyeluruh menggunakan kamera intraoral beresolusi tinggi.',
+    shortDescEn: 'Comprehensive oral examination using high-resolution intraoral imaging.',
+    description:
+      'Pemeriksaan gigi dan gusi oleh dokter gigi profesional, identifikasi karies sejak dini, dan perencanaan tindakan medis yang personal dan transparan.',
+    descriptionEn:
+      'Full checkup by dental specialist, early caries detection, and transparent treatment plan.',
+    zone: 'front',
+    category: 'prevention',
+    durationMinutes: 30,
+    priceFrom: 150000,
+    priceTo: 250000,
+    priceNote: '(termasuk kamera intraoral)',
+    priceNoteEn: '(includes intraoral camera imaging)',
+    sortOrder: 0,
+  },
+  {
+    slug: 'sakit-gigi-mendadak',
+    name: 'Sakit Gigi Mendadak (Penanganan Darurat)',
+    nameEn: 'Emergency Toothache Relief & Triage',
+    shortDesc: 'Penanganan cepat dan tepat untuk redakan nyeri berdenyut atau infeksi akut.',
+    shortDescEn: 'Fast and targeted relief for acute throbbing toothache or pulpitis inflammation.',
+    description:
+      'Tindakan pertolongan pertama untuk sakit gigi tak tertahankan, peredaan nyeri pulpa, pembersihan infeksi, atau penambalan sementara darurat.',
+    descriptionEn:
+      'Emergency pain relief intervention, pulp sedation, or temporary emergency restoration.',
+    zone: 'molar',
+    category: 'restorative',
+    durationMinutes: 45,
+    priceFrom: 200000,
+    priceTo: 450000,
+    priceNote: '(tindakan darurat pereda nyeri)',
+    priceNoteEn: '(emergency pain relief intervention)',
+    sortOrder: 1,
+  },
+  {
     slug: 'scaling',
-    name: 'Pembersihan Karang Gigi (Scaling)',
+    name: 'Scaling (Karang Gigi)',
     nameEn: 'Dental Scaling & Polishing',
     shortDesc: 'Pembersihan plak dan karang gigi ultrasonik tanpa rasa ngilu berlebih.',
     shortDescEn: 'Ultrasonic plaque and tartar removal with minimal sensitivity.',
@@ -89,9 +128,28 @@ const serviceSeeds: ServiceSeed[] = [
     durationMinutes: 45,
     priceFrom: 300000,
     priceTo: 550000,
-    priceNote: 'Mulai Rp 300 rb (tergantung tingkat keparahan karang gigi)',
-    priceNoteEn: 'From IDR 300k (depends on calculus grade)',
-    sortOrder: 0,
+    priceNote: '(tergantung tingkat keparahan karang gigi)',
+    priceNoteEn: '(depends on calculus grade)',
+    sortOrder: 2,
+  },
+  {
+    slug: 'cabut-gigi',
+    name: 'Cabut Gigi (Ekstraksi)',
+    nameEn: 'Atraumatic Tooth Extraction',
+    shortDesc: 'Pencabutan gigi rusak atau goyang dengan anestesi lokal nyaman minim trauma.',
+    shortDescEn: 'Atraumatic tooth removal with gentle localized anesthetic.',
+    description:
+      'Pencabutan gigi dewasa atau sisa akar menggunakan instrumen atraumatik untuk menjaga keutuhan soket tulang alveolar.',
+    descriptionEn:
+      'Extraction of non-restorable teeth or root remnants preserving alveolar bone contour.',
+    zone: 'molar',
+    category: 'surgery',
+    durationMinutes: 45,
+    priceFrom: 350000,
+    priceTo: 800000,
+    priceNote: '(tergantung posisi & tingkat penyulit)',
+    priceNoteEn: '(depends on tooth position and complexity)',
+    sortOrder: 3,
   },
   {
     slug: 'tambal',
@@ -202,10 +260,11 @@ const doctorSeeds: DoctorSeed[] = [
     bioEn: 'Specializes in microscopic root canal therapy, minimal-prep porcelain veneers, and high-aesthetic composite restorations with gentle precision.',
     photoUrl: portrait('photo-1559839734-2b71ea197ec2'),
     sipNumber: 'SIP. 503/4421/DPMPTSP/2023',
+    gender: 'female',
     experienceYears: 12,
     education: ['Spesialis Konservasi Gigi - Universitas Indonesia', 'Pendidikan Dokter Gigi - Universitas Airlangga'],
     sortOrder: 0,
-    serviceSlugs: ['scaling', 'tambal', 'bleaching', 'veneer'],
+    serviceSlugs: ['konsultasi-umum', 'sakit-gigi-mendadak', 'scaling', 'tambal', 'bleaching', 'veneer'],
     hours: drgAyuHours,
   },
   {
@@ -219,10 +278,11 @@ const doctorSeeds: DoctorSeed[] = [
     bioEn: 'Extensive experience treating complex malocclusion, self-ligating bracket dynamics, and clear aligners for adults and teens.',
     photoUrl: portrait('photo-1612349317150-e413f6a5b16d'),
     sipNumber: 'SIP. 503/8912/DPMPTSP/2022',
+    gender: 'male',
     experienceYears: 10,
     education: ['Spesialis Ortodonti - Universitas Gadjah Mada', 'Pendidikan Dokter Gigi - Universitas Indonesia'],
     sortOrder: 1,
-    serviceSlugs: ['behel', 'scaling'],
+    serviceSlugs: ['konsultasi-umum', 'behel', 'scaling'],
     hours: drgBimaHours,
   },
   {
@@ -236,10 +296,11 @@ const doctorSeeds: DoctorSeed[] = [
     bioEn: 'Dedicated to CBCT-guided dental implant placement, atraumatic wisdom tooth extractions, and alveolar bone ridge augmentations.',
     photoUrl: portrait('photo-1594824476967-48c8b964273f'),
     sipNumber: 'SIP. 503/3218/DPMPTSP/2024',
+    gender: 'female',
     experienceYears: 9,
     education: ['Spesialis Bedah Mulut - Universitas Padjadjaran', 'Pendidikan Dokter Gigi - Universitas Padjadjaran'],
     sortOrder: 2,
-    serviceSlugs: ['implan', 'scaling'],
+    serviceSlugs: ['konsultasi-umum', 'sakit-gigi-mendadak', 'cabut-gigi', 'implan', 'scaling'],
     hours: drgCitraHours,
   },
 ];
@@ -389,7 +450,19 @@ async function main() {
     address: 'Jl. Wolter Monginsidi No. 88, Kebayoran Baru, Jakarta Selatan 12180',
     timezone: 'Asia/Jakarta',
     chairsCount: 3,
-    reminderTemplates: {},
+    cancelCutoffHours: 3,
+    autoReleaseHours: 2,
+    blockedTimes: [
+      { id: 'jumatan', label: 'Sholat Jumat (Jumatan)', weekdays: [5], start: '11:30', end: '13:00' },
+      { id: 'dzuhur', label: 'Istirahat Siang / Dzuhur', weekdays: [1, 2, 3, 4, 6], start: '12:00', end: '13:00' },
+    ],
+    paymentMethods: ['qris', 'gopay', 'ovo', 'dana', 'bca_mandiri', 'card', 'insurance'],
+    reminderTemplates: {
+      confirmation: 'Halo {{name}}, janji temu {{service}} bersama {{doctor}} pada {{date}} pukul {{time}} WIB telah dibuat (Kode: {{code}}). Silakan konfirmasi kehadiran Anda melalui: {{link}}.',
+      reminder_h1: 'Halo {{name}}, mengingatkan janji temu {{service}} Anda besok pada {{date}} pukul {{time}} WIB bersama {{doctor}} di Klinik Gigi. Kode: {{code}}. Kelola jadwal: {{link}}.',
+      reminder_2h: 'Halo {{name}}, janji temu {{service}} Anda akan dimulai dalam 2 jam (pukul {{time}} WIB) bersama {{doctor}}. Harap hadir 10 menit lebih awal.',
+      review_request: 'Halo {{name}}, terima kasih atas kunjungan Anda untuk perawatan {{service}}. Mohon berikan ulasan singkat Anda: {{link}}.',
+    },
     socials: {},
     tagline: 'Perawatan Gigi Spesialis yang Nyaman, Lembut, dan Transparan',
     taglineEn: 'Comfortable, Gentle, and Transparent Specialist Dental Care',

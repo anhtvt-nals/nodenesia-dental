@@ -100,19 +100,19 @@ export const DoctorsPage: React.FC = () => {
                     "{lang === 'en' ? leadDoctor.bioEn : leadDoctor.bio}"
                   </p>
 
-                  <div className="pt-2 flex flex-wrap items-center gap-4">
+                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                     <Link
                       to={localePath(`/booking?dokter=${encodeURIComponent(leadDoctor.id)}`)}
-                      className="btn-whatsapp text-sm py-3 px-6 cursor-pointer"
+                      className="btn-whatsapp text-sm py-3.5 px-6 cursor-pointer w-full sm:w-auto text-center justify-center min-h-[48px] active:scale-[0.98] flex items-center"
                     >
                       <span>{lang === 'en' ? 'Book with Lead Specialist' : 'Buat Janji dengan drg. Ayu'}</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg className="w-4 h-4 ml-1.5 inline" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </Link>
                     <Link
                       to={localePath(`/dokter/${leadDoctor.slug}`)}
-                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-surface/90 hover:text-surface underline underline-offset-4 cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-surface/90 hover:text-surface underline underline-offset-4 cursor-pointer py-2"
                     >
                       <span>{lang === 'en' ? 'View clinical credentials & education' : 'Lihat riwayat pendidikan & sertifikasi'}</span>
                       <span aria-hidden="true">→</span>
@@ -132,7 +132,7 @@ export const DoctorsPage: React.FC = () => {
           {/* Search & Filter Toolbar */}
           <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 flex flex-col sm:flex-row items-center gap-3">
-              {/* Search input */}
+              {/* Search input (16px on mobile to prevent iOS auto-zoom) */}
               <div className="relative w-full sm:w-72">
                 <label htmlFor="doctor-search" className="sr-only">
                   {lang === 'en' ? 'Search doctors' : 'Cari dokter'}
@@ -149,11 +149,11 @@ export const DoctorsPage: React.FC = () => {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={lang === 'en' ? 'Search name or specialty…' : 'Cari nama atau spesialisasi…'}
-                  className="form-input pl-10 text-sm min-h-[44px]"
+                  className="form-input pl-10 text-base sm:text-sm min-h-[48px]"
                 />
               </div>
 
-              {/* Specialty dropdown */}
+              {/* Specialty dropdown (16px on mobile to prevent iOS auto-zoom) */}
               <div className="w-full sm:w-60">
                 <label htmlFor="doctor-specialty" className="sr-only">
                   {t.doctors.specialty}
@@ -162,7 +162,7 @@ export const DoctorsPage: React.FC = () => {
                   id="doctor-specialty"
                   value={specialty}
                   onChange={(e) => setSpecialty(e.target.value)}
-                  className="form-input text-sm min-h-[44px] cursor-pointer"
+                  className="form-input text-base sm:text-sm min-h-[48px] cursor-pointer"
                 >
                   <option value="all">
                     {lang === 'en' ? 'All specialties' : 'Semua spesialisasi'}

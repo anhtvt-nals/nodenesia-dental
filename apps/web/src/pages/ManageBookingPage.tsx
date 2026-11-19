@@ -14,13 +14,15 @@ import { Booking, Service, Doctor, BookingSlot } from '../types';
 import { AppHelmet } from '../components/common/AppHelmet';
 import { DateStrip } from '../components/common/DateStrip';
 import { SlotPicker } from '../components/common/SlotPicker';
-import { formatPhoneDisplay } from '../lib/utils';
+import { buildWhatsAppLink, formatPhoneDisplay } from '../lib/utils';
+import { useClinicSettings } from '../lib/clinic-settings';
 
 export const ManageBookingPage: React.FC = () => {
   const { code: urlCode } = useParams<{ code?: string }>();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || undefined;
   const navigate = useNavigate();
+  const settings = useClinicSettings();
 
   const { lang, t, localePath } = useI18n();
 
@@ -28,6 +30,10 @@ export const ManageBookingPage: React.FC = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [service, setService] = useState<Service | null>(null);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [managementToken, setManagementToken] = useState<string | undefined>(token);
+  const [verificationPhone, setVerificationPhone] = useState<string>('');
+  const [phoneInput, setPhoneInput] = useState<string>('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -46,8 +52,12 @@ export const ManageBookingPage: React.FC = () => {
   const loadBookingData = async (codeToSearch: string) => {
     setIsLoading(true);
     setActionMessage(null);
+    const code = codeToSearch.trim().toUpperCase();
+    const effectiveToken = token || managementToken || (typeof window !== 'undefined' ? localStorage.getItem(`booking_token_${code}`) || undefined : undefined);
+    if (effectiveToken && !managementToken) setManagementToken(effectiveToken);
+
     try {
-      const b = await getBooking(codeToSearch, token);
+      const b = await getBooking(code, effectiveToken, verificationPhone || undefined);
       if (b) {
         setBooking(b);
         const [s, d] = await Promise.all([
@@ -103,15 +113,51 @@ export const ManageBookingPage: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputCode.trim()) return;
-    navigate(localePath(`/booking/kelola/${inputCode.trim().toUpperCase()}${token ? `?token=${encodeURIComponent(token)}` : ''}`));
-    loadBookingData(inputCode.trim());
+    const cleanCode = inputCode.trim().toUpperCase();
+    const effectiveToken = token || (typeof window !== 'undefined' ? localStorage.getItem(`booking_token_${cleanCode}`) || undefined : undefined);
+    navigate(localePath(`/booking/kelola/${cleanCode}${effectiveToken ? `?token=${encodeURIComponent(effectiveToken)}` : ''}`));
+    loadBookingData(cleanCode);
+  };
+
+  const handleVerifyPhone = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!booking || !phoneInput.trim()) return;
+    setIsVerifying(true);
+    try {
+      const b = await getBooking(booking.code, undefined, phoneInput.trim());
+      if (b && b.canManage) {
+        setBooking(b);
+        setVerificationPhone(phoneInput.trim());
+        setActionMessage({
+          type: 'success',
+          text: lang === 'en'
+            ? 'Verification successful! You can now manage your appointment.'
+            : 'Verifikasi berhasil! Anda sekarang dapat mengubah jadwal atau membatalkan janji temu.',
+        });
+      } else {
+        setActionMessage({
+          type: 'error',
+          text: lang === 'en'
+            ? 'Phone number does not match this booking record.'
+            : 'Nomor telepon tidak sesuai dengan data reservasi janji temu ini.',
+        });
+      }
+    } catch (err: any) {
+      setActionMessage({
+        type: 'error',
+        text: err.message || (lang === 'en' ? 'Verification failed' : 'Verifikasi gagal'),
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleCancel = async () => {
     if (!booking) return;
     setIsProcessingAction(true);
     try {
-      const updated = await cancelBooking(booking.code, token);
+      const activeToken = managementToken || (typeof window !== 'undefined' ? localStorage.getItem(`booking_token_${booking.code}`) || undefined : undefined);
+      const updated = await cancelBooking(booking.code, activeToken, verificationPhone || undefined);
       setBooking(updated);
       setShowCancelModal(false);
       setActionMessage({ type: 'success', text: t.manageBooking.cancelSuccess });
@@ -126,10 +172,12 @@ export const ManageBookingPage: React.FC = () => {
     if (!booking || !rescheduleDate || !rescheduleTime) return;
     setIsProcessingAction(true);
     try {
+      const activeToken = managementToken || (typeof window !== 'undefined' ? localStorage.getItem(`booking_token_${booking.code}`) || undefined : undefined);
       const updated = await rescheduleBooking(booking.code, {
         newDate: rescheduleDate,
         newTime: rescheduleTime,
-        token,
+        token: activeToken,
+        phone: verificationPhone || undefined,
       });
       setBooking(updated);
       setIsRescheduling(false);
@@ -172,13 +220,13 @@ export const ManageBookingPage: React.FC = () => {
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                 placeholder={t.manageBooking.codePlaceholder}
-                className="form-input flex-1 uppercase tracking-widest font-mono font-bold text-base"
+                className="form-input flex-1 uppercase tracking-widest font-mono font-bold text-base h-12 min-h-[48px]"
               />
               <button
                 type="submit"
-                className="btn-primary px-7 py-3 justify-center cursor-pointer shrink-0"
+                className="btn-primary px-7 py-3 justify-center cursor-pointer shrink-0 min-h-[48px] flex items-center active:scale-[0.98]"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
@@ -228,6 +276,8 @@ export const ManageBookingPage: React.FC = () => {
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${
                       booking.status === 'confirmed'
                         ? 'bg-emerald-500/15 text-emerald-800 border border-emerald-400/30'
+                        : booking.status === 'pending'
+                        ? 'bg-amber-500/15 text-amber-800 border border-amber-400/30'
                         : booking.status === 'cancelled'
                         ? 'bg-rose-500/15 text-rose-800 border border-rose-400/30'
                         : 'bg-bg-alt text-secondary border border-border'
@@ -238,6 +288,18 @@ export const ManageBookingPage: React.FC = () => {
                   </span>
                 </div>
               </div>
+
+              {booking.status === 'pending' && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-400/30 text-amber-900 text-xs sm:text-sm flex items-start gap-3">
+                  <span className="text-lg leading-none">⏳</span>
+                  <div className="leading-relaxed">
+                    <strong>{lang === 'en' ? 'Awaiting Clinic Confirmation: ' : 'Menunggu Konfirmasi Klinik: '}</strong>
+                    {lang === 'en'
+                      ? 'Your reservation has been received and is currently being reviewed by our clinic receptionist. You will receive an official confirmation via WhatsApp shortly.'
+                      : 'Reservasi Anda telah kami terima dan sedang ditinjau oleh staf resepsionis klinik kami. Anda akan menerima pesan konfirmasi resmi melalui WhatsApp dalam 15-30 menit.'}
+                  </div>
+                </div>
+              )}
 
               {/* Booking Details Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -276,24 +338,71 @@ export const ManageBookingPage: React.FC = () => {
               </div>
 
               {/* Action Buttons (Only if active) */}
-              {booking.status === 'confirmed' && (
-                <div className="pt-6 border-t border-border flex flex-wrap items-center gap-3.5">
-                  <button
-                    type="button"
-                    onClick={() => setIsRescheduling(!isRescheduling)}
-                    className="btn-primary text-sm py-3 px-6 cursor-pointer"
-                  >
-                    {isRescheduling
-                      ? (lang === 'en' ? 'Close Schedule Picker' : 'Tutup Pilihan Jadwal')
-                      : t.manageBooking.rescheduleBtn}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowCancelModal(true)}
-                    className="px-5 py-3 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-sm font-semibold transition-colors cursor-pointer"
-                  >
-                    {t.manageBooking.cancelBookingBtn}
-                  </button>
+              {['pending', 'confirmed'].includes(booking.status) && (
+                <div className="pt-6 border-t border-border">
+                  {booking.canManage ? (
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                      <button
+                        type="button"
+                        onClick={() => setIsRescheduling(!isRescheduling)}
+                        className="btn-primary text-sm py-3 px-6 cursor-pointer min-h-[48px] justify-center flex items-center active:scale-[0.98]"
+                      >
+                        {isRescheduling
+                          ? (lang === 'en' ? 'Close Schedule Picker' : 'Tutup Pilihan Jadwal')
+                          : t.manageBooking.rescheduleBtn}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowCancelModal(true)}
+                        className="px-5 py-3 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-sm font-semibold transition-colors cursor-pointer min-h-[48px] justify-center flex items-center active:scale-[0.98]"
+                      >
+                        {t.manageBooking.cancelBookingBtn}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-400/30">
+                      <h4 className="font-heading font-bold text-secondary mb-1">
+                        {lang === 'en' ? 'Online Reschedule & Cancellation' : 'Ubah Jadwal & Pembatalan Mandiri'}
+                      </h4>
+                      <p className="text-xs text-text-muted mb-4 leading-relaxed">
+                        {lang === 'en'
+                          ? 'To reschedule or cancel this reservation online, enter your registered phone number below, or reach our reception team directly on WhatsApp.'
+                          : 'Untuk mengubah jadwal atau membatalkan reservasi ini secara online, masukkan nomor telepon yang Anda daftarkan, atau hubungi resepsionis via WhatsApp.'}
+                      </p>
+                      <form onSubmit={handleVerifyPhone} className="flex flex-col sm:flex-row gap-2.5 mb-3">
+                        <input
+                          type="tel"
+                          value={phoneInput}
+                          onChange={(e) => setPhoneInput(e.target.value)}
+                          placeholder={lang === 'en' ? 'e.g. 081234567890' : 'Contoh: 081234567890'}
+                          className="form-input flex-1 text-base sm:text-sm font-mono h-12 min-h-[48px]"
+                        />
+                        <button
+                          type="submit"
+                          disabled={isVerifying || !phoneInput.trim()}
+                          className="btn-primary text-xs sm:text-sm py-2.5 px-5 justify-center cursor-pointer disabled:opacity-50 min-h-[48px] flex items-center active:scale-[0.98]"
+                        >
+                          {isVerifying
+                            ? (lang === 'en' ? 'Verifying...' : 'Memverifikasi...')
+                            : (lang === 'en' ? 'Verify & Unlock' : 'Verifikasi & Buka Akses')}
+                        </button>
+                      </form>
+                      <a
+                        href={buildWhatsAppLink(
+                          settings.whatsappNumber,
+                          `Halo ${settings.name || 'Klinik Gigi Senyum Sehat'}, saya ingin mengonfirmasi / mengubah jadwal reservasi saya (Kode: ${booking.code}). Mohon bantuannya. Terima kasih!`
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-whatsapp text-xs sm:text-sm py-3 px-4 justify-center min-h-[48px] flex items-center active:scale-[0.98]"
+                      >
+                        <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                        </svg>
+                        <span>{lang === 'en' ? 'Contact Clinic via WhatsApp' : 'Hubungi Resepsionis via WhatsApp'}</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -328,12 +437,12 @@ export const ManageBookingPage: React.FC = () => {
                     />
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <button
                       type="button"
                       disabled={!rescheduleTime || isProcessingAction}
                       onClick={handleSaveReschedule}
-                      className="btn-primary text-sm py-3 px-6 disabled:opacity-50 cursor-pointer"
+                      className="btn-primary text-sm py-3.5 px-6 disabled:opacity-50 cursor-pointer min-h-[48px] justify-center flex items-center active:scale-[0.98]"
                     >
                       {isProcessingAction
                         ? (lang === 'en' ? 'Saving...' : 'Menyimpan...')
@@ -342,7 +451,7 @@ export const ManageBookingPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsRescheduling(false)}
-                      className="px-5 py-3 rounded-xl border border-border bg-surface text-sm font-semibold text-secondary hover:bg-bg transition-colors cursor-pointer"
+                      className="px-5 py-3 rounded-xl border border-border bg-surface text-sm font-semibold text-secondary hover:bg-bg transition-colors cursor-pointer min-h-[48px] justify-center flex items-center active:scale-[0.98]"
                     >
                       {lang === 'en' ? 'Cancel' : 'Batal'}
                     </button>
@@ -371,11 +480,11 @@ export const ManageBookingPage: React.FC = () => {
                 <p className="text-sm text-text-muted mb-6 leading-relaxed">
                   {t.manageBooking.confirmCancelDesc}
                 </p>
-                <div className="flex items-center justify-end gap-3 text-sm">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 text-sm">
                   <button
                     type="button"
                     onClick={() => setShowCancelModal(false)}
-                    className="px-4 py-2.5 rounded-xl border border-border bg-bg-alt font-semibold text-secondary hover:bg-border/50 transition-colors cursor-pointer"
+                    className="px-4 py-3 rounded-xl border border-border bg-bg-alt font-semibold text-secondary hover:bg-border/50 transition-colors cursor-pointer min-h-[48px] flex items-center justify-center active:scale-[0.98]"
                   >
                     {t.manageBooking.keepBookingAction}
                   </button>
@@ -383,7 +492,7 @@ export const ManageBookingPage: React.FC = () => {
                     type="button"
                     disabled={isProcessingAction}
                     onClick={handleCancel}
-                    className="px-5 py-2.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-3 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-semibold transition-colors disabled:opacity-50 cursor-pointer min-h-[48px] flex items-center justify-center active:scale-[0.98]"
                   >
                     {isProcessingAction
                       ? (lang === 'en' ? 'Processing...' : 'Memproses...')

@@ -53,13 +53,13 @@ export const ServicesPage: React.FC = () => {
           {/* Control Bar: Categories & View Mode Toggle */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-border">
             {/* Category Filter Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory">
               {categories.map((cat) => (
                 <button
                   key={cat.key}
                   type="button"
                   onClick={() => setSelectedCat(cat.key)}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer border ${
+                  className={`px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer border min-h-[44px] shrink-0 snap-start active:scale-95 ${
                     selectedCat === cat.key
                       ? 'bg-primary text-white border-primary shadow-xs'
                       : 'bg-surface text-secondary border-border hover:border-primary/40 hover:bg-bg-alt'

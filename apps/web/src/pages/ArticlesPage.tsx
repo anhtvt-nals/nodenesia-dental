@@ -51,7 +51,7 @@ export const ArticlesPage: React.FC = () => {
 
           {/* Featured Clinical Journal Highlight */}
           {!loading && selectedCat === 'all' && featured && (
-            <div className="mb-12 p-6 sm:p-8 lg:p-10 rounded-2xl bg-secondary text-surface shadow-floating relative overflow-hidden">
+            <div className="mb-10 p-5 sm:p-8 lg:p-10 rounded-2xl bg-secondary text-surface shadow-floating relative overflow-hidden">
               <div className="max-w-3xl space-y-3 relative z-10">
                 <div className="flex items-center gap-2">
                   <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-surface/10 text-accent border border-surface/15">
@@ -62,7 +62,7 @@ export const ArticlesPage: React.FC = () => {
                   </span>
                 </div>
 
-                <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-surface">
+                <h2 className="font-heading text-xl sm:text-3xl lg:text-4xl font-bold text-surface">
                   <Link to={localePath(`/artikel/${featured.slug}`)} className="hover:text-accent transition-colors">
                     {lang === 'en' ? featured.titleEn : featured.title}
                   </Link>
@@ -72,16 +72,16 @@ export const ArticlesPage: React.FC = () => {
                   {lang === 'en' ? featured.summaryEn : featured.summary}
                 </p>
 
-                <div className="pt-2 flex items-center justify-between gap-4">
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <span className="text-xs text-surface/70">
                     Oleh <strong className="text-surface font-semibold">{featured.authorName}</strong> ({featured.authorTitle})
                   </span>
                   <Link
                     to={localePath(`/artikel/${featured.slug}`)}
-                    className="btn-whatsapp text-xs py-2 px-4 cursor-pointer shrink-0"
+                    className="btn-whatsapp text-xs sm:text-sm py-2.5 px-5 cursor-pointer shrink-0 min-h-[44px] inline-flex items-center justify-center active:scale-95 self-start sm:self-auto"
                   >
                     <span>{lang === 'en' ? 'Read Article' : 'Baca Selengkapnya'}</span>
-                    <span aria-hidden="true">→</span>
+                    <span aria-hidden="true" className="ml-1">→</span>
                   </Link>
                 </div>
               </div>
@@ -89,13 +89,13 @@ export const ArticlesPage: React.FC = () => {
           )}
 
           {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-border scrollbar-none">
+          <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-8 border-b border-border scrollbar-none snap-x snap-mandatory">
             {categories.map((cat) => (
               <button
                 key={cat.key}
                 type="button"
                 onClick={() => setSelectedCat(cat.key)}
-                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer border ${
+                className={`px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer border min-h-[44px] shrink-0 snap-start active:scale-95 ${
                   selectedCat === cat.key
                     ? 'bg-primary text-white border-primary shadow-xs'
                     : 'bg-surface text-secondary border-border hover:border-primary/40 hover:bg-bg-alt'

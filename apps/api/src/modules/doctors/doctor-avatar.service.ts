@@ -14,6 +14,13 @@ export class DoctorAvatarService {
       : contentType === 'image/png' ? body.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
       : body.toString('ascii', 0, 4) === 'RIFF' && body.toString('ascii', 8, 12) === 'WEBP';
     if (!validSignature) throw new BadRequestException('Image content does not match its file type.');
+    if (process.env.DEMO_MODE === 'true') {
+      return {
+        photoUrl:
+          process.env.DEMO_DEFAULT_AVATAR_URL ||
+          'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=1200&h=750&q=80',
+      };
+    }
     const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_PUBLIC_URL } = process.env;
     if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET || !R2_PUBLIC_URL) {
       throw new ServiceUnavailableException('Avatar storage is not configured.');

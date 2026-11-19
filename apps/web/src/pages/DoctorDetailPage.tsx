@@ -103,11 +103,11 @@ export const DoctorDetailPage: React.FC = () => {
           </div>
 
           {/* Main Profile Card */}
-          <div className="bg-surface rounded-2xl border border-border shadow-card p-6 sm:p-8 lg:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
+          <div className="bg-surface rounded-2xl border border-border shadow-card p-5 sm:p-8 lg:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start mb-12">
             {/* Doctor Photo Column */}
             <div className="md:col-span-5 space-y-4">
               {doctor.photoUrl && !photoFailed ? (
-                <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative shadow-sm">
+                <div className="w-full max-w-[280px] sm:max-w-[340px] md:max-w-none mx-auto aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-bg-alt relative shadow-sm">
                   <img
                     src={doctor.photoUrl}
                     alt={doctor.name}
@@ -122,11 +122,13 @@ export const DoctorDetailPage: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <PhotoPlaceholder
-                  label={doctor.name}
-                  sublabel={specialty}
-                  aspect="3:4"
-                />
+                <div className="w-full max-w-[280px] sm:max-w-[340px] md:max-w-none mx-auto">
+                  <PhotoPlaceholder
+                    label={doctor.name}
+                    sublabel={specialty}
+                    aspect="3:4"
+                  />
+                </div>
               )}
 
               {/* Verified SIP license block */}
@@ -225,7 +227,7 @@ export const DoctorDetailPage: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to={localePath(`/booking?dokter=${doctor.id}`)}
-                  className="btn-primary w-full sm:w-auto justify-center py-3.5 px-8 text-sm cursor-pointer shadow-soft"
+                  className="btn-primary w-full sm:w-auto justify-center py-3.5 px-8 text-sm cursor-pointer shadow-soft min-h-[48px] active:scale-[0.98]"
                 >
                   <span>{t.doctors.bookWithDoctor}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">

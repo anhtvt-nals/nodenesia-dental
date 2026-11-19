@@ -1,5 +1,6 @@
-import { BadRequestException, Body, Controller, Get, Inject, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Inject, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { z, ZodError } from 'zod';
+import { paginateArray } from '../../common/pagination.js';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { TestimonialsService } from './testimonials.service.js';
@@ -11,7 +12,7 @@ const actor = (request: { user: { sub: string }; ip?: string }) => ({ userId: re
 export class TestimonialsController {
   constructor(@Inject(TestimonialsService) private readonly testimonials: TestimonialsService) {}
   @Get('public/testimonials') listPublic() { return this.testimonials.listPublic(); }
-  @Get('admin/testimonials') @UseGuards(AccessTokenGuard) @Roles('owner', 'staff') listAdmin() { return this.testimonials.listAdmin(); }
+  @Get('admin/testimonials') @UseGuards(AccessTokenGuard) @Roles('owner', 'staff') listAdmin(@Query('page') page?: string, @Query('pageSize') pageSize?: string) { return paginateArray(this.testimonials.listAdmin(), { page, pageSize }); }
   @Post('admin/testimonials') @UseGuards(AccessTokenGuard) @Roles('owner', 'staff') create(@Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.testimonials.create(schema.parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
   @Patch('admin/testimonials/:id') @UseGuards(AccessTokenGuard) @Roles('owner', 'staff') update(@Param('id') id: string, @Body() body: unknown, @Req() request: { user: { sub: string }; ip?: string }) { try { return this.testimonials.update(id, schema.partial().refine((input) => Object.keys(input).length > 0).parse(body), actor(request)); } catch (error) { if (error instanceof ZodError) throw new BadRequestException(error.flatten()); throw error; } }
 }

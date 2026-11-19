@@ -49,7 +49,7 @@ export const SchedulePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Practice Hours Summary Banner */}
-          <div className="mb-8 p-6 sm:p-8 rounded-2xl bg-surface border border-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="mb-8 p-5 sm:p-8 rounded-2xl bg-surface border border-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1">
               <div className="mb-2">
                 <OpenNowBadge />
@@ -65,7 +65,7 @@ export const SchedulePage: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <div className="px-4 py-2 rounded-xl bg-bg-alt border border-border text-xs text-text-muted">
+              <div className="px-4 py-2.5 rounded-xl bg-bg-alt border border-border text-xs text-text-muted">
                 <span className="block font-semibold text-secondary">Waktu Indonesia Barat (WIB)</span>
                 <span>Pendaftaran online 24 jam</span>
               </div>
@@ -79,13 +79,13 @@ export const SchedulePage: React.FC = () => {
               <span>{t.common.loading}</span>
             </div>
           ) : (
-            <div className="p-6 sm:p-8 rounded-2xl bg-surface border border-border shadow-card">
+            <div className="p-5 sm:p-8 rounded-2xl bg-surface border border-border shadow-card">
               <ScheduleTabs doctors={doctors} />
             </div>
           )}
 
           {/* Sunday emergency notice */}
-          <div className="mt-8 p-6 sm:p-8 rounded-2xl border border-amber-300/60 bg-amber-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
+          <div className="mt-8 p-5 sm:p-8 rounded-2xl border border-amber-300/60 bg-amber-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -107,7 +107,7 @@ export const SchedulePage: React.FC = () => {
               href={emergencyWaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-whatsapp whitespace-nowrap py-3 px-6 text-sm cursor-pointer shrink-0 shadow-soft"
+              className="btn-whatsapp whitespace-nowrap py-3.5 px-6 text-sm cursor-pointer shrink-0 shadow-soft w-full sm:w-auto text-center justify-center min-h-[48px] flex items-center active:scale-[0.98]"
             >
               <span>{lang === 'en' ? 'Emergency WhatsApp' : 'Hotline Darurat WA'}</span>
             </a>

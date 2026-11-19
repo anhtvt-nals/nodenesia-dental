@@ -59,9 +59,9 @@ export const NotFoundPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
             <Link
               to={localePath('/')}
-              className="btn-primary w-full sm:w-auto justify-center text-sm py-3 px-7 cursor-pointer shadow-soft"
+              className="btn-primary w-full sm:w-auto justify-center text-sm py-3.5 px-7 cursor-pointer shadow-soft min-h-[48px] flex items-center active:scale-[0.98]"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
               <span>{t.notFound.backHome}</span>
@@ -69,10 +69,10 @@ export const NotFoundPage: React.FC = () => {
 
             <Link
               to={localePath('/layanan')}
-              className="btn-secondary w-full sm:w-auto justify-center text-sm py-3 px-6 cursor-pointer"
+              className="btn-secondary w-full sm:w-auto justify-center text-sm py-3.5 px-6 cursor-pointer min-h-[48px] flex items-center active:scale-[0.98]"
             >
               <span>{t.notFound.exploreServices}</span>
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true" className="ml-1">→</span>
             </Link>
           </div>
 
@@ -84,25 +84,25 @@ export const NotFoundPage: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-2">
               <Link
                 to={localePath('/booking')}
-                className="px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors min-h-[44px] inline-flex items-center active:scale-95"
               >
                 {lang === 'en' ? 'Book Online' : 'Buat Janji Temu'}
               </Link>
               <Link
                 to={localePath('/jadwal')}
-                className="px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors min-h-[44px] inline-flex items-center active:scale-95"
               >
                 {lang === 'en' ? 'Doctor Schedule' : 'Jadwal Praktik'}
               </Link>
               <Link
                 to={localePath('/dokter')}
-                className="px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors min-h-[44px] inline-flex items-center active:scale-95"
               >
-                {lang === 'en' ? 'Our Doctors' : 'Dokter Spesialis'}
+                {lang === 'en' ? 'Our Doctors' : 'Tim Dokter'}
               </Link>
               <Link
                 to={localePath('/kontak')}
-                className="px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs font-semibold text-secondary hover:text-primary hover:border-primary/40 transition-colors min-h-[44px] inline-flex items-center active:scale-95"
               >
                 {lang === 'en' ? 'Location & Maps' : 'Lokasi Klinik'}
               </Link>
@@ -113,7 +113,7 @@ export const NotFoundPage: React.FC = () => {
                 href={waEmergencyLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-semibold text-accent hover:text-accent-hover inline-flex items-center gap-1.5"
+                className="text-xs font-semibold text-accent hover:text-accent-hover inline-flex items-center gap-1.5 min-h-[44px] py-1"
               >
                 <span>{lang === 'en' ? 'Need immediate assistance? Chat with receptionist' : 'Butuh bantuan segera? Chat dengan resepsionis'}</span>
                 <span aria-hidden="true">↗</span>

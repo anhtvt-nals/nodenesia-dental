@@ -2,6 +2,8 @@ export const userRoles = ['owner', 'staff'] as const;
 export const bookingStatuses = [
   'pending',
   'confirmed',
+  'arrived',
+  'in_chair',
   'completed',
   'cancelled',
   'no_show',

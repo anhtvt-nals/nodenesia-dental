@@ -20,6 +20,8 @@ export interface Service {
   description: string;
   descriptionEn: string;
   durationMinutes: number;
+  requiresConsultation?: boolean;
+  turnoverBufferMinutes?: number;
   priceFrom: number;
   priceTo?: number;
   priceNote?: string;
@@ -31,6 +33,14 @@ export interface DoctorWorkingHours {
   weekday: number; // 1 = Senin, ..., 6 = Sabtu, 0 = Minggu
   start: string; // "09:00"
   end: string;   // "16:00"
+}
+
+export interface DoctorTimeOff {
+  id: string;
+  doctorId?: string | null;
+  startsAt: string;
+  endsAt: string;
+  reason?: string | null;
 }
 
 export interface Doctor {
@@ -46,8 +56,10 @@ export interface Doctor {
   photoUrl: string;
   serviceIds: string[];
   workingHours: DoctorWorkingHours[];
+  timeOffs?: DoctorTimeOff[];
   education?: string[];
   sipNumber?: string;
+  gender?: 'female' | 'male' | null;
   experienceYears?: number;
   experience?: string;
   experienceEn?: string;
@@ -56,6 +68,8 @@ export interface Doctor {
 export type BookingStatus =
   | 'pending'
   | 'confirmed'
+  | 'arrived'
+  | 'in_chair'
   | 'completed'
   | 'cancelled'
   | 'no_show';
@@ -73,9 +87,12 @@ export interface Booking {
   doctorId: string; // Doctor id or 'any'
   startsAt: string; // ISO String
   endsAt: string;   // ISO String
+  turnoverEndsAt?: string;
+  chairIndex?: number;
   status: BookingStatus;
   patient: BookingPatient;
   complaint?: string;
+  canManage?: boolean;
   createdAt: string;
 }
 
@@ -104,6 +121,7 @@ export interface Article {
   summaryEn: string;
   content: string[];
   contentEn: string[];
+  coverUrl?: string | null;
 }
 
 export interface Faq {
@@ -167,4 +185,8 @@ export interface ClinicSettings {
     value: string;
     unit: string;
   }[];
+  paymentMethods?: string[];
+  blockedTimes?: { id: string; label: string; start: string; end: string; daysOfWeek?: number[] }[];
+  cancelCutoffHours?: number;
+  autoReleaseHours?: number;
 }

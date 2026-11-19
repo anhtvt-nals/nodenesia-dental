@@ -8,4 +8,4 @@
 - [ ] Working hours and clinic-wide/doctor time-off immediately remove affected availability.
 - [ ] Gallery consent is recorded before publication; private/draft content is not public.
 - [ ] Restore an encrypted backup into a separate database and record the date/result.
-- [ ] Check mobile booking, article page, privacy/booking terms, and monitoring alerts.
+- [ ] Check mobile booking, article page, and monitoring alerts.

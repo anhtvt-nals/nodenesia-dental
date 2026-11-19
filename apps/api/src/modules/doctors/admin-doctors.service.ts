@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Inject, Injectable, NotFoundExc
 import { AuditLogService } from '../audit-logs/audit-log.service.js';
 import { DoctorsRepository } from './doctors.repository.js';
 
-export type DoctorInput = { slug: string; name: string; title?: string | null; specialty?: string | null; bio?: string | null; photoUrl?: string | null; isActive?: boolean; sortOrder?: number; serviceIds: string[] };
+export type DoctorInput = { slug: string; name: string; title?: string | null; specialty?: string | null; bio?: string | null; photoUrl?: string | null; gender?: string | null; sipNumber?: string | null; isActive?: boolean; sortOrder?: number; serviceIds: string[] };
 export type WorkingHourInput = { weekday: number; start: string; end: string };
 export type TimeOffInput = { doctorId?: string | null; startsAt: string; endsAt: string; reason?: string };
 type Actor = { userId: string; ip?: string };

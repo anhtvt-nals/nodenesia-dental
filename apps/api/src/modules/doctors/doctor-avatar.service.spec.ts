@@ -31,4 +31,14 @@ describe('Doctor avatar uploads', () => {
     await expect(new DoctorAvatarService().upload('image/png', png)).rejects.toThrow('Avatar storage upload failed');
     expect(destroy).toHaveBeenCalled();
   });
+  it('returns a default avatar URL without uploading to R2 when DEMO_MODE=true', async () => {
+    process.env.DEMO_MODE = 'true';
+    try {
+      const result = await new DoctorAvatarService().upload('image/png', png);
+      expect(result.photoUrl).toMatch(/^https:\/\//);
+      expect(send).not.toHaveBeenCalled();
+    } finally {
+      delete process.env.DEMO_MODE;
+    }
+  });
 });

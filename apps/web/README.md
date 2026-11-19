@@ -25,7 +25,6 @@ All routes exist in Indonesian (default, no prefix) and mirror under `/en/...` w
 | `/booking` | `/en/booking` | 4-step booking flow (Service, Doctor/Date, Slot Picker, Patient WhatsApp data & honeypot) |
 | `/booking/sukses/:code` | `/en/booking/sukses/:code` | Confirmation screen with 1-click WhatsApp deep link with prefilled booking message |
 | `/booking/kelola/:code` | `/en/booking/kelola/:code` | Self-service booking management (view status, online reschedule, cancel with modal) |
-| `/privacy`, `/terms` | `/en/privacy`, `/en/terms` | Medical data privacy policy and clinic service terms |
 | `*` | `*` | 404 page with navigation links back |
 
 ---

@@ -1,24 +1,13 @@
-[2K[1G[1myarn run v1.22.19[22m
-[2K[1G[2m$ vitest run --passWithNoTests[22m
 
  RUN  v2.1.9 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/packages/shared
 
-[?25l · src/schemas/booking.spec.ts (2)
- · src/schemas/booking-summary.spec.ts (1)
- ✓ src/enums/booking.spec.ts (1)
- · src/schemas/slots.spec.ts (1)
-[?25l[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/schemas/booking.spec.ts (2)
- ✓ src/schemas/booking-summary.spec.ts (1)
- ✓ src/enums/booking.spec.ts (1)
- ✓ src/schemas/slots.spec.ts (1)
-[2K[1A[2K[1A[2K[1A[2K[1A[2K[G ✓ src/schemas/booking-summary.spec.ts (1)
- ✓ src/schemas/booking.spec.ts (2)
- ✓ src/schemas/slots.spec.ts (1)
- ✓ src/enums/booking.spec.ts (1)
+ ✓ src/enums/booking.spec.ts (1 test) 29ms
+ ✓ src/schemas/booking.spec.ts (5 tests) 49ms
+ ✓ src/schemas/slots.spec.ts (1 test) 5ms
+ ✓ src/schemas/booking-summary.spec.ts (1 test) 4ms
 
  Test Files  4 passed (4)
-      Tests  5 passed (5)
-   Start at  10:32:50
-   Duration  586ms (transform 117ms, setup 0ms, collect 174ms, tests 15ms, environment 1ms, prepare 402ms)
+      Tests  8 passed (8)
+   Start at  15:51:39
+   Duration  463ms (transform 90ms, setup 0ms, collect 455ms, tests 87ms, environment 1ms, prepare 237ms)
 
-[?25h[?25h[2K[1G✨  Done in 0.95s.

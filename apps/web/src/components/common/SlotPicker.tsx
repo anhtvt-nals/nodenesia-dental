@@ -68,8 +68,8 @@ export const SlotPicker: React.FC<SlotPickerProps> = ({
                   !isAvailable
                     ? 'bg-bg-alt/60 text-text-muted/50 cursor-not-allowed border-dashed border-border'
                     : isSelected
-                    ? 'bg-primary text-white border-primary shadow-xs cursor-pointer'
-                    : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer'
+                    ? 'bg-primary text-white border-primary shadow-xs cursor-pointer ring-2 ring-primary/20 scale-[1.02]'
+                    : 'bg-bg-card text-text border-border hover:border-primary hover:bg-primary/5 cursor-pointer active:scale-95'
                 }`}
                 title={slot.reason}
               >

@@ -1,16 +1,14 @@
-[2K[1G[1myarn run v1.22.19[22m
-[2K[1G[2m$ vitest run --passWithNoTests[22m
 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
 
  RUN  v2.1.9 /Users/nals_macbook_267/Documents/side-project/nodenesia-dental/apps/admin
 
- ✓ src/features/content/content-json.spec.ts (1)
-   ✓ parseContentObject (1)
-     ✓ accepts JSON objects but rejects arrays and scalar values
+ ✓ src/features/content/content-json.spec.ts (1 test) 2ms
+ ✓ src/api/session-refresh.spec.ts (5 tests) 8ms
+ ✓ src/features/calendar/calendar-events.spec.ts (5 tests) 5ms
+ ✓ src/api/auth-session.spec.ts (11 tests) 47ms
 
- Test Files  1 passed (1)
-      Tests  1 passed (1)
-   Start at  10:32:50
-   Duration  583ms (transform 32ms, setup 0ms, collect 31ms, tests 2ms, environment 0ms, prepare 52ms)
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  15:51:40
+   Duration  365ms (transform 143ms, setup 0ms, collect 185ms, tests 62ms, environment 0ms, prepare 313ms)
 
-[?25h[2K[1G✨  Done in 0.97s.

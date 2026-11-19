@@ -11,6 +11,10 @@ export type PublicClinicSettings = {
   googleMapsUrl: string | null;
   openHours: unknown;
   stats: unknown;
+  blockedTimes?: unknown;
+  paymentMethods?: unknown;
+  cancelCutoffHours?: number;
+  autoReleaseHours?: number;
 };
 
 export interface SettingsReader {

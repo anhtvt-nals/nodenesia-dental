@@ -59,9 +59,9 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
           )}
 
           {/* SIP badge on compact or desktop */}
-          {doctor.sipNumber && !compact && (
-            <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-md bg-secondary/80 backdrop-blur-xs text-surface text-[10px] font-mono tracking-wider">
-              SIP Aktif
+          {doctor.sipNumber && (
+            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-secondary/85 backdrop-blur-xs text-white text-[10px] font-mono tracking-wider shadow-xs">
+              {doctor.sipNumber}
             </div>
           )}
         </Link>
@@ -115,19 +115,19 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, compact = false 
       </div>
 
       {/* Bottom Actions Footer */}
-      <div className="p-5 sm:p-6 pt-0 mt-auto flex items-center gap-2.5">
+      <div className="p-5 sm:p-6 pt-0 mt-auto flex items-center gap-2">
         <Link
           to={localePath(`/booking?dokter=${encodeURIComponent(doctor.id)}`)}
-          className="flex-1 btn-primary py-2.5 px-3 text-xs sm:text-sm font-semibold justify-center min-h-[44px]"
+          className="flex-1 btn-primary py-2.5 px-3 text-xs sm:text-sm font-semibold justify-center min-h-[44px] active:scale-[0.98]"
         >
           <span>{lang === 'en' ? 'Book' : 'Buat Janji'}</span>
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+          <svg className="w-3.5 h-3.5 ml-1 inline" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z" />
           </svg>
         </Link>
         <Link
           to={profilePath}
-          className="inline-flex items-center justify-center px-3.5 min-h-[44px] rounded-xl border border-border bg-surface text-secondary hover:bg-bg-alt hover:text-primary text-xs sm:text-sm font-semibold transition-colors"
+          className="inline-flex items-center justify-center px-3.5 min-h-[44px] rounded-xl border border-border bg-surface text-secondary hover:bg-bg-alt hover:text-primary text-xs sm:text-sm font-semibold transition-colors active:scale-[0.98]"
           aria-label={lang === 'en' ? `Profile of ${doctor.name}` : `Profil ${doctor.name}`}
         >
           <span>{lang === 'en' ? 'Profile' : 'Profil'}</span>

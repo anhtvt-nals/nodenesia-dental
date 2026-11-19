@@ -1,8 +1,23 @@
 # Deploy and backup runbook
 
-This repository intentionally does not build production Docker images in CI. Before a sale, deploy the API, Public web and Admin web behind a clinic-owned HTTPS reverse proxy. Run `corepack yarn lint && corepack yarn typecheck && corepack yarn test && corepack yarn build`, then run Prisma migrations once against the production database.
+This repository intentionally does not build production Docker images in CI. For a demo or a single-host deployment, Docker Compose builds and runs PostgreSQL, API, Public web and Admin web. Before a sale, deploy behind a clinic-owned HTTPS reverse proxy. Run `corepack yarn lint && corepack yarn typecheck && corepack yarn test && corepack yarn build`, then run Prisma migrations once against the production database.
 
 Required clinic-owned credentials: domain/DNS, VPS, PostgreSQL, `JWT_SECRET`, `PUBLIC_WEB_URL` (the HTTPS public domain), WhatsApp/Fonnte, object-storage remote, GPG backup key, analytics/Search Console and monitoring accounts. Never put them in this repository.
+
+The public Nginx virtual host must disable proxy buffering for `/api/v1/public/bookings/:code/status/stream`; the bundled `scripts/setup-ubuntu-vps.sh` writes this location automatically so booking-confirmation SSE events arrive in real time.
+
+## Docker Compose demo
+
+Copy `.env.example` to `.env`, set a strong `JWT_SECRET` and `ADMIN_SEED_PASSWORD`, then run `docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d --build`. Apply the demo data once with `docker compose exec api yarn workspace @clinic/api exec tsx prisma/seed.ts`. The public site and admin bind only to `127.0.0.1` on ports 5173 and 5174; PostgreSQL and the API have no host ports. Place an HTTPS reverse proxy in front of the two web services for an internet-facing deployment.
+
+On an Ubuntu VPS with Docker Engine and the Compose plugin already installed, `scripts/setup-docker-vps-domain.sh` performs that reverse-proxy step: it starts the Compose stack, creates the two Nginx virtual hosts, preserves SSE streaming, opens Nginx in UFW and provisions Let's Encrypt certificates. DNS for both domains must point to the VPS before running it. Set `PUBLIC_WEB_URL=https://<CLIENT_DOMAIN>` and a unique `JWT_SECRET` in `.env` first:
+
+```sh
+sudo CLIENT_DOMAIN=clinic.example.com \
+  ADMIN_DOMAIN=admin.clinic.example.com \
+  CERTBOT_EMAIL=ops@example.com \
+  bash scripts/setup-docker-vps-domain.sh
+```
 
 ## Backup
 

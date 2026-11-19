@@ -118,6 +118,30 @@ html {
   color: var(--color-text);
   font-size: 15px;
   line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: clip;
+  max-width: 100vw;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+  position: relative;
+}
+
+/* Control Elements: Prevent text selection & callout on long press (Mobile Native) */
+button,
+[role="button"],
+[role="tab"],
+.btn-primary,
+.btn-secondary,
+.btn-whatsapp,
+.btn-emergency,
+.badge {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Accessibility: Skip link hidden by default, visible only on keyboard Tab focus */
@@ -198,15 +222,27 @@ h4,
   gap: 8px;
 }
 
-.btn-primary:hover {
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px -4px rgba(24, 78, 63, 0.35);
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(24, 78, 63, 0.35);
+  }
 }
 
 .btn-primary:active {
   transform: scale(0.98);
+}
+
+/* Service card actions share one fixed control box; global button padding must not change their height. */
+.service-card__actions > a {
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
 }
 
 .btn-secondary {
@@ -226,10 +262,12 @@ h4,
   gap: 8px;
 }
 
-.btn-secondary:hover {
-  background: var(--color-primary);
-  color: #FFFFFF;
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover {
+    background: var(--color-primary);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+  }
 }
 
 .btn-secondary:active {
@@ -254,11 +292,13 @@ h4,
   gap: 8px;
 }
 
-.btn-whatsapp:hover {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px -4px rgba(196, 139, 70, 0.35);
+@media (hover: hover) and (pointer: fine) {
+  .btn-whatsapp:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(196, 139, 70, 0.35);
+  }
 }
 
 .btn-whatsapp:active {
@@ -282,9 +322,11 @@ h4,
   gap: 8px;
 }
 
-.btn-emergency:hover {
-  border-color: var(--color-primary);
-  background: var(--color-bg-alt);
+@media (hover: hover) and (pointer: fine) {
+  .btn-emergency:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-alt);
+  }
 }
 
 .btn-emergency:active {
@@ -397,6 +439,107 @@ textarea:focus-visible,
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Global Editorial Warm Luxury Color Grade for Photography */
+img:not([src*=".svg"]):not([src*="data:image/svg"]) {
+  /* Warm, rich contrast with subtle desaturation for quiet luxury medical aesthetic */
+  filter: saturate(0.92) contrast(1.02) sepia(0.05);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover state on interactive cards gently lifts vitality */
+a:hover img, button:hover img, .group:hover img {
+  filter: saturate(0.98) contrast(1.03) sepia(0.02);
+}
+
+/* Exceptions: Leaflet map tiles, SVGs, QR codes, icons */
+.leaflet-container img,
+svg img,
+.no-color-grade img,
+img.no-color-grade {
+  filter: none !important;
+}
+
+/* Custom scrollbar hiding utility & smooth iOS touch momentum scrolling */
+.scrollbar-none,
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Touch scroll snapping surfaces */
+.snap-x {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* Edge-bleed carousel: track spans the full viewport width, but the first card
+   lines up with the page gutter (same as headings) and snaps back to it.
+   Gutter mirrors the container padding: px-4 / sm:px-6 / lg:px-8. */
+.carousel-bleed {
+  --gutter: 1rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+}
+@media (min-width: 640px) {
+  .carousel-bleed { --gutter: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .carousel-bleed { --gutter: 2rem; }
+  /* Grid / desktop variants: no bleed needed */
+  .carousel-bleed-mobile { margin-inline: 0; padding-inline: 0; scroll-padding-inline: 0; }
+}
+
+/* Mobile Bottom Sheet Animations */
+@keyframes slideUpSheet {
+  from {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0.9;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUpSheet 0.28s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideInRightDrawer {
+  from {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0.92;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-left {
+  animation: slideInRightDrawer 0.24s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Mobile-native input zoom prevention (iOS Safari auto-zoom on inputs < 16px) */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch action manipulation for fast 0ms tap feedback */
+a, button, input, select, textarea, [role="button"], [role="tab"] {
+  touch-action: manipulation;
 }
 
 /* Reduced motion preference */
