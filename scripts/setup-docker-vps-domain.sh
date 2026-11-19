@@ -111,10 +111,34 @@ if ! grep -Fqx "PUBLIC_WEB_URL=https://${CLIENT_DOMAIN}" "${ENV_FILE}"; then
 fi
 
 apt-get update -y
-apt-get install -y nginx certbot python3-certbot-nginx
+apt-get install -y nginx certbot python3-certbot-nginx curl
 
 cd "${APP_DIR}"
 docker compose up -d --build
+
+wait_for_upstream() {
+  local name="$1"
+  local port="$2"
+  local attempt
+  for attempt in {1..30}; do
+    if curl --fail --silent --show-error --max-time 3 "http://127.0.0.1:${port}/" >/dev/null; then
+      echo "${name} upstream is ready on 127.0.0.1:${port}."
+      return 0
+    fi
+    sleep 2
+  done
+
+  echo "${name} did not become reachable on 127.0.0.1:${port}; Nginx hosts were not changed."
+  docker compose ps || true
+  docker compose logs --tail=150 api web admin migrate || true
+  exit 1
+}
+
+# Do not create a host proxy configuration until both hardened containers are
+# actually serving traffic. This prevents a partially failed Compose startup
+# from leaving a misleading public 502 deployment behind.
+wait_for_upstream "Public web" 5173
+wait_for_upstream "Admin web" 5174
 
 cat > "/etc/nginx/sites-available/${CLIENT_DOMAIN}" <<EOF
 server {
@@ -183,6 +207,13 @@ ln -sf "/etc/nginx/sites-available/${ADMIN_DOMAIN}" "/etc/nginx/sites-enabled/${
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
+
+# Confirm that host Nginx selected the vhosts just created, rather than an
+# unrelated default server block on a multi-site VPS.
+curl --fail --silent --show-error --max-time 5 \
+  -H "Host: ${CLIENT_DOMAIN}" http://127.0.0.1/ >/dev/null
+curl --fail --silent --show-error --max-time 5 \
+  -H "Host: ${ADMIN_DOMAIN}" http://127.0.0.1/ >/dev/null
 
 ufw allow OpenSSH || true
 ufw allow 'Nginx Full' || true

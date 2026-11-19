@@ -13,8 +13,8 @@ Copy `.env.example` to `.env`, set a strong `JWT_SECRET` and `ADMIN_SEED_PASSWOR
 On an Ubuntu VPS with Docker Engine and the Compose plugin already installed, `scripts/setup-docker-vps-domain.sh` performs that reverse-proxy step: it starts the Compose stack, creates the two Nginx virtual hosts, preserves SSE streaming, opens Nginx in UFW and provisions Let's Encrypt certificates. DNS for both domains must point to the VPS before running it. When `.env` does not exist (or `OVERWRITE_ENV=true` is set), the script prompts for admin, public URL and optional R2 credentials, then creates `.env` with a generated `JWT_SECRET` before deployment:
 
 ```sh
-sudo CLIENT_DOMAIN=clinic.example.com \
-  ADMIN_DOMAIN=admin.clinic.example.com \
+sudo CLIENT_DOMAIN=dental.nodenesia.id \
+  ADMIN_DOMAIN=admin.clinic.nodenesia.id \
   CERTBOT_EMAIL=ops@example.com \
   bash scripts/setup-docker-vps-domain.sh
 ```
