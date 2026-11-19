@@ -1622,17 +1622,43 @@ button,
   }
 
   .admin-topbar {
-    padding-right: max(12px, env(safe-area-inset-right));
-    padding-left: max(64px, calc(52px + env(safe-area-inset-left)));
+    padding-inline: max(16px, env(safe-area-inset-right));
   }
 
   .nav-toggle {
+    position: fixed;
+    top: 7px;
+    left: max(16px, env(safe-area-inset-left));
+    display: grid;
     width: 44px;
     min-width: 44px !important;
     height: 44px;
     padding: 0 !important;
+    place-items: center;
     border-radius: 12px !important;
     font-size: 18px;
+  }
+
+  .nav-toggle .anticon {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    transition: opacity 150ms var(--ease-out), transform 180ms var(--ease-out);
+  }
+
+  .nav-toggle__close-icon {
+    opacity: 0;
+    transform: rotate(-70deg) scale(.76);
+  }
+
+  .nav-toggle.is-open .nav-toggle__menu-icon {
+    opacity: 0;
+    transform: rotate(70deg) scale(.76);
+  }
+
+  .nav-toggle.is-open .nav-toggle__close-icon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
   }
 
   .admin-topbar__inner,
@@ -1642,9 +1668,23 @@ button,
   }
 
   .admin-topbar h1 {
+    grid-column: 2;
     overflow: hidden;
+    justify-self: center;
+    max-width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .admin-topbar__inner {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    gap: 8px;
+  }
+
+  .admin-topbar__right {
+    grid-column: 3;
+    justify-self: end;
   }
 
   #admin-header-actions {
@@ -1765,6 +1805,16 @@ button,
 
   .admin-mobile-nav .ant-drawer-content-wrapper {
     width: min(86vw, 340px) !important;
+    height: 100% !important;
+    box-shadow: 14px 0 40px rgb(18 40 32 / 16%);
+  }
+
+  .admin-mobile-nav .ant-drawer-content {
+    border-radius: 0 18px 0 0;
+  }
+
+  .admin-mobile-nav .ant-drawer-body {
+    padding-top: 14px !important;
   }
 
   .ant-drawer-header {

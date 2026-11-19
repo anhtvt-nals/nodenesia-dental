@@ -3,6 +3,7 @@ import { Alert, App as AntdApp, Button, Card, Col, Drawer, Layout, Menu, Progres
 import {
   CalendarOutlined,
   CommentOutlined,
+  CloseOutlined,
   DashboardOutlined,
   FileTextOutlined,
   LogoutOutlined,
@@ -533,12 +534,16 @@ export function AdminDashboard({ accessToken, role, userName, onSignOut }: { acc
 
   return <Layout className={`admin-shell${sidebarCollapsed ? ' admin-shell--collapsed' : ''}`}>
     <Button
-      className="nav-toggle"
+      className={`nav-toggle${isNavOpen ? ' is-open' : ''}`}
       type="default"
-      icon={<MenuOutlined />}
-      onClick={() => setIsNavOpen(true)}
-      aria-label={t('menu')}
-    />
+      onClick={() => setIsNavOpen((open) => !open)}
+      aria-label={isNavOpen ? tr('Tutup menu', 'Close menu') : t('menu')}
+      aria-expanded={isNavOpen}
+      aria-controls="admin-mobile-menu"
+    >
+      <MenuOutlined className="nav-toggle__menu-icon" />
+      <CloseOutlined className="nav-toggle__close-icon" />
+    </Button>
     <Layout.Sider className="admin-sidebar" width={240} breakpoint="lg" collapsedWidth={72} collapsed={sidebarCollapsed} onCollapse={setCollapsed}>
       <div className="admin-brand-row">
         <AdminBrandLogo label={t('appTitle')} />
@@ -551,8 +556,8 @@ export function AdminDashboard({ accessToken, role, userName, onSignOut }: { acc
         {userProfileCard}
       </div>
     </Layout.Sider>
-    <Drawer className="admin-mobile-nav" placement="left" open={isNavOpen} onClose={() => setIsNavOpen(false)} title={t('appTitle')}>
-      <div className="admin-mobile-nav__body">
+    <Drawer className="admin-mobile-nav" placement="left" open={isNavOpen} onClose={() => setIsNavOpen(false)} closable={false} title={null} rootStyle={{ top: 58 }} aria-label={t('menu')}>
+      <div id="admin-mobile-menu" className="admin-mobile-nav__body">
         <div className="admin-mobile-nav__menu">
           {navigationContent}
         </div>
