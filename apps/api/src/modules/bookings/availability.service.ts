@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import type { BlockedTime } from '@clinic/shared';
 import { getAvailableSlots } from './slot-engine.js';
@@ -8,6 +8,11 @@ export class AvailabilityService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async find(serviceId: string, date: string, doctorId?: string) {
+    const settings = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
+    if (settings.maintenanceMode) {
+      throw new ServiceUnavailableException('Online booking is temporarily unavailable while the clinic website is under maintenance.');
+    }
+
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(serviceId);
     const service = await this.prisma.service.findFirst({
       where: { OR: [{ slug: serviceId }, ...(isUuid ? [{ id: serviceId }] : [])], isActive: true },
@@ -15,7 +20,6 @@ export class AvailabilityService {
     if (!service) throw new BadRequestException('Unknown service');
 
     const day = new Date(`${date}T00:00:00.000Z`).getUTCDay();
-    const settings = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
 
     const requestedDay = new Date(`${date}T00:00:00.000Z`);
     const horizonEndsAt = new Date(Date.now() + settings.bookingHorizonDays * 24 * 60 * 60_000);

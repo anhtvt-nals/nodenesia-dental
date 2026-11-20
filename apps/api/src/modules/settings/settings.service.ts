@@ -4,6 +4,7 @@ export type PublicClinicSettings = {
   waNumber: string;
   address: string;
   timezone: string;
+  maintenanceMode: boolean;
   tagline: string | null;
   taglineEn: string | null;
   city: string | null;

@@ -19,6 +19,18 @@ sudo CLIENT_DOMAIN=dental.nodenesia.id \
   bash scripts/setup-docker-vps-domain.sh
 ```
 
+## Public maintenance mode
+
+Maintenance mode is stored in `clinic_settings`, not exposed in the Admin application, and leaves the Admin site available. It displays a public maintenance page and blocks public slot lookup and new booking requests with `503`. After deploying the migration, run the following from the repository root on the VPS:
+
+```sh
+bash scripts/maintenance-mode.sh status
+bash scripts/maintenance-mode.sh on
+bash scripts/maintenance-mode.sh off
+```
+
+The public site checks the setting when it loads, so visitors only need to reload their page after it is toggled.
+
 ## Backup
 
 Install PostgreSQL client tools, GnuPG and optionally rclone. Import the clinic-owned public GPG key, set `DATABASE_URL`, `BACKUP_GPG_RECIPIENT`, and optionally `RCLONE_REMOTE` (an rclone remote/path owned by the clinic). Validate with `bash infra/backup.sh --check`; schedule `bash infra/backup.sh` daily. The script creates encrypted dumps, retains 14 local copies and copies each new dump to object storage when rclone is configured.

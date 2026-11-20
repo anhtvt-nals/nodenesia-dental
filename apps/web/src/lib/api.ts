@@ -121,6 +121,7 @@ type ApiSettings = {
   waNumber: string;
   address: string;
   timezone: string;
+  maintenanceMode: boolean;
   tagline: string | null;
   taglineEn: string | null;
   city: string | null;
@@ -163,6 +164,7 @@ function mapSettings(raw: ApiSettings): ClinicSettings {
     instagramHandle: raw.instagramHandle ?? '',
     googleMapsUrl: raw.googleMapsUrl ?? '',
     timezone: raw.timezone,
+    maintenanceMode: raw.maintenanceMode === true,
     openHoursDesc: openHours.openHoursDesc ?? '',
     openHoursDescEn: openHours.openHoursDescEn ?? openHours.openHoursDesc ?? '',
     regularHours: {

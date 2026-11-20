@@ -22,6 +22,18 @@ docker compose exec api sh -c 'node --import tsx apps/api/prisma/reset-demo.ts &
 
 Stop the stack with `docker compose -f docker-compose.yml -f docker-compose.demo.yml down`. Add `-v` only when intentionally deleting the local database volume. PostgreSQL and the API are deliberately not exposed on host ports.
 
+## Maintenance mode
+
+Maintenance mode is a database-controlled public-site switch; it is deliberately not available in Admin Settings. It replaces the public website with a maintenance page and returns `503` for public slot lookup and new booking requests. Admin remains available.
+
+Run this from the repository root on the Docker host after the latest migration has been deployed:
+
+```sh
+bash scripts/maintenance-mode.sh status
+bash scripts/maintenance-mode.sh on
+bash scripts/maintenance-mode.sh off
+```
+
 ## Local development
 
 ```sh

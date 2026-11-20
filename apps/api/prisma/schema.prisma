@@ -97,6 +97,7 @@ model ClinicSettings {
   lng                Decimal? @db.Decimal(9, 6)
   timezone           String   @default("Asia/Jakarta")
   adminLocale        String   @default("id") @map("admin_locale")
+  maintenanceMode    Boolean  @default(false) @map("maintenance_mode")
   slotStepMinutes    Int      @default(15) @map("slot_step_minutes")
   bookingLeadMinutes Int      @default(60) @map("booking_lead_minutes")
   bookingHorizonDays Int      @default(60) @map("booking_horizon_days")

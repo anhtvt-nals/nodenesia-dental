@@ -130,6 +130,37 @@ body {
   position: relative;
 }
 
+/* Rare, explanatory state: a quiet entrance keeps the maintenance takeover from feeling abrupt. */
+.maintenance-reveal {
+  animation: maintenance-enter 280ms var(--ease-out) both;
+}
+
+@keyframes maintenance-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maintenance-reveal {
+    animation: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .maintenance-secondary-link:hover {
+    background-color: var(--color-bg-alt);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+}
+
 /* Control Elements: Prevent text selection & callout on long press (Mobile Native) */
 button,
 [role="button"],

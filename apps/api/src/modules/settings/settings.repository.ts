@@ -15,6 +15,7 @@ export class SettingsRepository implements SettingsReader, AdminSettingsReposito
       waNumber: settings.waNumber,
       address: settings.address,
       timezone: settings.timezone,
+      maintenanceMode: settings.maintenanceMode,
       tagline: settings.tagline,
       taglineEn: settings.taglineEn,
       city: settings.city,
@@ -30,7 +31,7 @@ export class SettingsRepository implements SettingsReader, AdminSettingsReposito
   }
 
   async getAdmin(): Promise<AdminClinicSettings> {
-    const { reminderTemplates: _reminderTemplates, ...settings } = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
+    const { reminderTemplates: _reminderTemplates, maintenanceMode: _maintenanceMode, ...settings } = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
     return settings;
   }
 
@@ -41,6 +42,7 @@ export class SettingsRepository implements SettingsReader, AdminSettingsReposito
       ...(blockedTimes !== undefined ? { blockedTimes: blockedTimes as Prisma.InputJsonValue } : {}),
       ...(paymentMethods !== undefined ? { paymentMethods: paymentMethods as Prisma.InputJsonValue } : {}),
     };
-    return this.prisma.clinicSettings.update({ where: { id: 'default' }, data });
+    const { reminderTemplates: _reminderTemplates, maintenanceMode: _maintenanceMode, ...settings } = await this.prisma.clinicSettings.update({ where: { id: 'default' }, data });
+    return settings;
   }
 }

@@ -17,6 +17,7 @@ export const fallbackClinicSettings: ClinicSettings = {
   instagramHandle: '@senyumsehat.dental',
   googleMapsUrl: 'https://maps.google.com/?q=Jl.+Wolter+Monginsidi+Kebayoran+Baru+Jakarta+Selatan',
   timezone: 'Asia/Jakarta',
+  maintenanceMode: false,
   openHoursDesc: 'Senin – Sabtu: 09:00 – 20:00 WIB (Istirahat 12:00 – 13:00)',
   openHoursDescEn: 'Monday – Saturday: 09:00 – 20:00 WIB (Break 12:00 – 13:00)',
   regularHours: {
@@ -33,10 +34,16 @@ export const fallbackClinicSettings: ClinicSettings = {
   ],
 };
 
-const ClinicSettingsContext = createContext<ClinicSettings>(fallbackClinicSettings);
+type ClinicSettingsState = {
+  settings: ClinicSettings;
+  isReady: boolean;
+};
+
+const ClinicSettingsContext = createContext<ClinicSettingsState>({ settings: fallbackClinicSettings, isReady: false });
 
 export function ClinicSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<ClinicSettings>(fallbackClinicSettings);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -46,15 +53,22 @@ export function ClinicSettingsProvider({ children }: { children: React.ReactNode
       })
       .catch(() => {
         // Keep the fallback settings when the API is unreachable.
+      })
+      .finally(() => {
+        if (active) setIsReady(true);
       });
     return () => {
       active = false;
     };
   }, []);
 
-  return <ClinicSettingsContext.Provider value={settings}>{children}</ClinicSettingsContext.Provider>;
+  return <ClinicSettingsContext.Provider value={{ settings, isReady }}>{children}</ClinicSettingsContext.Provider>;
 }
 
 export function useClinicSettings(): ClinicSettings {
+  return useContext(ClinicSettingsContext).settings;
+}
+
+export function useClinicSettingsState(): ClinicSettingsState {
   return useContext(ClinicSettingsContext);
 }

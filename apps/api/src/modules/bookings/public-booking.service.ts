@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Inject, Injectable, Optional } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable, Optional, ServiceUnavailableException } from '@nestjs/common';
 import type { CreatePublicBookingInput } from '@clinic/shared';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AdminNotificationsService } from '../notifications/admin-notifications.service.js';
@@ -19,6 +19,11 @@ export class PublicBookingService {
   ) {}
 
   async create(input: CreatePublicBookingInput) {
+    const settings = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
+    if (settings.maintenanceMode) {
+      throw new ServiceUnavailableException('Online booking is temporarily unavailable while the clinic website is under maintenance.');
+    }
+
     const service = await this.prisma.service.findFirst({
       where: {
         OR: [
@@ -31,7 +36,6 @@ export class PublicBookingService {
     if (!service) throw new BadRequestException('Unknown service');
 
     const startsAt = new Date(input.startsAt);
-    const settings = await this.prisma.clinicSettings.findUniqueOrThrow({ where: { id: 'default' } });
 
     // Anti-fake booking: max 3 pending bookings per WhatsApp number per 24 hours
     if (input.phone) {

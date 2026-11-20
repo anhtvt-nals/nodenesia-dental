@@ -170,6 +170,7 @@ export interface ClinicSettings {
   instagramHandle: string;
   googleMapsUrl: string;
   timezone: string;
+  maintenanceMode: boolean;
   openHoursDesc: string;
   openHoursDescEn: string;
   regularHours: {

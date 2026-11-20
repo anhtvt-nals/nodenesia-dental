@@ -7,6 +7,7 @@ const publicSettings = {
   waNumber: '+628120000000',
   address: 'Jakarta',
   timezone: 'Asia/Jakarta',
+  maintenanceMode: false,
   tagline: null,
   taglineEn: null,
   city: null,
